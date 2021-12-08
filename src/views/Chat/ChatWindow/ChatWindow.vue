@@ -1,0 +1,289 @@
+<template>
+  <!-- <div class="messageActions">
+            <b-flex>
+              <b-btn
+                ghost
+                icon
+                class="m-0 p-0"
+              >
+                <b-icon name="mdi mdi-reply">
+                </b-icon>
+              </b-btn>
+              <b-btn
+                ghost
+                icon
+                class="m-0 p-0"
+                v-on:click="
+                  reaction.message = message;
+                  reaction.show = true;
+                "
+              >
+                <b-icon>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    aria-hidden="true"
+                    role="img"
+                    width="1em"
+                    height="1em"
+                    preserveAspectRatio="xMidYMid meet"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </b-icon>
+              </b-btn>
+
+            </b-flex>
+          </div> -->
+  <transition-group name="messageAnimation" tag="div">
+    <template v-for="(message, i) in messages" :key="i">
+      <div
+        :class="
+          'msg ' +
+          (message.sender == user.id ? 'me' : '') +
+          (checkMsgFromSameUser(message, i) && !checkTimeDifference(message, i)
+            ? ' sub'
+            : '') +
+          (checkLastMsgFromSameUser(message, i) ||
+          checkLastTimeForSameUser(message, i)
+            ? ' last'
+            : '')
+        "
+      >
+        <div>
+          <div
+            class="time"
+            v-if="checkTimeDifference(message, i)"
+            v-html="getTime(message.time)"
+          ></div>
+          <Popper style="width: 100%" offsetSkid="250px" :interactive="false">
+            <b-btn ghost icon class="messageActionBtn">
+              <b-icon name="mdi mdi-chevron-down"></b-icon>
+            </b-btn>
+            <template #content>
+              <b-card class="messageActions p-0 m-0">
+                <b-list-item
+                  clickable
+                  v-on:click="
+                    reaction.message = i;
+                    reaction.show = true;
+                  "
+                >
+                  <b-flex>
+                    <b-icon style="height: 30px">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        aria-hidden="true"
+                        role="img"
+                        width="1em"
+                        height="1em"
+                        preserveAspectRatio="xMidYMid meet"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </b-icon>
+                    <span>React</span>
+                  </b-flex>
+                </b-list-item>
+                <b-list-item clickable>
+                  <b-flex>
+                    <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
+                    <span>Reply</span>
+                  </b-flex>
+                </b-list-item>
+              </b-card>
+            </template>
+          </Popper>
+          <b-flex>
+            <b-spacer v-if="message.sender == user.id"></b-spacer>
+            <b-avatar
+              v-if="message.sender != user.id"
+              :size="30"
+              :username="
+                users[message.sender] ? users[message.sender].username : ''
+              "
+            ></b-avatar>
+            <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
+            <div
+              :class="`msg-text ${
+                checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
+              }`"
+              v-html="twemojiConvert(message.text)"
+            ></div>
+          </b-flex>
+        </div>
+        <div class="reactions">
+          <span v-for="(users, key) in message.reactions" :key="key">
+            <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
+          </span>
+        </div>
+      </div>
+    </template>
+  </transition-group>
+  <b-modal v-model="reaction.show">
+    <Picker
+      id="reactionPicker"
+      color="#286ef1"
+      autoFocus
+      size="15"
+      title="Pick a Reaction…"
+      emoji="point_up"
+      :data="emojiIndex"
+      set="apple"
+      @select="addReaction"
+  /></b-modal>
+</template>
+
+<script>
+/* eslint-disable */
+import db from "../../../fire.js";
+import { ref, set, get, child, onValue, update } from "firebase/database";
+import data from "emoji-mart-vue-fast/data/all.json";
+import "emoji-mart-vue-fast/css/emoji-mart.css";
+import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
+let emojiIndex = new EmojiIndex(data);
+twemoji.size = "";
+twemoji.base =
+  "https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-160";
+export default {
+  name: "ChatWindow",
+  components: { Picker, Emoji },
+  props: { user: Object, chat: Object, messages: Object, limit: Number },
+  data: () => {
+    return {
+      users: {},
+      emojiIndex: emojiIndex,
+      reaction: {
+        message: "",
+        show: false,
+      },
+    };
+  },
+  computed: {
+    emojiDataAll() {
+      return EmojiAllData;
+    },
+    emojiGroups() {
+      return EmojiGroups;
+    },
+  },
+  updated() {
+    const messages = this.messages;
+    const users = {};
+    let i = 0;
+    for (var messageId in messages) {
+      const message = messages[messageId];
+      get(child(ref(db), `users/${message.sender}`)).then((snapshot) => {
+        var data = snapshot.val();
+        users[message.sender] = data;
+        if (Object.keys(messages).length - 1 == i) {
+          this.users = users;
+        }
+        i++;
+      });
+    }
+    this.$nextTick(function () {
+      // If the user scrolled up, you don't want to scroll down
+      if (this.limit != 25) {
+        document
+          .querySelectorAll(".msg")
+          [
+            document.querySelectorAll(".msg").length - (this.limit - 24)
+          ]?.scrollIntoView(true);
+        return;
+      }
+      var el = document.getElementById("msgs");
+      el.scrollTop = el.scrollHeight;
+    });
+  },
+  methods: {
+    addReaction(emoji) {
+      const messageId = this.reaction.message;
+      console.log(emoji, this.reaction.message);
+      if (!emoji) return;
+      update(
+        child(
+          ref(db),
+          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}`
+        ),
+        { user: this.user.id }
+      );
+      this.reaction.show = false;
+    },
+    twemojiConvert(text) {
+      return twemoji.parse(text, { className: "emojiImg" });
+    },
+    checkOnlyOneEmoji(text) {
+      return (
+        /\p{Emoji}/u.test(text) &&
+        text.replace(
+          /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+          ""
+        ).length == 0
+      );
+    },
+    getUser(message) {
+      const users = JSON.parse(JSON.stringify(this.users));
+      console.log(users, message.sender);
+      return users[message.sender] ? users[message.sender].username : "";
+    },
+    convertToEmoji(text) {
+      return emojiConvertor.replace_colons(text);
+    },
+    checkMsgFromSameUser(message, i) {
+      const messages = this.messages;
+      const msgIndex = Object.keys(messages).indexOf(i);
+      if (message.sender == this.getByIndex(messages, msgIndex - 1)?.sender) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    checkLastMsgFromSameUser(message, i) {
+      const messages = this.messages;
+      const msgIndex = Object.keys(messages).indexOf(i);
+      if (message.sender != this.getByIndex(messages, msgIndex + 1)?.sender) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    checkTimeDifference(message, i) {
+      const messages = this.messages;
+      const msgIndex = Object.keys(this.messages).indexOf(i);
+      return !(
+        new Date(
+          this.getByIndex(this.messages, msgIndex - 1)?.time
+        ).getMinutes() == new Date(message?.time).getMinutes()
+      );
+    },
+    checkLastTimeForSameUser(message, i) {
+      const messages = this.messages;
+      const msgIndex = Object.keys(this.messages).indexOf(i);
+      return !(
+        new Date(
+          this.getByIndex(this.messages, msgIndex + 1)?.time
+        ).getMinutes() == new Date(message?.time).getMinutes()
+      );
+    },
+    getTime(time) {
+      return new Date(time).toLocaleString();
+    },
+    getByIndex: function (json, index) {
+      return json[Object.keys(json)[index]];
+    },
+  },
+};
+</script>
+<style>
+@import url("./styles.css");
+</style>

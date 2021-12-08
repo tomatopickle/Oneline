@@ -1,0 +1,145 @@
+.msg .msg-text {
+  padding: 8px;
+  border-radius: 1.125rem 1.125rem 1.125rem .15rem;
+  background-color: #262626;
+  min-width: 50px;
+  font-size: 17px;
+  word-break: break-word;
+  transition: border-radius .5s;
+  /* This is to align the emojis perfectly with the text */
+  display: flex;
+  align-items: center;
+}
+
+.msg {
+  position: relative;
+}
+
+.me .msg-text {
+  background-color: var(--primary);
+  border-radius: 1.125rem 1.125rem .15rem 1.125rem;
+}
+
+.me.sub .msg-text {
+  border-radius: 1.125rem;
+}
+
+.time {
+  text-align: center;
+  color: #dbdbdb6b;
+  font-size: 11px;
+}
+
+
+
+.me.last .msg-text {
+  border-radius: 1.125rem .15rem 1.125rem 1.125rem;
+}
+
+@keyframes messageAnimation {
+  from {
+    opacity: 0;
+    transform: translate3d(50px, 0, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.messageAnimation-enter-active,
+.messageAnimationIn,
+.messageAnimation-leave-active,
+.messageAnimationOut {
+  animation-duration: .5s;
+  animation-fill-mode: both;
+}
+
+.messageAnimation-enter-active,
+.messageAnimationIn {
+  animation-name: messageAnimation;
+}
+
+.messageAnimation-leave-active,
+.messageAnimationOut {
+  animation-name: messageAnimation;
+}
+
+.msg-text .emojiImg {
+  width: 17px;
+  height: 17px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.oneEmoji .emojiImg {
+  width: 50px;
+  height: 50px;
+}
+
+
+.reactions {
+  position: absolute;
+  right: 10px;
+  bottom: -10px;
+  background-color: #1c1c1c;
+  border-radius: 35px;
+  height: max-content;
+}
+
+
+.messageActionBtn {
+  transform: scale(0);
+  transition: transform .2s;
+  position: absolute;
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+
+.msg:hover .messageActionBtn {
+  transform: scale(1);
+}
+
+.msg:not(.last):not(.sub) .messageActionBtn {
+  top: 5px;
+}
+
+.msg.last .messageActionBtn {
+  top: 5px;
+}
+
+.msg.sub .messageActionBtn {
+  top: 15px;
+}
+
+.msg.sub.last .messageActionBtn {
+  top: 1px;
+}
+
+.me .messageActionBtn {
+  right: 5px;
+}
+
+.inline-block {
+  display: block !important;
+}
+
+.messageActions {
+  width: max-content;
+  min-width: 50px;
+}
+
+.messageActions .card-text {
+  margin: 0;
+  padding: 0 !important;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: block;
+}
+
+.messageActions .list-item-content p{
+  padding-inline: 15px;
+}
+/* sdfsdf */
