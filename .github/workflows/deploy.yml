@@ -1,4 +1,4 @@
-name: Deploy with Firebase
+name: Deploy
 
 on:
   push:
