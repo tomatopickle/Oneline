@@ -3,7 +3,8 @@
     <template v-slot:prepend>
       <b-sidebar id="contacts" width="250px">
         <template v-slot:header>
-          <b-flex>
+          <b-flex class="m-0" style="margin-left: -15px">
+            <img class="h-10" src="../../assets/logos/logo.png" alt="Logo" />
             <div class="font-normal">Oneline</div>
             <b-spacer></b-spacer>
             <b-btn icon ghost @click="settings.modal = true"
@@ -13,14 +14,58 @@
         </template>
         <div>
           <br />
-          <b-list class="border-0 p-0 m-0" style="margin: -19px">
-            <template v-slot:header>
+          <b-list class="border-0 p-0 m-0" style="margin: -19px;background:transparent">
+            <template v-slot:header> 
               <b-flex class="pl-4 pr-1">
                 <h4 class="m-0">Chats</h4>
                 <b-spacer></b-spacer>
-                <b-btn @click="newChat.modal = true" icon color="primary" ghost>
-                  <b-icon name="mdi mdi-plus"></b-icon
-                ></b-btn>
+                <Popper
+                  arrow
+                  :interactive="false"
+                  offsetDistance="15px"
+                  offsetSkid="-35px"
+                >
+                  <b-btn icon color="primary" ghost>
+                    <b-icon name="mdi mdi-plus"></b-icon
+                  ></b-btn>
+                  <template #content>
+                    <b-card class="contextMenu p-0 m-0">
+                      <b-list-item
+                        clickable
+                        @click="
+                          newChat.tabIndex = 0;
+                          newChat.modal = true;
+                        "
+                      >
+                        <b-flex>
+                          <span>New Chat</span>
+                        </b-flex>
+                      </b-list-item>
+                      <b-list-item
+                        clickable
+                        @click="
+                          newChat.tabIndex = 1;
+                          newChat.modal = true;
+                        "
+                      >
+                        <b-flex>
+                          <span>New Group</span>
+                        </b-flex>
+                      </b-list-item>
+                      <b-list-item
+                        clickable
+                        @click="
+                          newChat.modal = true;
+                          newChat.tabIndex = 1;
+                        "
+                      >
+                        <b-flex>
+                          <span>Join Group</span>
+                        </b-flex>
+                      </b-list-item>
+                    </b-card>
+                  </template>
+                </Popper>
               </b-flex>
             </template>
             <b-input ghost placeholder="Search" class="w-11/12 center">
@@ -94,19 +139,6 @@
       <div id="msgInp">
         <b-card class="w-full mr-0 max-w-full">
           <transition name="fade" :duration="{ enter: 200, leave: 300 }">
-            <Picker
-              v-show="emoji"
-              color="#286ef1"
-              autoFocus
-              id="emojiPicker"
-              title="Pick your emoji…"
-              emoji="point_up"
-              :data="emojiIndex"
-              set="apple"
-              @select="addedEmoji"
-            />
-          </transition>
-          <transition name="fade" :duration="{ enter: 200, leave: 300 }">
             <div id="typingBar" v-if="typing.length != 0">
               <span v-for="username in typing" :key="username">{{
                 username == this.user.username ? "You" : username
@@ -126,12 +158,31 @@
               placeholder="Your Message"
             >
             </b-textarea>
-            <b-btn ghost icon class="-ml-3" @click="emoji = !emoji">
-              <b-icon name="mdi mdi-emoticon"></b-icon>
-            </b-btn>
+            <Popper
+              style="border: none !important"
+              position="top"
+              offsetSkid="25px"
+            >
+              <b-btn ghost icon class="-ml-3" id="emojiBtn">
+                <b-icon name="mdi mdi-emoticon"></b-icon>
+              </b-btn>
+              <template #content>
+                <div>
+                  <Picker
+                    color="#286ef1"
+                    autoFocus
+                    title="Pick your emoji…"
+                    emoji="point_up"
+                    :data="emojiIndex"
+                    set="apple"
+                    @select="addedEmoji"
+                  /></div
+              ></template>
+            </Popper>
             <div>
               <transition name="fade" mode="out-in" :duration="200">
                 <b-btn
+                  style="margin-left: 10px"
                   v-if="message.text"
                   icon
                   color="primary"
@@ -139,7 +190,7 @@
                 >
                   <b-icon name="mdi mdi-send"></b-icon>
                 </b-btn>
-                <b-btn v-else icon color="primary">
+                <b-btn style="margin-left: 10px" v-else icon color="primary">
                   <b-icon name="mdi mdi-microphone"></b-icon>
                 </b-btn>
               </transition>

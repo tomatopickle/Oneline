@@ -100,7 +100,6 @@ export default {
                 this.members = [];
                 this.typing = [];
                 this.messages = data || {};
-                console.log(chat, this.user.chats[chat.id].members);
                 for (var userIndex in this.user.chats[chat.id].members) {
                     var userId = this.user.chats[chat.id].members[userIndex];
                     get(ref(db, `users/${userId}`)).then((snapshot) => {
@@ -147,7 +146,7 @@ export default {
                     });
                 }
             }
-        }, 
+        },
         createPersonalChat() {
             this.newChat.data.personal.loading = true;
             var chatId = nanoid(15);
@@ -180,6 +179,7 @@ export default {
 
         },
         sendMessage() {
+            if (this.message.text.trim().length < 1) return
             update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
             this.message.text = "";
         },

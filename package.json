@@ -10,7 +10,7 @@
   "dependencies": {
     "@kyvg/vue3-notification": "^2.3.4",
     "bootbox": "^5.5.2",
-    "bounce-ui-vue": "^0.1.5",
+    "bounce-ui-vue": "^0.1.6",
     "core-js": "^3.6.5",
     "emoji-js": "^3.6.0",
     "emoji-mart-vue-fast": "^10.2.0",

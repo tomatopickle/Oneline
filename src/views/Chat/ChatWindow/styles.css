@@ -15,6 +15,16 @@
   position: relative;
 }
 
+.reaction {
+  transition: background .2s;
+  border-radius: 20px;
+}
+
+.reaction:hover {
+  background-color: #2c2c2c;
+  cursor: pointer;
+}
+
 .me .msg-text {
   background-color: var(--primary);
   border-radius: 1.125rem 1.125rem .15rem 1.125rem;
@@ -30,7 +40,9 @@
   font-size: 11px;
 }
 
-
+.user-reacted {
+  color: #3e81ff;
+}
 
 .me.last .msg-text {
   border-radius: 1.125rem .15rem 1.125rem 1.125rem;
@@ -81,13 +93,18 @@
 
 .reactions {
   position: absolute;
-  right: 10px;
-  bottom: -10px;
+  bottom: -8px;
   background-color: #1c1c1c;
   border-radius: 35px;
   height: max-content;
+  left: 50px;
+  display: flex;
 }
 
+.me .reactions {
+  left: unset;
+  right: 10px;
+}
 
 .messageActionBtn {
   transform: scale(0);
@@ -96,6 +113,7 @@
   display: block;
   padding: 0;
   margin: 0;
+  left: 45px;
 }
 
 .msg:hover .messageActionBtn {
@@ -107,19 +125,20 @@
 }
 
 .msg.last .messageActionBtn {
-  top: 5px;
+  top: -10px;
 }
 
 .msg.sub .messageActionBtn {
-  top: 15px;
+  top: -10px;
 }
 
 .msg.sub.last .messageActionBtn {
-  top: 1px;
+  top: -10px;
 }
 
 .me .messageActionBtn {
   right: 5px;
+  left: unset;
 }
 
 .inline-block {
@@ -139,7 +158,25 @@
   display: block;
 }
 
-.messageActions .list-item-content p{
+.messageActions .list-item-content p {
   padding-inline: 15px;
 }
+
+.messageActions .b-list-item {
+  margin: 0;
+}
+
+.messageActions .b-list-item .list-item-content {
+  padding: 0;
+}
+
+.reactions .flex-box span {
+  margin: 0;
+}
+
+.reactions .reactionNumber {
+  padding-right: 5px;
+  font-size: 13px;
+}
+
 /* sdfsdf */

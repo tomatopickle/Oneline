@@ -1,44 +1,4 @@
 <template>
-  <!-- <div class="messageActions">
-            <b-flex>
-              <b-btn
-                ghost
-                icon
-                class="m-0 p-0"
-              >
-                <b-icon name="mdi mdi-reply">
-                </b-icon>
-              </b-btn>
-              <b-btn
-                ghost
-                icon
-                class="m-0 p-0"
-                v-on:click="
-                  reaction.message = message;
-                  reaction.show = true;
-                "
-              >
-                <b-icon>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    aria-hidden="true"
-                    role="img"
-                    width="1em"
-                    height="1em"
-                    preserveAspectRatio="xMidYMid meet"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </b-icon>
-              </b-btn>
-
-            </b-flex>
-          </div> -->
   <transition-group name="messageAnimation" tag="div">
     <template v-for="(message, i) in messages" :key="i">
       <div
@@ -60,7 +20,11 @@
             v-if="checkTimeDifference(message, i)"
             v-html="getTime(message.time)"
           ></div>
-          <Popper style="width: 100%" offsetSkid="250px" :interactive="false">
+          <Popper
+            style="width: 100%"
+            :offsetSkid="message.sender == user.id ? '500%' : '-225%'"
+            :interactive="false"
+          >
             <b-btn ghost icon class="messageActionBtn">
               <b-icon name="mdi mdi-chevron-down"></b-icon>
             </b-btn>
@@ -100,6 +64,12 @@
                     <span>Reply</span>
                   </b-flex>
                 </b-list-item>
+                <b-list-item clickable>
+                  <b-flex>
+                    <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
+                    <span>Copy</span>
+                  </b-flex>
+                </b-list-item>
               </b-card>
             </template>
           </Popper>
@@ -122,8 +92,18 @@
           </b-flex>
         </div>
         <div class="reactions">
-          <span v-for="(users, key) in message.reactions" :key="key">
-            <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
+          <span
+            v-for="(users, key) in message.reactions"
+            :key="key"
+            class="reaction"
+            v-on:click="reactionClicked(i, key)"
+          >
+            <b-flex style="padding: 0">
+              <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
+              <span :class="'reactionNumber ' + checkIfUserReacted(users)">{{
+                getNumberOfReactions(users)
+              }}</span>
+            </b-flex>
           </span>
         </div>
       </div>
@@ -146,7 +126,15 @@
 <script>
 /* eslint-disable */
 import db from "../../../fire.js";
-import { ref, set, get, child, onValue, update } from "firebase/database";
+import {
+  ref,
+  set,
+  get,
+  child,
+  onValue,
+  update,
+  remove,
+} from "firebase/database";
 import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
 import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
@@ -206,14 +194,57 @@ export default {
     });
   },
   methods: {
+    reactionClicked(messageId, emoji) {
+      get(
+        child(
+          ref(db),
+          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji}/${this.user.id}`
+        )
+      ).then((snapshot) => {
+        var data = snapshot.val();
+        console.log(data);
+        if (data) {
+          remove(
+            child(
+              ref(db),
+              `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji}/${this.user.id}`
+            )
+          );
+        } else {
+          set(
+            child(
+              ref(db),
+              `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji}/${this.user.id}`
+            ),
+            { user: this.user.id }
+          );
+        }
+      });
+    },
     addReaction(emoji) {
       const messageId = this.reaction.message;
       console.log(emoji, this.reaction.message);
       if (!emoji) return;
-      update(
+      get(
         child(
           ref(db),
-          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}`
+          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}/${this.user.id}`
+        )
+      ).then((snapshot) => {
+        var data = snapshot.val();
+        if (data) {
+          remove(
+            child(
+              ref(db),
+              `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}/${this.user.id}`
+            )
+          );
+        }
+      });
+      set(
+        child(
+          ref(db),
+          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}/${this.user.id}`
         ),
         { user: this.user.id }
       );
@@ -230,6 +261,12 @@ export default {
           ""
         ).length == 0
       );
+    },
+    checkIfUserReacted(user) {
+      console.log(user);
+      if (user[this.user.id]) {
+        return "user-reacted";
+      }
     },
     getUser(message) {
       const users = JSON.parse(JSON.stringify(this.users));
@@ -274,6 +311,9 @@ export default {
           this.getByIndex(this.messages, msgIndex + 1)?.time
         ).getMinutes() == new Date(message?.time).getMinutes()
       );
+    },
+    getNumberOfReactions(json) {
+      return Object.keys(json).length;
     },
     getTime(time) {
       return new Date(time).toLocaleString();
