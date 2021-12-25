@@ -11,6 +11,11 @@
 .center {
   margin: auto;
 }
+
 .btn-block.btn.loading .spinner_parent {
   top: 7px;
+}
+
+.btn {
+  display: block;
 }

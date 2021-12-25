@@ -73,17 +73,28 @@
               </b-card>
             </template>
           </Popper>
+              <small
+                class="username"
+                v-if="
+                  message.sender != user.id && checkTimeDifference(message, i)
+                "
+                >{{ users[message.sender]?.username }}</small
+              >
           <b-flex>
             <b-spacer v-if="message.sender == user.id"></b-spacer>
-            <b-avatar
-              v-if="message.sender != user.id"
-              :size="30"
-              :username="
-                users[message.sender] ? users[message.sender].username : ''
-              "
-            ></b-avatar>
+            <div>
+              <b-avatar
+                v-if=" message.sender != user.id"
+                :size="30"
+                :username="users[message.sender] ? users[message.sender].username : ''"
+              >
+              </b-avatar>
+            </div>
             <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
-            <div
+            <div v-if="message.type == 'gif'" class="msg-gif">
+              <img height="200" :src="message.src" :alt="message.title"/>
+              </div>
+            <div v-else
               :class="`msg-text ${
                 checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
               }`"
@@ -98,7 +109,7 @@
             class="reaction"
             v-on:click="reactionClicked(i, key)"
           >
-            <b-flex style="padding: 0">
+            <b-flex style="padding: 0" v-if="key != 'undefined'">
               <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
               <span :class="'reactionNumber ' + checkIfUserReacted(users)">{{
                 getNumberOfReactions(users)
@@ -145,7 +156,13 @@ twemoji.base =
 export default {
   name: "ChatWindow",
   components: { Picker, Emoji },
-  props: { user: Object, chat: Object, messages: Object, limit: Number },
+  props: {
+    user: Object,
+    chat: Object,
+    messages: Object,
+    limit: Number,
+    enableScroll: Boolean,
+  },
   data: () => {
     return {
       users: {},
@@ -181,7 +198,7 @@ export default {
     }
     this.$nextTick(function () {
       // If the user scrolled up, you don't want to scroll down
-      if (this.limit != 25) {
+      if (this.limit != 25 && !this.enableScroll) {
         document
           .querySelectorAll(".msg")
           [
@@ -202,7 +219,6 @@ export default {
         )
       ).then((snapshot) => {
         var data = snapshot.val();
-        console.log(data);
         if (data) {
           remove(
             child(
@@ -223,8 +239,10 @@ export default {
     },
     addReaction(emoji) {
       const messageId = this.reaction.message;
-      console.log(emoji, this.reaction.message);
-      if (!emoji) return;
+      // At times the reaction dialog just closes weirdly, therefore this will reopen it
+      if (!(typeof emoji == "object")) {
+        return;
+      }
       get(
         child(
           ref(db),
@@ -263,14 +281,12 @@ export default {
       );
     },
     checkIfUserReacted(user) {
-      console.log(user);
       if (user[this.user.id]) {
         return "user-reacted";
       }
     },
     getUser(message) {
       const users = JSON.parse(JSON.stringify(this.users));
-      console.log(users, message.sender);
       return users[message.sender] ? users[message.sender].username : "";
     },
     convertToEmoji(text) {

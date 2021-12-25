@@ -7,6 +7,9 @@ html {
     font-family: Inter, sans-serif;
 }
 
+.card-text {
+    flex-grow: 1;
+}
 
 .b-list h3 {
     margin: 0;
@@ -30,14 +33,41 @@ html {
     top: 8px !important;
 }
 
-#msgInp .card {
+#msgInp .card:not(.card-glass) {
     border-radius: 0;
     padding-left: 0;
 }
 
-#msgInp .card .card-text {
+#msgInp .card:not(.card-glass) .card-text {
     margin: 0;
     padding: 0;
+}
+#gifsPanel header{
+    position: sticky;
+    top: 0;
+}
+.gif img {
+    width: 95px;
+    border-radius: 5px;
+    height: 95px;
+    cursor: pointer;
+    transition: all .2s;
+}
+.gif:hover img{
+    /* box-shadow: 0 0 0 4px #282828; */
+    transform: scale(1.1);
+
+}
+.gif:active{
+    transform: scale(1);
+}
+.gif img:active{
+    transform: scale(.95);
+}
+.gif {
+    display: inline-block;
+    margin:5px;
+    transition: all .2s;
 }
 
 #msgInp textarea {
@@ -45,6 +75,8 @@ html {
     max-height: 85vh;
     min-height: 44px;
     padding-right: 25px;
+    width: 95%;
+    margin-left: 2%;
 }
 
 #typingBar {
@@ -135,8 +167,8 @@ section.emoji-mart.emoji-mart-static * {
     margin-right: 8px;
     margin-left: 8px;
     position: absolute;
-    top: 20px;
-    right: 55px;
+    top: 14px;
+    right: 125px;
 }
 
 /* contextMenu */
@@ -183,7 +215,7 @@ section.emoji-mart.emoji-mart-static * {
     border-bottom: 1px solid #454548;
 }
 
-.dark {
+/* .dark .card.contextMenu{
     --popper-theme-background-color: #222226;
     --popper-theme-background-color-hover: #222226;
     --popper-theme-text-color: white;
@@ -191,17 +223,28 @@ section.emoji-mart.emoji-mart-static * {
     --popper-theme-border-radius: 6px;
     --popper-theme-padding: 0;
     --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
-}
+} */
 
 .card.contextMenu #arrow {
     transform: translate(8px, 0px) !important;
 }
 
-.reactions .flex-box span {
-    margin: 0;
+
+#scrollDownButton {
+    position: fixed;
+    right: 12px;
+    bottom: 120px;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
 
-.reactions .reactionNumber {
-    padding-right: 5px;
-    font-size: 13px;
+#contacts .b-list-item {
+    border-color: transparent;
+}
+
+#msgInp button:not(.btn-primary) .icon {
+    color: #d7d7d7;
+}
+
+#msgInp button:hover .icon {
+    color: white;
 }
