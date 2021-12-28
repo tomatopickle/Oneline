@@ -5,9 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "vue-cli-service build && ren C:\\Users\\mohammed\\Abaan\\oneline\\dist\\index.html  200.htm && surge --domain oneline.surge.sh --project C:/Users/mohammed/Abaan/oneline/dist",
     "lint": "vue-cli-service lint",
-    "test": "ren C:\\Users\\mohammed\\Abaan\\oneline\\dist\\index.html  200.html"
+    "publish":"npm run build && npm run deploy",
+    "deploy": "surge --domain oneline.surge.sh --project C:/Users/mohammed/Abaan/oneline/dist"
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^2.3.4",
@@ -19,9 +19,11 @@
     "emoji-mart-vue-fast": "^10.2.0",
     "emoji-picker-element": "^1.8.1",
     "firebase": "^9.4.0",
+    "json-stable-stringify": "^1.0.1",
     "linkifyjs": "^2.1.9",
     "nanoid": "^3.1.30",
     "sort-json": "^2.0.0",
+    "v-lazy-image": "^2.0.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.12",
     "vue3-popper": "^1.4.0"

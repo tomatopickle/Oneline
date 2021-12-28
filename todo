@@ -1,0 +1,23 @@
+- Bugs
+    - User the disconnect function from firebase instead of beforeunload for more accuracy
+    - Fix the user group data updating prob (members are not pushed in to the group data)
+        - Change Code @done
+        - Test
+- Features
+    - read messages
+    - new messages
+    - file uploading
+    - audio recording 
+    - automatically select a chat when app is opened
+- Fixed Bugs
+    - remove /n from every text, comes because the prevent.default is called too late
+    - Gif recent section coming for people who haven't used emojis
+- Added Features
+    - make a landing page
+    - messaging
+    - gifs
+    - user status
+    - personal chat
+    - group chat
+    - reactions
+    - emoji picker

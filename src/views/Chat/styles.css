@@ -33,40 +33,51 @@ html {
     top: 8px !important;
 }
 
-#msgInp .card:not(.card-glass) {
+#msgInp .card:not(#gifsPanel) {
     border-radius: 0;
     padding-left: 0;
 }
 
-#msgInp .card:not(.card-glass) .card-text {
+#msgInp .card:not(#gifsPanel) .card-text {
     margin: 0;
     padding: 0;
 }
-#gifsPanel header{
+
+#gifsPanel header {
     position: sticky;
     top: 0;
 }
+
 .gif img {
     width: 95px;
     border-radius: 5px;
     height: 95px;
     cursor: pointer;
-    transition: all .2s;
+    transition: transform .15s cubic-bezier(0.2, 0, 0.13, 2);
+
 }
-.gif:hover img{
-    /* box-shadow: 0 0 0 4px #282828; */
+
+.gif:hover img {
     transform: scale(1.1);
 
 }
-.gif:active{
+
+.action-btn i,
+.action-btn span {
+    font-size: 22px;
+}
+
+.gif:active {
     transform: scale(1);
 }
-.gif img:active{
+
+.gif img:active {
     transform: scale(.95);
 }
+
 .gif {
     display: inline-block;
-    margin:5px;
+    margin: 5px;
     transition: all .2s;
 }
 
@@ -241,10 +252,49 @@ section.emoji-mart.emoji-mart-static * {
     border-color: transparent;
 }
 
-#msgInp button:not(.btn-primary) .icon {
+#msgInp .chatInpBtn .icon {
     color: #d7d7d7;
 }
 
-#msgInp button:hover .icon {
+#msgInp .chatInpBtn:hover .icon {
     color: white;
+}
+
+.flip-list-move {
+    transition: transform 0.2s ease;
+}
+
+.chip {
+    background-color: #282828;
+    border-radius: 35px;
+    display: inline-block;
+    padding-inline: 5px;
+    margin: 5px;
+    font-size: 15px;
+    user-select: none;
+}
+
+.chip:hover {
+    background-color: #2c2c2c;
+    cursor: pointer;
+}
+
+.chip:focus {
+    background-color: var(--primary);
+}
+
+.vue-avatar--wrapper {
+    position: relative;
+}
+
+.status-online.vue-avatar--wrapper::after {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 30px;
+    display: block;
+    position: absolute;
+    right: 0px;
+    bottom: 0;
+    background-color: var(--success);
 }

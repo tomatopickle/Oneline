@@ -76,22 +76,66 @@
                 <b-icon name="mdi mdi-magnify"></b-icon>
               </template>
             </b-input>
-            <template v-for="(chat, i) in chats" :key="i">
-              <b-list-item
-                clickable
-                v-on:click="openChat(chat)"
-                class="contact"
-              >
-                <b-flex>
-                  <b-avatar
-                    :size="35"
-                    :username="chat.name"
-                    :src="chat?.src"
-                  ></b-avatar>
-                  <span>{{ chat.name }}</span>
-                </b-flex>
-              </b-list-item>
-            </template>
+            <br> 
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              version="1.1"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              xmlns:svgjs="http://svgjs.com/svgjs"
+              width="100"
+              height="100"
+              x="0"
+              y="0"
+              viewBox="0 0 512 512"
+              style="enable-background: new 0 0 512 512"
+              xml:space="preserve"
+              class="center" 
+            >
+              <g>
+                <g xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="m134.19 197.83c-8.46 17.63-13.19 37.36-13.19 58.17 0 37.48 15.42 72.44 42.77 97.97l-27.77 37.03h120c20.81 0 40.54-4.73 58.17-13.19z"
+                    fill="#5e5e5e"
+                    data-original="#000000"
+                    class=""
+                  ></path>
+                  <path
+                    d="m256 121c-20.81 0-40.54 4.73-58.17 13.19l179.98 179.98c8.46-17.63 13.19-37.36 13.19-58.17 0-74.44-60.56-135-135-135z"
+                    fill="#5e5e5e"
+                    data-original="#000000"
+                    class=""
+                  ></path>
+                  <path
+                    d="m256 0c-141.486 0-256 114.497-256 256 0 141.568 114.389 256 256 256 141.486 0 256-114.497 256-256 0-141.568-114.389-256-256-256zm-226 256c0-57.051 21.095-109.126 55.909-148.878l318.969 318.969c-39.748 34.813-91.821 55.909-148.878 55.909-124.996 0-226-100.969-226-226zm396.091 148.878-318.969-318.969c39.748-34.813 91.821-55.909 148.878-55.909 124.996 0 226 100.969 226 226 0 57.051-21.095 109.126-55.909 148.878z"
+                    fill="#5e5e5e"
+                    data-original="#000000"
+                    class=""
+                  ></path>
+                </g>
+              </g>
+            </svg>
+            <br>
+            <p class="text-center">You don't have any chats</p>
+            <b-btn color="primary" outline class="center" size="small" @click="newChat.modal = true;"> New Chat</b-btn>
+            <transition-group name="flip-list" tag="div">
+              <template v-for="(chat, i) in chats" :key="i">
+                <b-list-item
+                  clickable
+                  v-on:click="openChat(chat)"
+                  class="contact"
+                >
+                  <b-flex>
+                    <b-avatar
+                      :size="35"
+                      :class="chat.status ? 'status-' + chat.status : ''"
+                      :username="chat.name"
+                      :src="chat?.src"
+                    ></b-avatar>
+                    <span>{{ chat.name }}</span>
+                  </b-flex>
+                </b-list-item>
+              </template>
+            </transition-group>
           </b-list>
         </div>
         <template v-slot:footer>
@@ -114,24 +158,40 @@
       </b-sidebar>
     </template>
     <div class="flex flex-col h-full">
-      <b-nav
-        ><template v-slot:branding>
-          <b-flex class="m-0 p-0 w-full">
-            <b-avatar :username="chat?.name || ''" :size="35"></b-avatar>
-            <h3 class="mt-0 mb-0">{{ chat?.name }}</h3>
-          </b-flex>
-        </template>
-        <template v-slot:actions>
-          <b-btn ghost color="primary" icon @click="chatInfo = !chatInfo"
-            ><b-icon name="mdi mdi-information-outline"></b-icon
-          ></b-btn>
-        </template>
-      </b-nav>
       <div
         v-on:scroll="checkIfScrolledToTop($event)"
         class="flex-grow overflow-y-scroll overflow-x-hidden"
         id="msgs"
       >
+        <b-nav sticky v-if="chat.id"
+          ><template v-slot:branding>
+            <b-flex class="m-0 p-0 w-full">
+              <b-avatar :username="chat?.name || ''" :size="35"></b-avatar>
+              <h3 class="mt-0 mb-0">{{ chat?.name }}</h3>
+            </b-flex>
+          </template>
+          <template v-slot:actions>
+            <b-btn ghost color="primary" icon @click="chatInfo = !chatInfo"
+              ><b-icon name="mdi mdi-information-outline"></b-icon
+            ></b-btn>
+          </template>
+        </b-nav>
+        <div class="w-max center" v-if="Object.keys(chats).length == 0">
+          <br /><br /><br />
+          <img
+            class="center block"
+            height="200"
+            src="../../assets/logos/logo.png"
+            alt="Oneline Logo"
+          />
+          <h1 class="mt-0">Hmm... You don't have any chats</h1>
+          <br />
+          <b-btn @click="newChat.modal = true" color="primary" class="center">
+            <b-icon name="mdi mdi-plus" left></b-icon>
+            Create New Chat
+          </b-btn>
+        </div>
+
         <chat-window
           :limit="limit"
           :messages="messages"
@@ -152,12 +212,12 @@
           </b-btn>
         </transition>
       </div>
-      <div id="msgInp">
+      <div id="msgInp" v-if="chat.id">
         <b-card class="w-full mr-0 max-w-full">
           <transition name="fade" :duration="{ enter: 200, leave: 300 }">
             <div id="typingBar" v-if="checkIfUsersAreTyping">
               <span v-for="username in typing" :key="username">{{
-                username == this.user.username ? "You" : username
+                (username == this.user.username ? "You" : username) + " "
               }}</span>
               typing...
             </div>
@@ -168,8 +228,9 @@
             </b-btn>
             <b-textarea
               ghost
-              v-on:keypress="checkIfUserTyping()"
-              v-on:keyup="checkEnterKey($event)"
+              @keypress="checkIfUserTyping()"
+              @keydown="checkEnterKey($event)"
+              @blur="userLeftMessageBox()"
               v-model="message.text"
               class="font-normal w-full flex-grow"
               placeholder="Your Message"
@@ -180,7 +241,7 @@
               position="top"
               offsetSkid="25px"
             >
-              <b-btn ghost icon class="-ml-3" id="emojiBtn">
+              <b-btn ghost icon class="-ml-3 chatInpBtn" id="emojiBtn">
                 <b-icon name="mdi mdi-emoticon"></b-icon>
               </b-btn>
               <template #content>
@@ -202,11 +263,22 @@
                 position="top"
                 offsetSkid="25px"
               >
-                <b-btn ghost icon style="margin-left: 15px;margin-right:15px" @click="getGifs()">
+                <b-btn
+                  ghost
+                  icon
+                  class="chatInpBtn"
+                  style="margin-left: 15px; margin-right: 15px"
+                  @click="getGifs()"
+                >
                   <b-icon size="25px">
                     <svg
                       width="100%"
-                      style="height: 29px;margin: auto;display: block;margin-bottom: 5px;"
+                      style="
+                        height: 29px;
+                        margin: auto;
+                        display: block;
+                        margin-bottom: 5px;
+                      "
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 30 30"
                     >
@@ -217,22 +289,119 @@
                     </svg>
                   </b-icon>
                 </b-btn>
-                <template #content>
+                <template #content="{ close }">
                   <div>
-                   <b-card glass height="75vh" width="350px" style="overflow-y:auto;" :loading="gif.loading" id="gifsPanel"> 
-                     <template #header>
-                       <b-input @keyup="searchGifs($event)" placeholder="Search" v-model="gif.search"></b-input>
-                     </template>
-                     <div class="grid-3"> 
-                       <transition-group name="fadeUp" tag="div">
-                       <div v-for="(gif,i) in gif.gifs" :key="i" class="gif  col" v-on:click="sendGif(gif)">
-                         <img width="100px"
-                          loop autoplay :src="gif.images.original.webp" />
-                       </div>
-                       </transition-group>
-                     </div>
-                   </b-card>
-                   </div
+                    <b-card
+                      height="75vh"
+                      width="460px"
+                      style="overflow-y: auto"
+                      :loading="gif.loading"
+                      id="gifsPanel"
+                    >
+                      <template #header>
+                        <b-input
+                          @keyup="searchGifs($event)"
+                          placeholder="Search"
+                          v-model="gif.search"
+                        ></b-input>
+                      </template>
+                      <div class="grid-3">
+                        <template
+                          v-if="!gif.searched && !gif.recent.notAvailable"
+                        >
+                          <b-flex bare>
+                            <transition name="zoom">
+                              <b-btn
+                                v-if="gif.viewingRecent"
+                                ghost
+                                size="small"
+                                icon
+                                @click="getGifs()"
+                                ><b-icon name="mdi mdi-arrow-left"></b-icon
+                              ></b-btn>
+                            </transition>
+                            <h3 class="ml-1">Recent</h3>
+                            <b-spacer></b-spacer>
+                            <b-btn
+                              v-if="!gif.viewingRecent"
+                              @click="getAllRecentGifs()"
+                              ghost
+                              size="small"
+                              color="primary"
+                              >View All<b-icon
+                                right
+                                name="mdi mdi-chevron-right"
+                              ></b-icon
+                            ></b-btn>
+                          </b-flex>
+                          <transition-group name="fadeUp" tag="div">
+                            <div
+                              v-for="(gif, i) in gif.recent"
+                              :key="i"
+                              class="gif col"
+                              v-on:click="
+                                sendGif(gif);
+                                close();
+                              "
+                            >
+                              <v-lazy-image
+                                width="100px"
+                                src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                                :src="gif.images?.original.webp"
+                              />
+                            </div>
+                          </transition-group>
+                        </template>
+                        <transition name="fadeUp" mode="out-in">
+                          <h3
+                            class="ml-1"
+                            v-if="!gif.searched && !gif.viewingRecent"
+                          >
+                            Trending
+                          </h3>
+                          <b-flex bare v-else-if="!gif.viewingRecent">
+                            <b-btn ghost size="small" icon @click="getGifs()"
+                              ><b-icon name="mdi mdi-arrow-left"></b-icon
+                            ></b-btn>
+                            <h3 class="ml-1">Results</h3>
+                          </b-flex>
+                        </transition>
+                        <template v-if="!gif.searched && !gif.viewingRecent">
+                          <transition-group name="fadeUp" tag="div">
+                            <div
+                              v-on:click="
+                                gif.search = text;
+                                searchGifs(null, text);
+                              "
+                              v-for="(text, i) in gif.chips"
+                              :key="i"
+                              class="chip"
+                              role="button"
+                              tabindex="1"
+                            >
+                              {{ text }}
+                            </div>
+                          </transition-group>
+                        </template>
+                        <transition-group name="fadeUp" tag="div">
+                          <div
+                            v-for="(gif, i) in gif.gifs"
+                            :key="i"
+                            class="gif col"
+                            v-on:click="
+                              sendGif(gif);
+                              close();
+                            "
+                          >
+                            <v-lazy-image
+                              width="100px"
+                              src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                              :src="gif.images.original.webp"
+                            />
+                          </div>
+                        </transition-group>
+                      </div>
+                    </b-card></div
                 ></template>
               </Popper>
             </div>
@@ -457,22 +626,35 @@
             <b-flex class="m-0 p-0">
               <h4>Chat Info</h4>
               <b-spacer></b-spacer>
-              <b-btn @click="chatInfo = false" icon ghost
-                ><b-icon name="mdi mdi-close"></b-icon
-              ></b-btn>
+              <b-btn @click="chatInfo = false" icon ghost>
+                <b-icon name="mdi mdi-close"></b-icon>
+              </b-btn>
             </b-flex>
           </template>
           <div>
             <b-avatar class="center" :username="chat.name || ''"></b-avatar>
             <h4 class="text-center">{{ chat.name }}</h4>
             <div class="center">
-              <h5 class="text-center">
-                <span>Group ID: </span><span>{{ chat.id }}</span>
-              </h5>
-              <b-btn block size="small" @click="groupInfo.modal = true">
-                Edit Group Info</b-btn
-              >
-              <b-btn block size="small"> Copy Invite Link </b-btn>
+              <b-flex class="center w-max">
+                <b-btn
+                  data-tooltip="Edit Group Info"
+                  icon
+                  circle
+                  @click="groupInfo.modal = true"
+                  color="secondary"
+                >
+                  <b-icon size="22px" name="mdi mdi-pencil"></b-icon>
+                </b-btn>
+                <b-btn
+                  icon
+                  circle
+                  data-tooltip="Copy Invite Link"
+                  @click="groupInfo.modal = true"
+                  color="secondary"
+                >
+                  <b-icon size="22px" name="mdi mdi-content-copy"></b-icon>
+                </b-btn>
+              </b-flex>
             </div>
             <h3>Members</h3>
             <template v-for="(user, i) in members" :key="i">

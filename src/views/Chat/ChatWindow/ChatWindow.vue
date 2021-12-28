@@ -92,7 +92,8 @@
             </div>
             <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
             <div v-if="message.type == 'gif'" class="msg-gif">
-              <img height="200" :src="message.src" :alt="message.title"/>
+              <v-lazy-image                               src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+ height="200" :src="message.src" :alt="message.title"/>
               </div>
             <div v-else
               :class="`msg-text ${

@@ -1,9 +1,9 @@
 /* eslint-disable */
 import db from "../../fire.js";
-import { ref, set, get, child, onValue, update, limitToLast, query, startAt } from "firebase/database";
+import { ref, set, get, child, onValue, update, limitToLast, query, onDisconnect } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
-import sortJson  from "sort-json";
+import stringify from "json-stable-stringify";
 
 import ChatWindow from "./ChatWindow/ChatWindow";
 import data from "emoji-mart-vue-fast/data/all.json";
@@ -27,13 +27,17 @@ export default {
             emojisOutput: "",
             user: {},
             settingsHeading: ["Appearance"],
-            chats: [],
+            chats: {},
             chatInfo: false,
             chat: {},
             gif: {
                 gifs: [],
+                chips: [],
                 search: "",
-                loading: true
+                recent: { notAvailable: true },
+                loading: true,
+                searched: false,
+                viewingRecent: false
             },
             groupInfo: {
                 modal: false,
@@ -103,8 +107,10 @@ export default {
             this.user = data;
             console.log(data)
             this.loading = false;
-            window.addEventListener('beforeunload', (event) => {
+            update(child(ref(db), `status/${this.user.id}`), { status: "online" });
+            window.addEventListener('unload', (event) => {
                 update(child(ref(db), `users/${this.user.id}`), { lastOnline: Date.now() });
+                update(child(ref(db), `status/${this.user.id}`), { status: "offline" });
             });
             this.getChats();
             for (var key in this.user.settings) {
@@ -138,32 +144,54 @@ export default {
         },
         getGifs() {
             this.gif.loading = true;
-            axios.get(`https://api.giphy.com/v1/gifs/trending?rating=g&api_key=${process.env.VUE_APP_GIPHY_KEY}`, {})
-                .then((response) => {
-                    // handle success
-                    console.log(response);
-                    this.gif.gifs = response.data.data;
-                    this.gif.loading = false;
-
-                })
-                .catch(function (error) {
-                    // handle error
-                    console.log(error);
-                });
+            this.gif.viewingRecent = false;
+            this.gif.search = "";
+            onValue(query(ref(db, `recent-gifs/${this.user.id}`), limitToLast(4)), (snapshot) => {
+                if (snapshot.exists()) {
+                    this.gif.recent = JSON.parse(stringify(snapshot.val(), function (a, b) {
+                        return a.key < b.key ? 1 : -1;
+                    }));
+                }
+                axios.get(`https://api.giphy.com/v1/gifs/trending?rating=g&api_key=${process.env.VUE_APP_GIPHY_KEY}`, {})
+                    .then((response) => {
+                        this.gif.gifs = response.data.data;
+                        axios.get(`https://api.giphy.com/v1/trending/searches?api_key=${process.env.VUE_APP_GIPHY_KEY}`, {})
+                            .then((chips) => {
+                                this.gif.chips = chips.data.data;
+                                this.gif.chips.length = 7;
+                                this.gif.loading = false;
+                                this.gif.searched = false;
+                            });
+                    });
+            });
         },
-        searchGifs(e) {
-            if (e.key != 'Enter') return
+        getAllRecentGifs() {
+            this.gif.gifs = [];
+            this.gif.viewingRecent = true;
+            this.gif.searched = false;
+            this.gif.loading = true;
+            onValue(query(ref(db, `recent-gifs/${this.user.id}`), limitToLast(25)), (snapshot) => {
+                if (snapshot.exists()) {
+                    this.gif.recent = JSON.parse(stringify(snapshot.val(), function (a, b) {
+                        return a.key < b.key ? 1 : -1;
+                    }));
+                }
+                this.gif.loading = false;
+            });
+        },
+        searchGifs(e, q) {
+            if (!q && e?.key != 'Enter') return
             if (!this.gif.search) {
                 this.getGifs();
             }
-            this.gif.loading = true;
             // Restting the gif list will prevent the mix up of trending and searched gifs
             this.gif.gifs = [];
+            this.gif.viewingRecent = false;
+            this.gif.searched = true;
+            this.gif.loading = true;
 
             axios.get(`https://api.giphy.com/v1/gifs/search?rating=g&api_key=${process.env.VUE_APP_GIPHY_KEY}&q=${this.gif.search}`, {})
                 .then((response) => {
-                    // handle success
-                    console.log(response);
                     this.gif.gifs = response.data.data;
                     this.gif.loading = false;
 
@@ -174,7 +202,7 @@ export default {
                 });
         },
         sendGif(gif) {
-            console.log(gif);
+            update(child(ref(db), `recent-gifs/${this.user.id}/${Date.now()}`), gif);
             update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { src: gif.images.fixed_height.webp, title: gif.title, sender: this.user.id, time: Date.now(), type: "gif" });
         },
         changeGroupInfo() {
@@ -228,24 +256,41 @@ export default {
             });
         },
         getChats() {
+            if(!this.user.chats) return
             this.chats = {};
             var chats = JSON.parse(JSON.stringify(this.user.chats));
             let i = 0;
             for (var id in chats) {
                 i++;
                 const chat = this.user.chats[id];
-                // I added const chatId = id; coz the id var changes with the loop and the callback functions only get the last id
+
+                /* A little info about some weird stuff in this function
+                    1) I added const chatId = id; coz the id var changes with the loop and the callback functions only get the last id
+                    2) The JSON sorting function is called a bunch of times rather than calling it once after it's all over, I did this because
+                       I don't know which would be the last one to be finished because it's only called after a data request. Since the personal
+                       chats have to make two requests these are slower, but it might be the last to be called.
+               */
                 if (chat.type == "personal") {
                     const chatId = id;
-
+                    const index = i;
                     this.user.chats[chatId].members.forEach((usr) => {
                         if (usr != this.user.id) {
                             get(ref(db, `users/${usr}`)).then((snapshot) => {
                                 if (snapshot.exists()) {
                                     var data = snapshot.val();
-                                    onValue(query(ref(db, `messages/${chatId}/messages`), limitToLast(1)), (snapshot) => {
-                                        var lastMessage = snapshot.val();
-                                        this.chats[chatId] = { name: data.username, id: chat.id, data: data, lastMessageTime: (new Date(lastMessage[Object.keys(lastMessage)[0]]?.time)) };
+                                    onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
+                                        console.log(snapshot.val());
+                                        var status = snapshot.exists() ? snapshot.val().status : "offline";
+                                        onValue(query(ref(db, `messages/${chatId}/messages`), limitToLast(1)), (snapshot) => {
+                                            var lastMessage = snapshot.val();
+                                            this.chats[chatId] = { name: data.username, id: chat.id, data, lastMessageTime: lastMessage[Object.keys(lastMessage)[0]]?.time, status };
+                                            var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
+                                                return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
+                                            });
+                                            this.chats = JSON.parse(s);
+                                        });
+
+
                                     });
                                 } else {
                                     alert(
@@ -256,16 +301,17 @@ export default {
                         }
                     });
                 } else {
+                    const index = i;
                     const chatId = id;
                     onValue(query(ref(db, `messages/${id}/messages`), limitToLast(1)), (snapshot) => {
                         var lastMessage = snapshot.val();
-                        this.chats[chatId] = { name: chat.name, id: chat.id, description: chat.description, lastMessageTime: (new Date(lastMessage[Object.keys(lastMessage)[0]]?.time)) };
+                        this.chats[chatId] = { name: chat.name, id: chat.id, description: chat.description, lastMessageTime: lastMessage[Object.keys(lastMessage)[0]]?.time };
 
+                        var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
+                            return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
+                        });
+                        this.chats = JSON.parse(s);
                     });
-                }
-                if (i == Object.keys(this.user.chats).length) {
-                    console.log(sortJson(this.chats, { ignoreCase: true, depth: 1}))
-                    console.log("Sorted")
                 }
             }
         },
@@ -323,7 +369,10 @@ export default {
                         var data = snapshot.val();
                         delete data.messages;
                         console.log(data);
+                        let members = data.members;
+                        members.push(this.user.id);
                         const chat = data;
+                        update(child(ref(db), `messages/${this.newChat.data.group.id}`), { members });
                         update(child(ref(db), `users/${this.user.id}/chats`), { [data.id]: chat });
                         this.newChat.data.group.loading = false;
                         this.newChat.modal = false;
@@ -342,7 +391,7 @@ export default {
         },
         checkEnterKey(e) {
             if (e.key == 'Enter') {
-                e.preventDefault();
+                e.preventDefault(); 
                 this.sendMessage();
             }
         },
@@ -362,6 +411,10 @@ export default {
             searchTimeout = setTimeout(() => {
                 update(child(ref(db), `typing/${this.user.id}`), { chat: this.chat.id, typing: false, user: this.user });
             }, 500);
+        },
+        userLeftMessageBox() {
+            update(child(ref(db), `typing/${this.user.id}`), { chat: this.chat.id, typing: false, user: this.user });
+
         },
         updateSettings() {
             // this.settings.loading = true;

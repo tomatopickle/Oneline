@@ -60,6 +60,10 @@
                 label="Password"
                 type="password"
               ></b-input>
+              <b-textarea
+                v-model="signUp.description"
+                label="Description"
+              ></b-textarea>
             </p>
             <br />
             <b-btn
@@ -96,6 +100,7 @@ export default {
         pwd: "",
         email: "",
         loading: false,
+        description:""
       },
       login: {
         pwd: "",
@@ -106,13 +111,13 @@ export default {
   },
   methods: {
     createUser() {
-      console.log('singinup')
       this.signUp.loading = true;
       const userId = nanoid();
       set(ref(db, "users/" + userId), {
         id: userId,
         username: this.signUp.username,
         email: this.signUp.email,
+        description: this.signUp.description,
         pwd: this.signUp.pwd,
         chats: [],
       });
