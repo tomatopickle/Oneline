@@ -446,8 +446,10 @@ export default {
             const settingsData = this.settings.data;
             if (settingsData?.lightMode) {
                 this.$toggleTheme();
+                document.querySelector("meta[name='theme-color']").setAttribute("content", "#fff");
             } else {
                 document.querySelector("html").classList.add("dark");
+                document.querySelector("meta[name='theme-color']").setAttribute("content", "#242428");
             }
         },
         scrollDown() {
