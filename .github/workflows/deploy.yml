@@ -2,25 +2,32 @@ name: Deploy
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
-  firebase-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Fetch repo
-        uses: actions/checkout@master
-      - name: Install node
-        uses: actions/setup-node@master
-      - name: Install dependencies
-        run: npm install
-      - name: Build
-        run: npm run build
-      - name: Deploy with Firebase
-        uses: w9jds/firebase-action@master
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      # Install node version 12
+      - uses: actions/setup-node@v2-beta
         with:
-          args: deploy --only hosting
-        env:
-          # see via cmd: firebase login:ci
-          FIREBASE_TOKEN: ${{ secrets.FirebaseDeploy }}
+          node-version: '12'
+
+      # Install npm packages
+      - name: Install packages
+        run: npm install
+
+      # Build react app
+      - name: Build the app
+        run: npm run build
+
+      # Install Surge 
+      - name: Install Surge
+        run: npm install -g surge
+
+      # Deploy to the defined URL using the token
+      - name: Deploy to surge
+        run: surge ./dist oneline.surge.sh --token ${{secrets.TOKEN}}
