@@ -187,6 +187,7 @@
 
 .messageActions .b-list-item {
   margin: 0;
+  width: 95%;
 }
 
 .messageActions .b-list-item .list-item-content {
@@ -233,5 +234,7 @@ textarea {
 .msg-gif img {
   border-radius: var(--ui-radius);
 }
-
+.msg .senderAvatar{
+  align-self: baseline;
+}
 /* sdfsdf */

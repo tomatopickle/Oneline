@@ -5,6 +5,7 @@ import Notifications from '@kyvg/vue3-notification';
 import App from './App.vue';
 import VLazyImage from "v-lazy-image";
 import router from './router';
+import './registerServiceWorker'
 const app = createApp(App);
 app.use(bounce_ui);
 app.use(router);

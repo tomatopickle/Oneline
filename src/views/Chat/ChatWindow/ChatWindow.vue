@@ -29,7 +29,7 @@
               <b-icon name="mdi mdi-chevron-down"></b-icon>
             </b-btn>
             <template #content>
-              <b-card class="messageActions p-0 m-0">
+              <b-card class="messageActions p-0 m-0" glass>
                 <b-list-item
                   clickable
                   v-on:click="
@@ -82,7 +82,7 @@
               >
           <b-flex>
             <b-spacer v-if="message.sender == user.id"></b-spacer>
-            <div>
+            <div class="senderAvatar">
               <b-avatar
                 v-if=" message.sender != user.id"
                 :size="30"

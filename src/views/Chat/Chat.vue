@@ -4,7 +4,7 @@
       <b-sidebar id="contacts" width="250px">
         <template v-slot:header>
           <b-flex class="m-0" style="margin-left: -15px">
-            <img class="h-10" src="../../assets/logos/logo.png" alt="Logo" />
+            <img height="30" src="../../assets/logos/logo.png" alt="Logo" />
             <div class="font-normal">Oneline</div>
             <b-spacer></b-spacer>
             <b-btn icon ghost @click="settings.modal = true"
@@ -76,47 +76,57 @@
                 <b-icon name="mdi mdi-magnify"></b-icon>
               </template>
             </b-input>
-            <br> 
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              xmlns:svgjs="http://svgjs.com/svgjs"
-              width="100"
-              height="100"
-              x="0"
-              y="0"
-              viewBox="0 0 512 512"
-              style="enable-background: new 0 0 512 512"
-              xml:space="preserve"
-              class="center" 
-            >
-              <g>
-                <g xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="m134.19 197.83c-8.46 17.63-13.19 37.36-13.19 58.17 0 37.48 15.42 72.44 42.77 97.97l-27.77 37.03h120c20.81 0 40.54-4.73 58.17-13.19z"
-                    fill="#5e5e5e"
-                    data-original="#000000"
-                    class=""
-                  ></path>
-                  <path
-                    d="m256 121c-20.81 0-40.54 4.73-58.17 13.19l179.98 179.98c8.46-17.63 13.19-37.36 13.19-58.17 0-74.44-60.56-135-135-135z"
-                    fill="#5e5e5e"
-                    data-original="#000000"
-                    class=""
-                  ></path>
-                  <path
-                    d="m256 0c-141.486 0-256 114.497-256 256 0 141.568 114.389 256 256 256 141.486 0 256-114.497 256-256 0-141.568-114.389-256-256-256zm-226 256c0-57.051 21.095-109.126 55.909-148.878l318.969 318.969c-39.748 34.813-91.821 55.909-148.878 55.909-124.996 0-226-100.969-226-226zm396.091 148.878-318.969-318.969c39.748-34.813 91.821-55.909 148.878-55.909 124.996 0 226 100.969 226 226 0 57.051-21.095 109.126-55.909 148.878z"
-                    fill="#5e5e5e"
-                    data-original="#000000"
-                    class=""
-                  ></path>
+            <template v-if="Object.keys(chats).length == 0">
+              <br />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                xmlns:svgjs="http://svgjs.com/svgjs"
+                width="100"
+                height="100"
+                x="0"
+                y="0"
+                viewBox="0 0 512 512"
+                style="enable-background: new 0 0 512 512"
+                xml:space="preserve"
+                class="center"
+              >
+                <g>
+                  <g xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="m134.19 197.83c-8.46 17.63-13.19 37.36-13.19 58.17 0 37.48 15.42 72.44 42.77 97.97l-27.77 37.03h120c20.81 0 40.54-4.73 58.17-13.19z"
+                      fill="#5e5e5e"
+                      data-original="#000000"
+                      class=""
+                    ></path>
+                    <path
+                      d="m256 121c-20.81 0-40.54 4.73-58.17 13.19l179.98 179.98c8.46-17.63 13.19-37.36 13.19-58.17 0-74.44-60.56-135-135-135z"
+                      fill="#5e5e5e"
+                      data-original="#000000"
+                      class=""
+                    ></path>
+                    <path
+                      d="m256 0c-141.486 0-256 114.497-256 256 0 141.568 114.389 256 256 256 141.486 0 256-114.497 256-256 0-141.568-114.389-256-256-256zm-226 256c0-57.051 21.095-109.126 55.909-148.878l318.969 318.969c-39.748 34.813-91.821 55.909-148.878 55.909-124.996 0-226-100.969-226-226zm396.091 148.878-318.969-318.969c39.748-34.813 91.821-55.909 148.878-55.909 124.996 0 226 100.969 226 226 0 57.051-21.095 109.126-55.909 148.878z"
+                      fill="#5e5e5e"
+                      data-original="#000000"
+                      class=""
+                    ></path>
+                  </g>
                 </g>
-              </g>
-            </svg>
-            <br>
-            <p class="text-center">You don't have any chats</p>
-            <b-btn color="primary" outline class="center" size="small" @click="newChat.modal = true;"> New Chat</b-btn>
+              </svg>
+              <br />
+              <p class="text-center">You don't have any chats</p>
+              <b-btn
+                color="primary"
+                outline
+                class="center"
+                size="small"
+                @click="newChat.modal = true"
+              >
+                New Chat</b-btn
+              >
+            </template>
             <transition-group name="flip-list" tag="div">
               <template v-for="(chat, i) in chats" :key="i">
                 <b-list-item
@@ -180,10 +190,11 @@
           <br /><br /><br />
           <img
             class="center block"
-            height="200"
+            height="150"
             src="../../assets/logos/logo.png"
             alt="Oneline Logo"
           />
+          <br>
           <h1 class="mt-0">Hmm... You don't have any chats</h1>
           <br />
           <b-btn @click="newChat.modal = true" color="primary" class="center">
@@ -191,7 +202,12 @@
             Create New Chat
           </b-btn>
         </div>
-
+        <div v-if="chat.id"> 
+        <b-avatar class="center" :username="chat.name || ''" size="65"></b-avatar>
+        <h2 class="text-center">{{ chat.name }}</h2>
+        <small class="block text-center text-opacity-5">{{"Created Chat on " + getTime(chat.addedTime)}}</small>
+        </div>
+        <br>
         <chat-window
           :limit="limit"
           :messages="messages"
@@ -454,6 +470,7 @@
               </b-flex>
             </template>
           </b-tab-content>
+          <div>Icons made by <a href="https://www.flaticon.com/authors/ilham-fitrotul-hayat" title="Ilham Fitrotul Hayat">Ilham Fitrotul Hayat</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
           <template #footer>
             <b-flex style="height: max-content">
               <b-spacer></b-spacer>
@@ -519,6 +536,29 @@
               @click="changeGroupInfo()"
             >
               Update
+            </b-btn>
+          </b-flex>
+        </template>
+      </b-card>
+    </b-modal>
+        <b-modal width="500px" v-model="leaveGroup">
+      <b-card glass>
+        <template v-slot:header>
+            <h4 class="mt-0 mb-0">Leave Group</h4>
+        </template>
+       <p>Are you sure you want to leave this group? 
+         <br>
+        The messages you sent will not be deleted
+        </p>
+       <br>
+        <template v-slot:float>
+          <b-flex>
+            <b-spacer></b-spacer>
+            <b-btn @click="leaveGroup = false">
+              Cancel
+            </b-btn>
+            <b-btn color="danger">
+              Leave
             </b-btn>
           </b-flex>
         </template>
@@ -634,25 +674,37 @@
           <div>
             <b-avatar class="center" :username="chat.name || ''"></b-avatar>
             <h4 class="text-center">{{ chat.name }}</h4>
-            <div class="center">
+            <div class="center" v-if="chat.type == 'group'">
               <b-flex class="center w-max">
                 <b-btn
                   data-tooltip="Edit Group Info"
                   icon
+                  outline
                   circle
                   @click="groupInfo.modal = true"
-                  color="secondary"
+                  color="primary"
                 >
                   <b-icon size="22px" name="mdi mdi-pencil"></b-icon>
                 </b-btn>
                 <b-btn
                   icon
                   circle
+                  outline
                   data-tooltip="Copy Invite Link"
-                  @click="groupInfo.modal = true"
-                  color="secondary"
+                  v-on:click="copy(`${baseUrl}/invite?groupId=${chat.id}`)"
+                  color="primary"
                 >
                   <b-icon size="22px" name="mdi mdi-content-copy"></b-icon>
+                </b-btn>
+                 <b-btn
+                  icon
+                  circle
+                  outline
+                  data-tooltip="Leave Group"
+                  v-on:click="leaveGroup = true;"
+                  color="danger"
+                >
+                  <b-icon size="22px" name="mdi mdi-logout-variant"></b-icon>
                 </b-btn>
               </b-flex>
             </div>

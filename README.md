@@ -1,4 +1,10 @@
-# oneline
+# Oneline
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/09bff4b9-4812-45bd-bc98-683f9642c23b/deploy-status)](https://app.netlify.com/sites/oneline-web/deploys)
+
+A free, fast and reliable chat app.
+
+Check it out [here](https://oneline-web.netlify.app/)
 
 ## Project setup
 ```

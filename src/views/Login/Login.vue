@@ -9,7 +9,7 @@
     <b-card width="350px">
       <template v-slot:header>
         <b-flex>
-          <img height="50" src="../../assets/logos/logo.png" alt="Oneline Logo" />
+          <img height="35" src="../../assets/logos/logo.png" alt="Oneline Logo" />
           <h4>Oneline</h4>
         </b-flex>
       </template>

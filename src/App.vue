@@ -15,4 +15,5 @@ export default {};
 @import url("./styles.css");
 @tailwind utilities;
 @tailwind base;
+@tailwind components;
 </style>

@@ -28,6 +28,7 @@ export default {
             user: {},
             settingsHeading: ["Appearance"],
             chats: {},
+            baseUrl: location.href,
             chatInfo: false,
             chat: {},
             gif: {
@@ -49,6 +50,7 @@ export default {
             },
             scrollDownBtn: false,
             limit: 25,
+            leaveGroup: false,
             messages: [],
             settings: {
                 modal: false,
@@ -108,10 +110,8 @@ export default {
             console.log(data)
             this.loading = false;
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
-            window.addEventListener('unload', (event) => {
-                update(child(ref(db), `users/${this.user.id}`), { lastOnline: Date.now() });
-                update(child(ref(db), `status/${this.user.id}`), { status: "offline" });
-            });
+            onDisconnect(child(ref(db), `users/${this.user.id}`)).update({ lastOnline: Date.now() }); 
+            onDisconnect(child(ref(db), `status/${this.user.id}`)).update( { status: "offline" }); 
             this.getChats();
             for (var key in this.user.settings) {
                 if (!this.user?.settings[key]) return
@@ -136,7 +136,14 @@ export default {
         }
     },
     methods: {
+        copy(text) {
+            const cb = navigator.clipboard;
+            cb.writeText(text);
+        },
         addedEmoji(emoji) {
+            if (!(typeof emoji == "object")) {
+                return
+            }
             this.message.text += emoji.native;
         },
         changeToEmoji(text) {
@@ -256,7 +263,7 @@ export default {
             });
         },
         getChats() {
-            if(!this.user.chats) return
+            if (!this.user.chats) return
             this.chats = {};
             var chats = JSON.parse(JSON.stringify(this.user.chats));
             let i = 0;
@@ -283,7 +290,7 @@ export default {
                                         var status = snapshot.exists() ? snapshot.val().status : "offline";
                                         onValue(query(ref(db, `messages/${chatId}/messages`), limitToLast(1)), (snapshot) => {
                                             var lastMessage = snapshot.val();
-                                            this.chats[chatId] = { name: data.username, id: chat.id, data, lastMessageTime: lastMessage[Object.keys(lastMessage)[0]]?.time, status };
+                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, data, lastMessageTime: snapshot.exists() ? (lastMessage[Object.keys(lastMessage)[0]]?.time) : Date.now(), status };
                                             var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                                                 return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
                                             });
@@ -305,7 +312,7 @@ export default {
                     const chatId = id;
                     onValue(query(ref(db, `messages/${id}/messages`), limitToLast(1)), (snapshot) => {
                         var lastMessage = snapshot.val();
-                        this.chats[chatId] = { name: chat.name, id: chat.id, description: chat.description, lastMessageTime: lastMessage[Object.keys(lastMessage)[0]]?.time };
+                        this.chats[chatId] = { name: chat.name, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, lastMessageTime: snapshot.exists() ? (lastMessage[Object.keys(lastMessage)[0]]?.time) : Date.now() };
 
                         var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                             return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
@@ -327,7 +334,8 @@ export default {
                             const chat = {
                                 id: chatId,
                                 type: "personal",
-                                members: [this.user.id, usr.id]
+                                members: [this.user.id, usr.id],
+                                addedTime: Date.now()
                             };
                             if (usr.email == this.newChat.data.personal.email) {
                                 set(ref(db, "messages/" + chatId), chat);
@@ -354,7 +362,8 @@ export default {
                 name: this.newChat.data.newGroup.name,
                 description: this.newChat.data.newGroup.description,
                 type: "group",
-                members: [this.user.id]
+                members: [this.user.id],
+                addedTime: Date.now()
             };
             set(ref(db, "messages/" + chatId), chat);
             update(child(ref(db), `users/${this.user.id}/chats`), { [chatId]: chat });
@@ -372,6 +381,7 @@ export default {
                         let members = data.members;
                         members.push(this.user.id);
                         const chat = data;
+                        chat.addedTime = Date.now();
                         update(child(ref(db), `messages/${this.newChat.data.group.id}`), { members });
                         update(child(ref(db), `users/${this.user.id}/chats`), { [data.id]: chat });
                         this.newChat.data.group.loading = false;
@@ -389,9 +399,12 @@ export default {
             update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
             this.message.text = "";
         },
+        getTime(time) {
+            return new Date(time).toLocaleString();
+        },
         checkEnterKey(e) {
             if (e.key == 'Enter') {
-                e.preventDefault(); 
+                e.preventDefault();
                 this.sendMessage();
             }
         },

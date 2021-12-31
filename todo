@@ -1,17 +1,11 @@
 - Bugs
-    - User the disconnect function from firebase instead of beforeunload for more accuracy
-    - Fix the user group data updating prob (members are not pushed in to the group data)
-        - Change Code @done
-        - Test
 - Features
-    - read messages
     - new messages
+    - read messages notify
     - file uploading
     - audio recording 
     - automatically select a chat when app is opened
-- Fixed Bugs
-    - remove /n from every text, comes because the prevent.default is called too late
-    - Gif recent section coming for people who haven't used emojis
+    - leave group
 - Added Features
     - make a landing page
     - messaging
@@ -21,3 +15,11 @@
     - group chat
     - reactions
     - emoji picker
+    - make the site a PWA
+- Fixed Bugs
+    - remove /n from every text, comes because the prevent.default is called too late
+    - Gif recent section coming for people who haven't used emojis
+    - Fix the user group data updating prob (members are not pushed in to the group data)
+    - User the disconnect function from firebase instead of beforeunload for more relaiblity
+    - The user avatar was aligned center with the message/gif
+
