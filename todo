@@ -1,25 +1,26 @@
 - Bugs
 - Features
-    - new messages
-    - read messages notify
-    - file uploading
-    - audio recording 
-    - automatically select a chat when app is opened
-    - leave group
+    - Leave group
+    - Show changes that hapenned to a group like user got added/left or group info got changed
+    - New messages
+    - Read messages notify
+    - File uploading
+    - Audio recording 
+    - Automatically select a chat when app is opened
 - Added Features
-    - make a landing page
-    - messaging
-    - gifs
-    - user status
-    - personal chat
-    - group chat
-    - reactions
-    - emoji picker
-    - make the site a PWA
+    - Make a landing page
+    - Messaging
+    - Gifs
+    - User status
+    - Personal chat
+    - Group chat
+    - Reactions
+    - Emoji picker
+    - Make the site a PWA
 - Fixed Bugs
-    - remove /n from every text, comes because the prevent.default is called too late
+    - Remove /n from every text, comes because the prevent.default is called too late
     - Gif recent section coming for people who haven't used emojis
     - Fix the user group data updating prob (members are not pushed in to the group data)
     - User the disconnect function from firebase instead of beforeunload for more relaiblity
     - The user avatar was aligned center with the message/gif
-
+    - Added _redirects file in public directory for Netlify SPA redirects

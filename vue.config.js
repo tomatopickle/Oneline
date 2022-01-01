@@ -18,6 +18,9 @@ module.exports = {
       appleTouchIcon: 'img/icons/apple-touch-icon.png',
       maskIcon: 'img/icons/safari-pinned-tab.svg',
       msTileImage: 'img/icons/mstile-150x150.png'
-    }
+    },
+    workboxOptions: {
+        exclude: [/_redirects/]
+      }
   }
 }
