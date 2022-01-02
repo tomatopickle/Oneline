@@ -194,7 +194,7 @@
             src="../../assets/logos/logo.png"
             alt="Oneline Logo"
           />
-          <br>
+          <br />
           <h1 class="mt-0">Hmm... You don't have any chats</h1>
           <br />
           <b-btn @click="newChat.modal = true" color="primary" class="center">
@@ -202,12 +202,22 @@
             Create New Chat
           </b-btn>
         </div>
-        <div v-if="chat.id"> 
-        <b-avatar class="center" :username="chat.name || ''" size="65"></b-avatar>
-        <h2 class="text-center">{{ chat.name }}</h2>
-        <small class="block text-center text-opacity-5">{{"Created Chat on " + getTime(chat.addedTime)}}</small>
+        <div v-if="chat.id">
+          <b-avatar
+            class="center"
+            :username="chat.name || ''"
+            size="65"
+          ></b-avatar>
+          <h2 class="text-center">{{ chat.name }}</h2>
+          <small class="block text-center text-opacity-5">{{
+            "Created Chat on " + getTime(chat.addedTime)
+          }}</small>
         </div>
-        <br>
+        <div v-if="chat.id && Object.keys(messages).length == 0">
+          <br>
+          <b-btn @click="sendHi()" color="primary" class="center">Say Hi 👋</b-btn>
+        </div>
+        <br />
         <chat-window
           :limit="limit"
           :messages="messages"
@@ -470,7 +480,18 @@
               </b-flex>
             </template>
           </b-tab-content>
-          <div>Icons made by <a href="https://www.flaticon.com/authors/ilham-fitrotul-hayat" title="Ilham Fitrotul Hayat">Ilham Fitrotul Hayat</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+          <div>
+            Icons made by
+            <a
+              href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
+              title="Ilham Fitrotul Hayat"
+              >Ilham Fitrotul Hayat</a
+            >
+            from
+            <a href="https://www.flaticon.com/" title="Flaticon"
+              >www.flaticon.com</a
+            >
+          </div>
           <template #footer>
             <b-flex style="height: max-content">
               <b-spacer></b-spacer>
@@ -541,23 +562,24 @@
         </template>
       </b-card>
     </b-modal>
-        <b-modal width="500px" v-model="leaveGroup">
+    <b-modal width="500px" v-model="leaveGroup">
       <b-card glass>
         <template v-slot:header>
-            <h4 class="mt-0 mb-0">Leave Group</h4>
+          <h4 class="mt-0 mb-0">Leave Group</h4>
         </template>
-         <br>
+        <br />
         The messages you sent will not be deleted
-       <p>Are you sure you want to leave this group? 
-        </p>
-       <br>
+        <p>Are you sure you want to leave this group?</p>
+        <br />
         <template v-slot:float>
           <b-flex>
             <b-spacer></b-spacer>
-            <b-btn @click="leaveGroup = false">
-              Cancel
-            </b-btn>
-            <b-btn color="danger" :loading="leavingGroup" @click="leaveGroupFunction()">
+            <b-btn @click="leaveGroup = false"> Cancel </b-btn>
+            <b-btn
+              color="danger"
+              :loading="leavingGroup"
+              @click="leaveGroupFunction()"
+            >
               Leave
             </b-btn>
           </b-flex>
@@ -696,12 +718,12 @@
                 >
                   <b-icon size="22px" name="mdi mdi-content-copy"></b-icon>
                 </b-btn>
-                 <b-btn
+                <b-btn
                   icon
                   circle
                   outline
                   data-tooltip="Leave Group"
-                  v-on:click="leaveGroup = true;"
+                  v-on:click="leaveGroup = true"
                   color="danger"
                 >
                   <b-icon size="22px" name="mdi mdi-logout-variant"></b-icon>

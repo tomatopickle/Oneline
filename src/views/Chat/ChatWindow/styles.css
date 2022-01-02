@@ -9,6 +9,7 @@
   /* This is to align the emojis perfectly with the text */
   display: flex;
   align-items: center;
+  white-space: break-spaces;
 }
 
 .msg {
@@ -202,6 +203,7 @@
   padding-right: 5px;
   font-size: 13px;
 }
+
 html:not(.dark) .msg-text {
   color: white;
 }
@@ -234,10 +236,12 @@ textarea {
 .msg-gif img {
   border-radius: var(--ui-radius);
 }
-.msg .senderAvatar{
+
+.msg .senderAvatar {
   align-self: baseline;
 }
-.info-message{
+
+.info-message {
   font-size: 15px;
   margin: auto;
   display: block;
@@ -246,4 +250,5 @@ textarea {
   border-radius: var(--ui-radius);
   margin-bottom: 5px;
 }
+
 /* sdfsdf */

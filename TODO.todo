@@ -1,7 +1,8 @@
-✔ Bugs: @done(22-01-02 14:13)
+✔ Bugs: @done(22-01-02 23:42)
 Features:
-    - Show changes that hapenned to a group like user got added/left or group info got changed @doing
+    -  Make message bar floating
     - New messages
+    - Emoji text autocomplete
     - Read messages notify
     - File uploading
     - Audio recording 

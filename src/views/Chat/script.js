@@ -4,7 +4,91 @@ import { ref, set, get, child, onValue, update, limitToLast, query, onDisconnect
 import { nanoid } from "nanoid";
 import router from "../../router";
 import stringify from "json-stable-stringify";
+const option = {
+    // Configure a dropdown UI. 
+    dropdown: {
+        // Class attribute of the dropdown element.
+        className: "dropdown-menu textcomplete-dropdown",
 
+        // The maximum number of items to be rendered.
+        maxCount: 10,
+
+        // Placement of the dropdown. "auto", "top" or "bottom".
+        placement: "auto",
+
+        // Return header and footer elements' content
+        header: (results) => "",
+        footer: (results) => "",
+
+        // Whether activate the opposite side item on pressing up or
+        // down key when an edge item is active.
+        rotate: false,
+
+        // Configure CSS style of the dropdown element.
+        style: { display: "none", position: "absolute", zIndex: "1000" },
+
+        // The parent node of the dropdown element.
+        parent: document.body,
+
+        item: {
+            // Class attribute of the each dropdown item element.
+            className: "textcomplete-item",
+
+            // Active item's class attribute.
+            activeClassName: "textcomplete-item active",
+        }
+    }
+}
+const strategy = // This document page is using almost the same strategy for demo.
+{
+    // (Optional) Identifier of the strategy. Will be appear on data-strategy
+    // attribute of a dropdown element.
+    id: "mention",
+
+    // (Optional) This function is called on every change before matching. The
+    // first argument is the string from head to cursor. If it returns `false`,
+    // following matching phase isn't started.
+    context: (beforeCursor) =>
+        // Return false if the cursor is in code block or inline code notation
+        // to stop executing the matching phase.
+        !isInClode(beforeCursor),
+
+    // (Required) On every change, the string from head to cursor tests with the
+    // RegExp. If it matches, the captured substring will be passed to the search
+    // parameter's first argument.
+    // See also "index" parameter.
+    match: /\B:([\-+\w]*)$/,
+
+    // (Optional) Specify the index of target capture group. Default to 1.
+    index: 1,
+
+    // (Required) When the current input matches the "match" regexp above, this
+    // function is called. The first argument is the captured substring.
+    // You can callback only once for each search.
+    search: async (
+        term,
+        callback,
+        match
+    ) => {
+        callback(await gatherCandidates(term))
+    },
+
+    // (Optional) Whether the search results are cached. Default false.
+    cache: false,
+
+    // (Optional) Specify how to render each search result on the dropdown UI.
+    // The argument is an element of the search results callbacked in the search
+    // phase.
+    template: ([key, url]) =>
+        `<img src="${url}"/>&nbsp;<small>${key}</small>`,
+
+    // (Required) Specify how to update the editor value. The whole substring
+    // matched in the match phase will be replaced by the returned value.
+    // Note that it can return a string or an array of two strings. If it returns
+    // an array, the matched substring will be replaced by the concatenated string
+    // and the cursor will be set between first and second strings.
+    replace: (result) => `:${result[0]}: `
+}
 import ChatWindow from "./ChatWindow/ChatWindow";
 import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
@@ -219,7 +303,7 @@ export default {
                 .then((response) => {
                     // handle success
                     console.log(response);
-                    update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id,action:"groupInfoChanged" });information-outlin
+                    update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" }); information - outlin
                 })
                 .catch(function (error) {
                     // handle error
@@ -230,38 +314,49 @@ export default {
 
                 });
         },
+        sendHi(){
+            update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() }); 
+
+        },
         // The controlled arg is used for functions calling this method, like the scrolled top function
         openChat(chat, controlled) {
             if (!controlled) {
                 this.limit = 25;
             }
-            onValue(query(ref(db, `messages/${chat.id}/messages`), limitToLast(this.limit)), (snapshot) => {
-                var data = snapshot.val();
-                this.chat = chat;
-                this.groupInfo.data.name = chat?.name;
-                this.groupInfo.data.description = chat?.description;
-                this.members = [];
-                this.typing = {};
-                this.messages = data || {};
-                for (var userIndex in this.user.chats[chat.id].members) {
-                    var userId = this.user.chats[chat.id].members[userIndex];
-                    get(ref(db, `users/${userId}`)).then((snapshot) => {
-                        if (snapshot.exists()) {
-                            var member = snapshot.val();
-                            this.members.push(member);
-                        }
-                    });
-                    onValue((child(ref(db), `typing/${userId}`)), (snapshot) => {
-                        if (snapshot.exists()) {
-                            var user = snapshot.val();
-                            if ((user?.typing) && this.chat.id == user?.chat) {
-                                this.typing[userId] = user.user.username;
-                            } else if ((!user?.typing) && this.chat.id == user?.chat) {
-                                delete this.typing[userId];
-                            }
-                        }
-                    });
+            this.members = {};
+            onValue(query(ref(db, `messages/${chat.id}`)), (snapshot) => {
+                let chatData = snapshot.val();
+                this.chat = chatData;
+                if (!chatData.name) {
+                    this.chat.name = chat.name;
                 }
+                onValue(query(ref(db, `messages/${chat.id}/messages`), limitToLast(this.limit)), (snapshot) => {
+                    var data = snapshot.val();
+                    this.groupInfo.data.name = chatData?.name;
+                    this.groupInfo.data.description = chatData?.description;
+                    this.typing = {};
+                    this.messages = data || {};
+                    chatData.members.forEach((userId) => {
+                        get(ref(db, `users/${userId}`)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                var member = snapshot.val();
+                                this.members[userId] = member;
+                            }
+                        });
+                        onValue((child(ref(db), `typing/${userId}`)), (snapshot) => {
+                            if (snapshot.exists()) {
+                                var user = snapshot.val();
+                                if ((user?.typing) && this.chat.id == user?.chat) {
+                                    this.typing[userId] = user.user.username;
+                                } else if ((!user?.typing) && this.chat.id == user?.chat) {
+                                    delete this.typing[userId];
+                                }
+                            }
+                        });
+
+                    });
+
+                });
             });
         },
         getChats() {
@@ -368,6 +463,7 @@ export default {
                 addedTime: Date.now()
             };
             set(ref(db, "messages/" + chatId), chat);
+            delete chat.members;
             update(child(ref(db), `users/${this.user.id}/chats`), { [chatId]: chat });
             this.newChat.data.newGroup.loading = false;
             this.newChat.modal = false;
@@ -385,6 +481,7 @@ export default {
                         const chat = data;
                         chat.addedTime = Date.now();
                         update(child(ref(db), `messages/${this.newChat.data.group.id}`), { members });
+                        delete chat.messages;
                         update(child(ref(db), `users/${this.user.id}/chats`), { [data.id]: chat });
                         this.newChat.data.group.loading = false;
                         this.newChat.modal = false;
@@ -401,7 +498,7 @@ export default {
             axios.post('https://oneline-functions.abaanshanid.repl.co/group/leave', { id: this.chat.id, user: this.user.id })
                 .then((response) => {
                     // handle success  
-                
+                    update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: `${this.user.username} left the group`, type: "info", time: Date.now(), sender: this.user.id, action: "groupLeft" });
                     console.log(response);
                     this.leavingGroup = false;
                     this.leaveGroup = false;
@@ -414,8 +511,6 @@ export default {
                 })
                 .then(() => {
                     this.leavingGroup = false;
-
-
                 });
         },
         sendMessage() {

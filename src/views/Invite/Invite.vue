@@ -18,7 +18,9 @@
       <b-flex class="center">
         <b-spacer></b-spacer>
         <b-btn @click="$route.push('/')">Cancel</b-btn>
-        <b-btn @click="addToGroup()" :loading="btnLoading" color="primary">Join Group</b-btn>
+        <b-btn @click="addToGroup()" :loading="btnLoading" color="primary"
+          >Join Group</b-btn
+        >
         <b-spacer></b-spacer>
       </b-flex>
     </b-card>
@@ -62,6 +64,18 @@ export default {
       }
       get(child(ref(db), "messages/" + groupId)).then((snapshot) => {
         if (snapshot.exists()) {
+          get(child(ref(db), "users/" + userId)).then((snapshot) => {
+            update(
+              child(ref(db), `messages/${groupId}/messages/${Date.now()}`),
+              {
+                text: `${snapshot.val().username} joined the group`,
+                type: "info",
+                time: Date.now(),
+                sender: userId,
+                action: "groupJoined",
+              }
+            );
+          });
           var data = snapshot.val();
           delete data.messages;
           console.log(data);
@@ -70,6 +84,8 @@ export default {
           const chat = data;
           chat.addedTime = Date.now();
           update(child(ref(db), `messages/${groupId}`), { members });
+          // We don't want members property in user data
+          delete chat.messages;
           update(child(ref(db), `users/${userId}/chats`), { [data.id]: chat });
           this.btnLoading = false;
           this.$router.push("/");
