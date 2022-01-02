@@ -31,6 +31,7 @@ export default {
             baseUrl: location.href,
             chatInfo: false,
             chat: {},
+            leavingGroup: false,
             gif: {
                 gifs: [],
                 chips: [],
@@ -110,8 +111,8 @@ export default {
             console.log(data)
             this.loading = false;
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
-            onDisconnect(child(ref(db), `users/${this.user.id}`)).update({ lastOnline: Date.now() }); 
-            onDisconnect(child(ref(db), `status/${this.user.id}`)).update( { status: "offline" }); 
+            onDisconnect(child(ref(db), `users/${this.user.id}`)).update({ lastOnline: Date.now() });
+            onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
             this.getChats();
             for (var key in this.user.settings) {
                 if (!this.user?.settings[key]) return
@@ -218,6 +219,7 @@ export default {
                 .then((response) => {
                     // handle success
                     console.log(response);
+                    update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id,action:"groupInfoChanged" });information-outlin
                 })
                 .catch(function (error) {
                     // handle error
@@ -392,6 +394,28 @@ export default {
                         );
                         this.newChat.data.group.loading = false;
                     }
+                });
+        },
+        leaveGroupFunction() {
+            this.leavingGroup = true;
+            axios.post('https://oneline-functions.abaanshanid.repl.co/group/leave', { id: this.chat.id, user: this.user.id })
+                .then((response) => {
+                    // handle success  
+                
+                    console.log(response);
+                    this.leavingGroup = false;
+                    this.leaveGroup = false;
+                    this.chat = {};
+                    this.$router.go();
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+                .then(() => {
+                    this.leavingGroup = false;
+
+
                 });
         },
         sendMessage() {

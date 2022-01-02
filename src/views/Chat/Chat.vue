@@ -546,9 +546,9 @@
         <template v-slot:header>
             <h4 class="mt-0 mb-0">Leave Group</h4>
         </template>
-       <p>Are you sure you want to leave this group? 
          <br>
         The messages you sent will not be deleted
+       <p>Are you sure you want to leave this group? 
         </p>
        <br>
         <template v-slot:float>
@@ -557,7 +557,7 @@
             <b-btn @click="leaveGroup = false">
               Cancel
             </b-btn>
-            <b-btn color="danger">
+            <b-btn color="danger" :loading="leavingGroup" @click="leaveGroupFunction()">
               Leave
             </b-btn>
           </b-flex>
@@ -691,7 +691,7 @@
                   circle
                   outline
                   data-tooltip="Copy Invite Link"
-                  v-on:click="copy(`${baseUrl}/invite?groupId=${chat.id}`)"
+                  v-on:click="copy(`${baseUrl}invite?groupId=${chat.id}`)"
                   color="primary"
                 >
                   <b-icon size="22px" name="mdi mdi-content-copy"></b-icon>

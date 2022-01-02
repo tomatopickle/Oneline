@@ -1,13 +1,13 @@
-- Bugs
-- Features
-    - Leave group
-    - Show changes that hapenned to a group like user got added/left or group info got changed
+✔ Bugs: @done(22-01-02 14:13)
+Features:
+    - Show changes that hapenned to a group like user got added/left or group info got changed @doing
     - New messages
     - Read messages notify
     - File uploading
     - Audio recording 
     - Automatically select a chat when app is opened
-- Added Features
+Added Features:
+    - Add an invite confirmation dialog
     - Make a landing page
     - Messaging
     - Gifs
@@ -17,7 +17,8 @@
     - Reactions
     - Emoji picker
     - Make the site a PWA
-- Fixed Bugs
+Fixed Bugs: 
+    - Group Leaving doesn't work
     - Remove /n from every text, comes because the prevent.default is called too late
     - Gif recent section coming for people who haven't used emojis
     - Fix the user group data updating prob (members are not pushed in to the group data)

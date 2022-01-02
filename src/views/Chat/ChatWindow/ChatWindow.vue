@@ -13,6 +13,7 @@
             ? ' last'
             : '')
         "
+            v-if="message.type != 'info'"
       >
         <div>
           <div
@@ -118,6 +119,14 @@
             </b-flex>
           </span>
         </div>
+      </div>
+      <div v-else>
+        <span class="info-message">
+          <b-flex>
+          <b-icon name="mdi mdi-information-outline"></b-icon>
+          <span>{{message.text}}</span>
+          </b-flex>
+        </span>
       </div>
     </template>
   </transition-group>

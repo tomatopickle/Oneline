@@ -237,4 +237,13 @@ textarea {
 .msg .senderAvatar{
   align-self: baseline;
 }
+.info-message{
+  font-size: 15px;
+  margin: auto;
+  display: block;
+  width: max-content;
+  background-color: hsl(0deg 0% 100% / 8%);
+  border-radius: var(--ui-radius);
+  margin-bottom: 5px;
+}
 /* sdfsdf */
