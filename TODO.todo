@@ -1,6 +1,5 @@
 ✔ Bugs: @done(22-01-03 22:51)
 Features:
-    - Notifcations when user isn't in the window
     - New messages
     - Automatically select a chat when app is opened
     - Emoji text autocomplete
@@ -9,6 +8,7 @@ Features:
     - Audio recording 
     - Full support dark mode
 ✔ Added Features: @done(22-01-03 23:03)
+    - Notifcations when user isn't in the window
     - Add plain text mode for messages
     - Make message bar floating
     - Add an invite confirmation dialog

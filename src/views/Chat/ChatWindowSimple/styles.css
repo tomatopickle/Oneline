@@ -242,7 +242,7 @@
     margin: auto;
     display: block;
     width: max-content;
-    background-color: #000;
+    background-color: rgb(37, 37, 37);
     border-radius: var(--ui-radius);
     margin-bottom: 5px;
 }

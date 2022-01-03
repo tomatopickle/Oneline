@@ -93,7 +93,7 @@
               v-on:click="reactionClicked(i, key)"
             >
               <b-flex style="padding: 0" v-if="key != 'undefined'">
-                <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
+                <emoji :size="18" :data="emojiIndex" :emoji="key"></emoji>
                 <span :class="'reactionNumber ' + checkIfUserReacted(users)">{{
                   getNumberOfReactions(users)
                 }}</span>

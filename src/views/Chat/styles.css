@@ -247,9 +247,10 @@ section.emoji-mart.emoji-mart-static * {
     position: fixed;
     right: 12px;
     bottom: 120px;
-    box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
 }
-
+.nav{
+    position: absolute;
+}
 #contacts .b-list-item {
     border-color: transparent;
 }

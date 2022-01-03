@@ -19,7 +19,7 @@ let emojiIndex = new EmojiIndex(data);
 let searchTimeout;
 export default {
     name: "App",
-    components: { ChatWindow, Picker,ContentEditableDiv,ChatWindowSimple },
+    components: { ChatWindow, Picker, ContentEditableDiv, ChatWindowSimple },
     data: () => {
         return {
             enableScroll: false,
@@ -27,11 +27,12 @@ export default {
             emojiIndex: emojiIndex,
             emojisOutput: "",
             user: {},
-            settingsHeading: ["Appearance","About"],
+            settingsHeading: ["Appearance", "About"],
             chats: {},
             baseUrl: location.href,
             chatInfo: false,
             chat: {},
+            windowHidden: false,
             leavingGroup: false,
             gif: {
                 gifs: [],
@@ -64,7 +65,7 @@ export default {
                 index: 0,
                 data: {
                     lightMode: false,
-                    messagesSimpleMode:false
+                    messagesSimpleMode: false
                 }
             },
             loading: true,
@@ -110,16 +111,14 @@ export default {
                 router.push("login");
             }
             this.user = data;
-            console.log(data)
-            this.loading = false;
+            console.log(data);
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
             onDisconnect(child(ref(db), `users/${this.user.id}`)).update({ lastOnline: Date.now() });
             onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
+            this.loading = false;
             this.getChats();
             const settings = JSON.parse(JSON.stringify(this.user.settings));
-            console.log(settings,Object.keys(settings))
-            Object.keys(settings).forEach((key)=>{
-                console.log(key,this.user.settings)
+            Object.keys(settings).forEach((key) => {
                 if (!this.user?.settings[key]) return
                 this.settings.data[key] = this.user?.settings[key];
 
@@ -129,6 +128,9 @@ export default {
             if (Object.keys(data?.chats).length != Object.keys(this.user?.chats).length) {
                 this.$notify("New Chat Added");
             }
+            document.addEventListener("visibilitychange", (e) => {
+                this.windowHidden = (document.visibilityState === "hidden");
+            });
         });
     },
     computed: {
@@ -236,8 +238,8 @@ export default {
 
                 });
         },
-        sendHi(){
-            update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() }); 
+        sendHi() {
+            update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() });
 
         },
         // The controlled arg is used for functions calling this method, like the scrolled top function
@@ -254,6 +256,9 @@ export default {
                 }
                 onValue(query(ref(db, `messages/${chat.id}/messages`), limitToLast(this.limit)), (snapshot) => {
                     var data = snapshot.val();
+                    if (this.chat.id != chat.id) {
+                        return
+                    }
                     this.groupInfo.data.name = chatData?.name;
                     this.groupInfo.data.description = chatData?.description;
                     this.typing = {};
@@ -314,6 +319,13 @@ export default {
                                                 return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
                                             });
                                             this.chats = JSON.parse(s);
+                                            Notification.requestPermission().then((result) => {
+                                                if (this.windowHidden) {
+                                                    console.log(lastMessage);
+                                                    new Notification(`${data.username} in dms`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
+                                                }
+                                            });
+
                                         });
 
 
@@ -337,8 +349,20 @@ export default {
                             return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
                         });
                         this.chats = JSON.parse(s);
+                        Notification.requestPermission().then((result) => {
+                            if (this.windowHidden) {
+                                get(ref(db, `users/${lastMessage[Object.keys(lastMessage)[0]].sender}`)).then((snapshot) => {
+                                    if (snapshot.exists()) {
+                                        var member = snapshot.val();
+                                        new Notification(`${member.username} in ${chat.name}`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
+
+                                    }
+                                });
+                            }
+                        });
                     });
                 }
+
             }
         },
         createPersonalChat() {

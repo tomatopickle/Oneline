@@ -42,7 +42,7 @@
 
 .chatWindowDefault .reactions .reactionNumber {
     padding-right: 5px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .chatWindowDefault .username {
@@ -55,7 +55,7 @@
 
 .chatWindowDefault .time {
     text-align: center;
-    color: #dbdbdb 6b;
+    color: #a2a2a2;
     font-size: 11px;
 }
 
@@ -154,39 +154,11 @@
     transform: scale(1);
 }
 
-.chatWindowDefault .messageActionBtn {
-    transform: scale(0);
-    transition: transform 0.2s;
-    position: absolute;
-    display: block;
-    padding: 0;
-    margin: 0;
-    left: 45px;
-}
-
-.chatWindowDefault .msg:hover .messageActionBtn {
-    transform: scale(1);
-}
-
-.chatWindowDefault .msg:not(.last):not(.sub) .messageActionBtn {
-    top: 5px;
-}
-
-.chatWindowDefault .msg.last .messageActionBtn {
-    top: -10px;
-}
-
-.chatWindowDefault .msg.sub .messageActionBtn {
-    top: -10px;
-}
-
-.chatWindowDefault .msg.sub.last .messageActionBtn {
-    top: -10px;
-}
-
-.chatWindowDefault .messageActionBtn {
-    right: 5px;
-    left: unset;
+.chatWindowDefault .msg:hover .msg-text {
+    background-color: #ffffff0d;
+    transition: all .2s;
+    transition-delay: .5s;
+    border-radius: 5px;
 }
 
 .chatWindowDefault .inline-block {
@@ -274,7 +246,7 @@
     margin: auto;
     display: block;
     width: max-content;
-    background-color: #000;
+    background-color: rgb(37, 37, 37);
     border-radius: var(--ui-radius);
     margin-bottom: 5px;
 }
