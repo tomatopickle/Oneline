@@ -24,7 +24,6 @@ if (process.env.NODE_ENV === 'production') {
       caches.keys().then(function (names) {
         for (let name of names) caches.delete(name);
       });
-      location.reload();
     },
     offline() {
       console.log('No internet connection found. App is running in offline mode.')
