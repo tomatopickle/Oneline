@@ -1,6 +1,5 @@
 ✔ Bugs: @done(22-01-02 23:42)
 Features:
-    -  Make message bar floating
     - New messages
     - Emoji text autocomplete
     - Read messages notify
@@ -8,6 +7,8 @@ Features:
     - Audio recording 
     - Automatically select a chat when app is opened
 Added Features:
+    - Add plain text mode for messages
+    - Make message bar floating
     - Add an invite confirmation dialog
     - Make a landing page
     - Messaging

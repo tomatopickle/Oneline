@@ -1,33 +1,18 @@
 /* .msg .msg-text {
   padding: 8px;
+  border-radius: 1.125rem 1.125rem 1.125rem .15rem;
+  background-color: #262626;
   min-width: 50px;
+  font-size: 17px;
   word-break: break-word;
   transition: border-radius .5s;
   display: flex;
   align-items: center;
   white-space: break-spaces;
-  padding-block: 2px;
-  margin-left: 30px;
-  font-size: 1.05rem;
-  line-height: 1.375rem;
-  white-space: break-spaces;
-  word-wrap: break-word;
-  user-select: text;
-  color: #dcddde;
-  font-weight: 400;
-}
-
-.msg.last {
-  margin-bottom: 12px;
 }
 
 .msg {
   position: relative;
-  margin-left: 5px;
-}
-
-.msg .flex-box {
-  padding: 0;
 }
 
 .reaction {
@@ -44,12 +29,30 @@
   font-size: 13px;
 }
 
+
+
+.me .msg-text {
+  background-color: var(--primary);
+  border-radius: 1.125rem 1.125rem .15rem 1.125rem;
+}
+
+.me.sub .msg-text {
+  border-radius: 1.125rem;
+}
+
+.last .msg-text {
+  border-radius: .15rem 1.125rem 1.125rem 1.125rem;
+}
+
+.me.last .msg-text {
+  border-radius: 1.125rem .15rem 1.125rem 1.125rem;
+}
+
 .username {
+  position: absolute;
+  left: 55px;
+  top: 5px;
   color: grey;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.375rem;
-  color: #fff;
 }
 
 .time {
@@ -107,15 +110,13 @@
 
 
 .reactions {
-  position: relative;
+  position: absolute;
+  bottom: -8px;
   background-color: #1c1c1c;
   border-radius: 35px;
   height: max-content;
+  left: 50px;
   display: flex;
-  width: max-content;
-  margin-left: 40px;
-  top: 5px;
-  margin-bottom: 10px;
 }
 
 .reaction:hover {
@@ -123,32 +124,9 @@
   cursor: pointer;
 }
 
-.messageActions {
-  background-color: #1c1c1c;
-  border-radius: 30px;
-  transform: scale(0);
-  transition: all .2s;
-  position: absolute;
-  display: block;
-  padding: 0;
-  margin: 0;
-  right: 0;
-  padding: 2px;
-  padding-inline: 7px
-}
-.messageActions .icon{
-  cursor: pointer;
-  opacity: .8;
-  transition: transform .2s;
-}
-.messageActions .icon:hover{
-  opacity: 1;
-}
-.messageActions .icon:active{
-  transform: scale(.90);
-}
-.msg:hover .messageActions {
-  transform: scale(1);
+.me .reactions {
+  left: unset;
+  right: 10px;
 }
 
 .messageActionBtn {
@@ -181,17 +159,13 @@
   top: -10px;
 }
 
-.messageActionBtn {
+.me .messageActionBtn {
   right: 5px;
   left: unset;
 }
 
 .inline-block {
   display: block !important;
-}
-
-.msg-gif {
-  margin-left: 35px;
 }
 
 .messageActions {
@@ -275,62 +249,58 @@ textarea {
   border-radius: var(--ui-radius);
   margin-bottom: 5px;
 } */
-.chatWindowDefault {
-	/* sdfsdf */
-}
- .chatWindowDefault .msg .msg-text {
+ .chatWindowSimple .msg .msg-text {
 	 padding: 8px;
+	 border-radius: 1.125rem 1.125rem 1.125rem 0.15rem;
+	 background-color: #262626;
 	 min-width: 50px;
+	 font-size: 17px;
 	 word-break: break-word;
 	 transition: border-radius 0.5s;
 	/* This is to align the emojis perfectly with the text */
 	 display: flex;
 	 align-items: center;
 	 white-space: break-spaces;
-	 padding-block: 2px;
-	 margin-left: 30px;
-	 font-size: 1.05rem;
-	 line-height: 1.375rem;
-	 white-space: break-spaces;
-	 word-wrap: break-word;
-	 user-select: text;
-	 color: #dcddde;
-	 font-weight: 400;
 }
- .chatWindowDefault .msg.last {
-	 margin-bottom: 12px;
-}
- .chatWindowDefault .msg {
+ .chatWindowSimple .msg {
 	 position: relative;
-	 margin-left: 5px;
 }
- .chatWindowDefault .msg .flex-box {
-	 padding: 0;
-}
- .chatWindowDefault .reaction {
+ .chatWindowSimple .reaction {
 	 transition: background 0.2s;
 	 border-radius: 20px;
 }
- .chatWindowDefault .reactions .flex-box span {
+ .chatWindowSimple .reactions .flex-box span {
 	 margin: 0;
 }
- .chatWindowDefault .reactions .reactionNumber {
+ .chatWindowSimple .reactions .reactionNumber {
 	 padding-right: 5px;
 	 font-size: 13px;
 }
- .chatWindowDefault .username {
-	 color: grey;
-	 font-size: 1rem;
-	 font-weight: 500;
-	 line-height: 1.375rem;
-	 color: #fff;
+ .chatWindowSimple .me .msg-text {
+	 background-color: var(--primary);
+	 border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
 }
- .chatWindowDefault .time {
+ .chatWindowSimple .me.sub .msg-text {
+	 border-radius: 1.125rem;
+}
+ .chatWindowSimple .last .msg-text {
+	 border-radius: 0.15rem 1.125rem 1.125rem 1.125rem;
+}
+ .chatWindowSimple .me.last .msg-text {
+	 border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
+}
+ .chatWindowSimple .username {
+	 position: absolute;
+	 left: 55px;
+	 top: 5px;
+	 color: grey;
+}
+ .chatWindowSimple .time {
 	 text-align: center;
 	 color: #dbdbdb 6b;
 	 font-size: 11px;
 }
- .chatWindowDefault .user-reacted {
+ .chatWindowSimple .user-reacted {
 	 color: #3e81ff;
 }
  @keyframes messageAnimation {
@@ -343,69 +313,44 @@ textarea {
 		 transform: none;
 	}
 }
- .chatWindowDefault .messageAnimation-enter-active, .chatWindowDefault .messageAnimationIn, .chatWindowDefault .messageAnimation-leave-active, .chatWindowDefault .messageAnimationOut {
+ .chatWindowSimple .messageAnimation-enter-active, .chatWindowSimple .messageAnimationIn, .chatWindowSimple .messageAnimation-leave-active, .chatWindowSimple .messageAnimationOut {
 	 animation-duration: 0.5s;
 	 animation-fill-mode: both;
 }
- .chatWindowDefault .messageAnimation-enter-active, .chatWindowDefault .messageAnimationIn {
+ .chatWindowSimple .messageAnimation-enter-active, .chatWindowSimple .messageAnimationIn {
 	 animation-name: messageAnimation;
 }
- .chatWindowDefault .messageAnimation-leave-active, .chatWindowDefault .messageAnimationOut {
+ .chatWindowSimple .messageAnimation-leave-active, .chatWindowSimple .messageAnimationOut {
 	 animation-name: messageAnimation;
 }
- .chatWindowDefault .msg-text .emojiImg {
+ .chatWindowSimple .msg-text .emojiImg {
 	 width: 17px;
 	 height: 17px;
 	 margin-left: 5px;
 	 margin-right: 5px;
 }
- .chatWindowDefault .oneEmoji .emojiImg {
+ .chatWindowSimple .oneEmoji .emojiImg {
 	 width: 50px;
 	 height: 50px;
 }
- .chatWindowDefault .reactions {
-	 position: relative;
+ .chatWindowSimple .reactions {
+	 position: absolute;
+	 bottom: -8px;
 	 background-color: #1c1c1c;
 	 border-radius: 35px;
 	 height: max-content;
+	 left: 50px;
 	 display: flex;
-	 width: max-content;
-	 margin-left: 40px;
-	 top: 5px;
-	 margin-bottom: 10px;
 }
- .chatWindowDefault .reaction:hover {
+ .chatWindowSimple .reaction:hover {
 	 background-color: #2c2c2c;
 	 cursor: pointer;
 }
- .chatWindowDefault .messageActions {
-	 background-color: #1c1c1c;
-	 border-radius: 30px;
-	 transform: scale(0);
-	 transition: all 0.2s;
-	 position: absolute;
-	 display: block;
-	 padding: 0;
-	 margin: 0;
-	 right: 0;
-	 padding: 2px;
-	 padding-inline: 7px;
+ .chatWindowSimple .me .reactions {
+	 left: unset;
+	 right: 10px;
 }
- .chatWindowDefault .messageActions .icon {
-	 cursor: pointer;
-	 opacity: 0.8;
-	 transition: transform 0.2s;
-}
- .chatWindowDefault .messageActions .icon:hover {
-	 opacity: 1;
-}
- .chatWindowDefault .messageActions .icon:active {
-	 transform: scale(0.9);
-}
- .chatWindowDefault .msg:hover .messageActions {
-	 transform: scale(1);
-}
- .chatWindowDefault .messageActionBtn {
+ .chatWindowSimple .messageActionBtn {
 	 transform: scale(0);
 	 transition: transform 0.2s;
 	 position: absolute;
@@ -414,88 +359,85 @@ textarea {
 	 margin: 0;
 	 left: 45px;
 }
- .chatWindowDefault .msg:hover .messageActionBtn {
+ .chatWindowSimple .msg:hover .messageActionBtn {
 	 transform: scale(1);
 }
- .chatWindowDefault .msg:not(.last):not(.sub) .messageActionBtn {
+ .chatWindowSimple .msg:not(.last):not(.sub) .messageActionBtn {
 	 top: 5px;
 }
- .chatWindowDefault .msg.last .messageActionBtn {
+ .chatWindowSimple .msg.last .messageActionBtn {
 	 top: -10px;
 }
- .chatWindowDefault .msg.sub .messageActionBtn {
+ .chatWindowSimple .msg.sub .messageActionBtn {
 	 top: -10px;
 }
- .chatWindowDefault .msg.sub.last .messageActionBtn {
+ .chatWindowSimple .msg.sub.last .messageActionBtn {
 	 top: -10px;
 }
- .chatWindowDefault .messageActionBtn {
+ .chatWindowSimple .me .messageActionBtn {
 	 right: 5px;
 	 left: unset;
 }
- .chatWindowDefault .inline-block {
+ .chatWindowSimple .inline-block {
 	 display: block !important;
 }
- .chatWindowDefault .msg-gif {
-	 margin-left: 35px;
-}
- .chatWindowDefault .messageActions {
+ .chatWindowSimple .messageActions {
 	 width: max-content;
 	 min-width: 50px;
 }
- .chatWindowDefault .messageActions .card-text {
+ .chatWindowSimple .messageActions .card-text {
 	 margin: 0;
 	 padding: 0 !important;
 	 padding-left: 10px;
 	 padding-right: 10px;
 	 display: block;
 }
- .chatWindowDefault .messageActions .list-item-content p {
+ .chatWindowSimple .messageActions .list-item-content p {
 	 padding-inline: 15px;
 }
- .chatWindowDefault .messageActions .b-list-item {
+ .chatWindowSimple .messageActions .b-list-item {
 	 margin: 0;
 	 width: 95%;
 }
- .chatWindowDefault .messageActions .b-list-item .list-item-content {
+ .chatWindowSimple .messageActions .b-list-item .list-item-content {
 	 padding: 0;
 }
- .chatWindowDefault .reactions .flex-box span {
+ .chatWindowSimple .reactions .flex-box span {
 	 margin: 0;
 }
- .chatWindowDefault .reactions .reactionNumber {
+ .chatWindowSimple .reactions .reactionNumber {
 	 padding-right: 5px;
 	 font-size: 13px;
 }
- .chatWindowDefault html:not(.dark) .msg-text {
+ .chatWindowSimple html:not(.dark) .msg-text {
 	 color: white;
 }
- .chatWindowDefault html:not(.dark) .time {
+ .chatWindowSimple html:not(.dark) .time {
 	 color: #000 a8;
 }
- .chatWindowDefault html:not(.dark) .msg:not(.me) .msg-text {
+ .chatWindowSimple html:not(.dark) .msg:not(.me) .msg-text {
 	 background-color: #e1e1e1;
 	 color: black;
 }
- .chatWindowDefault html:not(.dark) .reactions {
+ .chatWindowSimple html:not(.dark) .reactions {
 	 background-color: #fff;
 }
- .chatWindowDefault html:not(.dark) .reaction:hover {
+ .chatWindowSimple html:not(.dark) .reaction:hover {
 	 background-color: #e5e5e5;
 }
- .chatWindowDefault html:not(.dark) #emojiBtn {
+ .chatWindowSimple html:not(.dark) #emojiBtn {
 	 color: #565656;
 }
- .chatWindowDefault textarea {
+ .chatWindowSimple textarea {
 	 min-height: 50px;
 }
- .chatWindowDefault .msg-gif img {
+ .chatWindowSimple .msg-gif img {
 	 border-radius: var(--ui-radius);
 }
- .chatWindowDefault .msg .senderAvatar {
+ .chatWindowSimple .msg .senderAvatar {
 	 align-self: baseline;
 }
- .chatWindowDefault .info-message {
+ .chatWindowSimple .info-message {
 	 font-size: 15px;
 	 margin: auto;
 	 display: block;

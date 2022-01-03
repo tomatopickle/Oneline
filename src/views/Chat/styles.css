@@ -47,7 +47,9 @@ html {
     position: sticky;
     top: 0;
 }
-
+#gifsPanel  .card-text{
+    padding: 0;
+}
 .gif img {
     width: 95px;
     border-radius: 5px;
@@ -297,4 +299,57 @@ section.emoji-mart.emoji-mart-static * {
     right: 0px;
     bottom: 0;
     background-color: var(--success);
+}
+
+#messageInp {
+    display: flex;
+    align-items: center;
+    left: -6px;
+    font-size: 15px;
+    background-color: #2c2a2a;
+    border-radius: var(--ui-radius);
+    width: 95%;
+    margin: auto;
+    margin-bottom: 5px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    max-height: 80vh;
+}
+
+#messageInp .editable {
+    width: 83%;
+    flex-grow: 1;
+    padding-block: 15px; 
+    padding-inline: 5px; 
+    cursor: text;
+}
+
+#messageInp .editable:empty:before {
+    content: attr(data-placeholder);
+    opacity: .7; 
+}
+
+#messageInp .editable:hover:empty:before {
+    opacity: .8; 
+}
+#messageInp .messageBtn {
+    cursor: pointer;
+    font-size: 20px;
+    margin-inline: 10px;
+    opacity: .8; 
+    transition: transform .2s;
+}
+#messageInp .messageBtn:hover {
+    opacity: 1; 
+} 
+#messageInp .messageBtn:active {
+    transform: scale(.9);
+} 
+#messageInp .emojiBtn{
+    margin-inline: 25px;
+}
+.popperBtn{
+    position: relative;
+    top: 15px;
 }

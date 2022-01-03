@@ -1,5 +1,6 @@
 <template>
-  <div class="chatWindowDefault">
+  <div 
+        class="chatWindowSimple" >
     <transition-group name="messageAnimation" tag="div">
       <template v-for="(message, i) in messages" :key="i">
         <div
@@ -18,60 +19,83 @@
           v-if="message.type != 'info'"
         >
           <div>
-            <div class="messageActions">
-              <b-flex>
-                <b-icon
-                  style="height: 22px"
-                  v-on:click="
-                    reaction.message = i;
-                    reaction.show = true;
-                  "
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    aria-hidden="true"
-                    role="img"
-                    width="1em"
-                    height="1em"
-                    preserveAspectRatio="xMidYMid meet"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </b-icon>
-                <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
-                <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
-              </b-flex>
-            </div>
-            <div>
-              <b-flex style="align-items: baseline">
-                <div class="senderAvatar">
-                  <b-avatar
-                    v-if="checkTimeDifference(message, i)"
-                    :size="30"
-                    :username="
-                      users[message.sender]
-                        ? users[message.sender].username
-                        : ''
+            <div
+              class="time"
+              v-if="checkTimeDifference(message, i)"
+              v-html="getTime(message.time)"
+            ></div>
+            <Popper
+              style="width: 100%"
+              :offsetSkid="message.sender == user.id ? '500%' : '-225%'"
+              :interactive="false"
+            >
+              <b-btn ghost icon class="messageActionBtn">
+                <b-icon name="mdi mdi-chevron-down"></b-icon>
+              </b-btn>
+              <template #content>
+                <b-card class="messageActions p-0 m-0" glass>
+                  <b-list-item
+                    clickable
+                    v-on:click="
+                      reaction.message = i;
+                      reaction.show = true;
                     "
                   >
-                  </b-avatar>
-                </div>
-                <small
-                  class="username"
-                  v-if="checkTimeDifference(message, i)"
-                  >{{ users[message.sender]?.username }}</small
+                    <b-flex>
+                      <b-icon style="height: 30px">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          aria-hidden="true"
+                          role="img"
+                          width="1em"
+                          height="1em"
+                          preserveAspectRatio="xMidYMid meet"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </b-icon>
+                      <span>React</span>
+                    </b-flex>
+                  </b-list-item>
+                  <b-list-item clickable>
+                    <b-flex>
+                      <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
+                      <span>Reply</span>
+                    </b-flex>
+                  </b-list-item>
+                  <b-list-item clickable>
+                    <b-flex>
+                      <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
+                      <span>Copy</span>
+                    </b-flex>
+                  </b-list-item>
+                </b-card>
+              </template>
+            </Popper>
+            <small
+              class="username"
+              v-if="
+                message.sender != user.id && checkTimeDifference(message, i)
+              "
+              >{{ users[message.sender]?.username }}</small
+            >
+            <b-flex>
+              <b-spacer v-if="message.sender == user.id"></b-spacer>
+              <div class="senderAvatar">
+                <b-avatar
+                  v-if="message.sender != user.id"
+                  :size="30"
+                  :username="
+                    users[message.sender] ? users[message.sender].username : ''
+                  "
                 >
-                <div
-                  class="time"
-                  v-if="checkTimeDifference(message, i)"
-                  v-html="getTime(message.time)"
-                ></div>
-              </b-flex>
+                </b-avatar>
+              </div>
               <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
               <div v-if="message.type == 'gif'" class="msg-gif">
                 <v-lazy-image
@@ -88,10 +112,9 @@
                 }`"
                 v-html="twemojiConvert(message.text)"
               ></div>
-            </div>
+            </b-flex>
           </div>
-          <!-- We don't want the reactions component if they aren't any reactions, the take up space -->
-          <div class="reactions" v-if="!!message.reactions">
+          <div class="reactions">
             <span
               v-for="(users, key) in message.reactions"
               :key="key"
