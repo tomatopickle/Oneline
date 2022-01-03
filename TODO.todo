@@ -1,5 +1,6 @@
-✔ Bugs: @done(22-01-02 23:42)
+☐ Bugs:
 Features:
+    - Notifcations when user isn't in the window
     - New messages
     - Emoji text autocomplete
     - Read messages notify
@@ -20,6 +21,7 @@ Added Features:
     - Emoji picker
     - Make the site a PWA
 Fixed Bugs: 
+    - Default emssages UI only shows send avatar once if its in the same minute
     - Group Leaving doesn't work
     - Remove /n from every text, comes because the prevent.default is called too late
     - Gif recent section coming for people who haven't used emojis

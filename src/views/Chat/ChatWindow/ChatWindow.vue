@@ -48,10 +48,10 @@
               </b-flex>
             </div>
             <div>
-              <b-flex style="align-items: baseline">
+              <b-flex style="align-items: baseline" v-if="!(checkMsgFromSameUser(message, i) &&
+            !checkTimeDifference(message, i))">
                 <div class="senderAvatar">
                   <b-avatar
-                    v-if="checkTimeDifference(message, i)"
                     :size="30"
                     :username="
                       users[message.sender]
@@ -61,16 +61,10 @@
                   >
                   </b-avatar>
                 </div>
-                <small
-                  class="username"
-                  v-if="checkTimeDifference(message, i)"
-                  >{{ users[message.sender]?.username }}</small
-                >
-                <div
-                  class="time"
-                  v-if="checkTimeDifference(message, i)"
-                  v-html="getTime(message.time)"
-                ></div>
+                <small class="username">{{
+                  users[message.sender]?.username
+                }}</small>
+                <div class="time" v-html="getTime(message.time)"></div>
               </b-flex>
               <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
               <div v-if="message.type == 'gif'" class="msg-gif">

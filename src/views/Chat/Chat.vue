@@ -230,7 +230,6 @@
         ></chat-window-simple>
         <chat-window
         v-else
-        class="chatWindowDefault" 
           :limit="limit"
           :messages="messages"
           :user="user"
