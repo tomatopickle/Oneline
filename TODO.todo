@@ -2,12 +2,13 @@
 Features:
     - Notifcations when user isn't in the window
     - New messages
+    - Automatically select a chat when app is opened
     - Emoji text autocomplete
     - Read messages notify
     - File uploading
     - Audio recording 
-    - Automatically select a chat when app is opened
-Added Features:
+    - Full support dark mode
+✔ Added Features: @done(22-01-03 23:03)
     - Add plain text mode for messages
     - Make message bar floating
     - Add an invite confirmation dialog
@@ -20,7 +21,7 @@ Added Features:
     - Reactions
     - Emoji picker
     - Make the site a PWA
-Fixed Bugs: 
+✔ Fixed Bugs: @done(22-01-03 23:03)
     - Default emssages UI only shows send avatar once if its in the same minute
     - Group Leaving doesn't work
     - Remove /n from every text, comes because the prevent.default is called too late
