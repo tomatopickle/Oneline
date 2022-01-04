@@ -153,7 +153,7 @@ export default {
             if (!(typeof emoji == "object")) {
                 return
             }
-            this.message.text += emoji.native;
+            document.querySelector("#messageInp .editable").innerHTML  += emoji.native;
         },
         changeToEmoji(text) {
             return checkText(text)
