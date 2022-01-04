@@ -17,7 +17,7 @@
       <br />
       <b-flex class="center">
         <b-spacer></b-spacer>
-        <b-btn @click="$route.push('/')">Cancel</b-btn>
+        <b-btn @click="$router.push('/')">Cancel</b-btn> 
         <b-btn @click="addToGroup()" :loading="btnLoading" color="primary"
           >Join Group</b-btn
         >
