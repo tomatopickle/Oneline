@@ -58,3 +58,7 @@ html.dark, html.dark body {
   display: block;
   transform: translate(-50%, 110%) scale(1);
 }
+a {
+  color: #6fa1ff;
+  text-decoration: none;
+}

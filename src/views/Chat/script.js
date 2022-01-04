@@ -131,6 +131,8 @@ export default {
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
             });
+            
+            this.openChat(JSON.parse(localStorage.getItem("lastOpenedChat")));
         });
     },
     computed: {
@@ -247,6 +249,7 @@ export default {
             if (!controlled) {
                 this.limit = 25;
             }
+            localStorage.setItem("lastOpenedChat",JSON.stringify(chat));
             this.members = {};
             onValue(query(ref(db, `messages/${chat.id}`)), (snapshot) => {
                 let chatData = snapshot.val();

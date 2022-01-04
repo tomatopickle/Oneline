@@ -1,12 +1,13 @@
 ✔ Bugs: @done(22-01-04 14:57)
 Features:
-    - Automatically select a chat when app is opened
     - Emoji text autocomplete
     - Read messages notify
     - File uploading
     - Audio recording 
     - Full support light mode
-✔ Added Features: @done(22-01-03 23:03)
+✔ Added Features: @done(22-01-04 17:49)
+    - Linkify texts
+    - Automatically select a chat when app is opened
     - New messages
     - Notifcations when user isn't in the window
     - Add plain text mode for messages

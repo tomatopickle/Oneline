@@ -110,7 +110,7 @@
                 :class="`msg-text ${
                   checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
                 }`"
-                v-html="twemojiConvert(message.text)"
+                v-html="convertMessageToHTML(message.text)"
               ></div>
             </b-flex>
           </div>
@@ -158,6 +158,7 @@
 <script>
 /* eslint-disable */
 import db from "../../../fire.js";
+import linkifyHtml from "linkify-html";
 import {
   ref,
   set,
@@ -232,6 +233,11 @@ export default {
     });
   },
   methods: {
+    convertMessageToHTML(text) {
+      return twemoji.parse(linkifyHtml(text, { defaultProtocol: "https",target: "_blank" }), {
+        className: "emojiImg",
+      });
+    },
     reactionClicked(messageId, emoji) {
       get(
         child(

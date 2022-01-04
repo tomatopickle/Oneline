@@ -212,9 +212,12 @@ export default {
   },
   methods: {
     convertMessageToHTML(text) {
-      return twemoji.parse(linkifyHtml(text, { defaultProtocol: "https" }), {
-        className: "emojiImg",
-      });
+      return twemoji.parse(
+        linkifyHtml(text, { defaultProtocol: "https", target: "_blank" }),
+        {
+          className: "emojiImg",
+        }
+      );
     },
     reactionClicked(messageId, emoji) {
       get(
