@@ -48,8 +48,15 @@
               </b-flex>
             </div>
             <div>
-              <b-flex style="align-items: baseline" v-if="!(checkMsgFromSameUser(message, i) &&
-            !checkTimeDifference(message, i))">
+              <b-flex
+                style="align-items: baseline"
+                v-if="
+                  !(
+                    checkMsgFromSameUser(message, i) &&
+                    !checkTimeDifference(message, i)
+                  )
+                "
+              >
                 <div class="senderAvatar">
                   <b-avatar
                     :size="30"
@@ -80,7 +87,7 @@
                 :class="`msg-text ${
                   checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
                 }`"
-                v-html="twemojiConvert(message.text)"
+                v-html="convertMessageToHTML(message.text)"
               ></div>
             </div>
           </div>
@@ -129,6 +136,7 @@
 <script>
 /* eslint-disable */
 import db from "../../../fire.js";
+import linkifyHtml from "linkify-html";
 import {
   ref,
   set,
@@ -203,6 +211,11 @@ export default {
     });
   },
   methods: {
+    convertMessageToHTML(text) {
+      return twemoji.parse(linkifyHtml(text, { defaultProtocol: "https" }), {
+        className: "emojiImg",
+      });
+    },
     reactionClicked(messageId, emoji) {
       get(
         child(

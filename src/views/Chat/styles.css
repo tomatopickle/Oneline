@@ -47,9 +47,11 @@ html {
     position: sticky;
     top: 0;
 }
-#gifsPanel  .card-text{
+
+#gifsPanel .card-text {
     padding: 0;
 }
+
 .gif img {
     width: 95px;
     border-radius: 5px;
@@ -216,6 +218,14 @@ section.emoji-mart.emoji-mart-static * {
     padding: 0;
 }
 
+#contacts .b-list-item+#contacts .b-list-item {
+    border-top: 1px solid rgba(255, 255, 255, 0.2); 
+}
+
+.b-list-item .list-item-content {
+    padding-block: 0;
+}
+
 .card.contextMenu .b-list-item {
     margin: 0;
 }
@@ -248,9 +258,11 @@ section.emoji-mart.emoji-mart-static * {
     right: 12px;
     bottom: 120px;
 }
-.nav{
+
+.nav {
     position: absolute;
 }
+
 #contacts .b-list-item {
     border-color: transparent;
 }
@@ -321,36 +333,53 @@ section.emoji-mart.emoji-mart-static * {
 #messageInp .editable {
     width: 83%;
     flex-grow: 1;
-    padding-block: 15px; 
-    padding-inline: 5px; 
+    padding-block: 15px;
+    padding-inline: 5px;
     cursor: text;
 }
 
 #messageInp .editable:empty:before {
     content: attr(data-placeholder);
-    opacity: .7; 
+    opacity: .7;
 }
 
 #messageInp .editable:hover:empty:before {
-    opacity: .8; 
+    opacity: .8;
 }
+
 #messageInp .messageBtn {
     cursor: pointer;
     font-size: 20px;
     margin-inline: 10px;
-    opacity: .8; 
+    opacity: .8;
     transition: transform .2s;
 }
+
 #messageInp .messageBtn:hover {
-    opacity: 1; 
-} 
+    opacity: 1;
+}
+
 #messageInp .messageBtn:active {
     transform: scale(.9);
-} 
-#messageInp .emojiBtn{
+}
+
+#messageInp .emojiBtn {
     margin-inline: 25px;
 }
-.popperBtn{
+
+.popperBtn {
     position: relative;
     top: 15px;
+}
+.chatName{
+    font-size: 15px;
+}
+.chatMessagePreview{
+    display: block;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    margin-right: -36px !important;
 }

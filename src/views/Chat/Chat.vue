@@ -141,7 +141,13 @@
                       :username="chat.name"
                       :src="chat?.src"
                     ></b-avatar>
-                    <span>{{ chat.name }}</span>
+                    <span class="flex-grow">
+                      <span class="chatName">
+                        {{ chat.name }}
+                      </span>
+                      <br>
+                      <small class="chatMessagePreview">{{ getMessagePreview(chat)}}</small> 
+                    </span>
                   </b-flex>
                 </b-list-item>
               </template>
@@ -464,6 +470,16 @@
               </b-flex>
             </template>
             <template v-slot:1>
+              <h4 class="my-0">Bugs</h4>
+              <p>
+                Found a bug? Great!, please report it
+                <a
+                  href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
+                  title="Ilham Fitrotul Hayat"
+                  >here</a
+                >
+              </p>
+              <h4>Credits</h4>
               <div>
                 Icons made by
                 <a

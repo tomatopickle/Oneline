@@ -153,7 +153,7 @@ export default {
             if (!(typeof emoji == "object")) {
                 return
             }
-            document.querySelector("#messageInp .editable").innerHTML  += emoji.native;
+            document.querySelector("#messageInp .editable").innerHTML += emoji.native;
         },
         changeToEmoji(text) {
             return checkText(text)
@@ -310,20 +310,25 @@ export default {
                                 if (snapshot.exists()) {
                                     var data = snapshot.val();
                                     onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
-                                        console.log(snapshot.val());
                                         var status = snapshot.exists() ? snapshot.val().status : "offline";
                                         onValue(query(ref(db, `messages/${chatId}/messages`), limitToLast(1)), (snapshot) => {
                                             var lastMessage = snapshot.val();
-                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, data, lastMessageTime: snapshot.exists() ? (lastMessage[Object.keys(lastMessage)[0]]?.time) : Date.now(), status };
-                                            var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
-                                                return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
-                                            });
-                                            this.chats = JSON.parse(s);
-                                            Notification.requestPermission().then((result) => {
-                                                if (this.windowHidden) {
-                                                    console.log(lastMessage);
-                                                    new Notification(`${data.username} in dms`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
-                                                }
+                                            lastMessage = lastMessage[Object.keys(lastMessage)[0]];
+                                            console.log(lastMessage)
+                                            get(ref(db, `users/${lastMessage.sender}`)).then((snapshot) => {
+                                                var sender = snapshot.val();
+                                                lastMessage.senderInfo = sender;
+                                                this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
+                                                var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
+                                                    return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
+                                                });
+                                                this.chats = JSON.parse(s);
+                                                Notification.requestPermission().then((result) => {
+                                                    if (this.windowHidden) {
+                                                        console.log(lastMessage);
+                                                        new Notification(`${sender.username} in dms`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
+                                                    }
+                                                });
                                             });
 
                                         });
@@ -342,29 +347,43 @@ export default {
                     const index = i;
                     const chatId = id;
                     onValue(query(ref(db, `messages/${id}/messages`), limitToLast(1)), (snapshot) => {
-                        var lastMessage = snapshot.val();
-                        this.chats[chatId] = { name: chat.name, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, lastMessageTime: snapshot.exists() ? (lastMessage[Object.keys(lastMessage)[0]]?.time) : Date.now() };
-
-                        var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
-                            return a.value.lastMessageTime < b.value.lastMessageTime ? 1 : -1;
-                        });
-                        this.chats = JSON.parse(s);
-                        Notification.requestPermission().then((result) => {
-                            if (this.windowHidden) {
-                                get(ref(db, `users/${lastMessage[Object.keys(lastMessage)[0]].sender}`)).then((snapshot) => {
-                                    if (snapshot.exists()) {
-                                        var member = snapshot.val();
-                                        new Notification(`${member.username} in ${chat.name}`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
-
-                                    }
-                                });
+                        if (snapshot.exists()) {
+                            var lastMessage = snapshot.val();
+                            lastMessage = lastMessage[Object.keys(lastMessage)[0]];
+                        } else {
+                            console.log(snapshot.val())
+                        }
+                        get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                            if (lastMessage) {
+                            var sender = snapshot.val();
+                            lastMessage.senderInfo = sender;
                             }
+                            this.chats[chatId] = { name: chat.name, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
+                            var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
+                                return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
+                            });
+                            this.chats = JSON.parse(s);
+                            Notification.requestPermission().then(() => {
+                                if (this.windowHidden) {
+                                    new Notification(`${sender.username} in ${chat.name}`, { body: lastMessage.text });
+
+                                }
+                            });
                         });
                     });
                 }
 
             }
         },
+        getMessagePreview(chat) {
+            if (!chat.lastMessage.senderInfo) { return `New Chat` }
+            if (chat.type == "personal") {
+                return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
+            } else {
+                return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
+            }
+        },
+
         createPersonalChat() {
             this.newChat.data.personal.loading = true;
             var chatId = nanoid(15);
