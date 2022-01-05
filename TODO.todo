@@ -24,6 +24,7 @@ Archive:
     - Emoji picker
     - Make the site a PWA
   ✔ Fixed Bugs:
+    - Message.text doesn't update when autocomplete adds emoji
     - Cancel button in invite page not working
     - Emojis are not being added (add to innerText not modelValue)
     - Default emssages UI only shows send avatar once if its in the same minute

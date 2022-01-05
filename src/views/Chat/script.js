@@ -507,6 +507,7 @@ export default {
                     for (let position = 0; position != text.length; position++) {
                         selection.modify("move", "right", "character");
                     };
+                    this.message.text = e.target.innerText;
                     this.clearEmojiSearch();
                     return
                 }
