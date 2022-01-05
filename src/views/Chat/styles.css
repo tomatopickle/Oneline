@@ -383,3 +383,17 @@ section.emoji-mart.emoji-mart-static * {
     margin: 0;
     margin-right: -36px !important;
 }
+#emojiComplete{ 
+    position: absolute;
+    bottom: 60px;
+    background-color: #242424;
+    left: 0;
+    right: 0;
+    border-radius: var(--ui-radius);
+    max-height: 75vh;
+    overflow-y: auto;
+    z-index: 6;
+}
+#emojiComplete .selected{
+    background-color: var(--primary);
+}

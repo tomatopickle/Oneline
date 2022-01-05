@@ -1,4 +1,5 @@
 /* eslint-disable */
+import axios from "axios";
 import db from "../../fire.js";
 import { ref, set, get, child, onValue, update, limitToLast, query, onDisconnect } from "firebase/database";
 import { nanoid } from "nanoid";
@@ -9,19 +10,24 @@ import ChatWindowSimple from "./ChatWindowSimple/ChatWindowSimple";
 import ContentEditableDiv from "./ContentEditableDiv/ContentEditableDiv";
 import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
-import { Picker, EmojiIndex } from "emoji-mart-vue-fast/src";
-import EmojiConvertor from "emoji-js";
+import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
+import EmojiConvertor from "emoji-js"; 
 let emojiConvertor = new EmojiConvertor();
 emojiConvertor.allow_native = true;
 emojiConvertor.replace_mode = 'unified';
-import axios from "axios";
+let userTypedColon = false;
+let emojiQuery = "";
 let emojiIndex = new EmojiIndex(data);
 let searchTimeout;
 export default {
     name: "App",
-    components: { ChatWindow, Picker, ContentEditableDiv, ChatWindowSimple },
+    components: { ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji },
     data: () => {
         return {
+            emojiComplete: {
+                emojis: [],
+                selectedIndex: 0
+            },
             enableScroll: false,
             emoji: false,
             emojiIndex: emojiIndex,
@@ -131,7 +137,7 @@ export default {
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
             });
-            
+
             this.openChat(JSON.parse(localStorage.getItem("lastOpenedChat")));
         });
     },
@@ -249,7 +255,7 @@ export default {
             if (!controlled) {
                 this.limit = 25;
             }
-            localStorage.setItem("lastOpenedChat",JSON.stringify(chat));
+            localStorage.setItem("lastOpenedChat", JSON.stringify(chat));
             this.members = {};
             onValue(query(ref(db, `messages/${chat.id}`)), (snapshot) => {
                 let chatData = snapshot.val();
@@ -317,7 +323,6 @@ export default {
                                         onValue(query(ref(db, `messages/${chatId}/messages`), limitToLast(1)), (snapshot) => {
                                             var lastMessage = snapshot.val();
                                             lastMessage = lastMessage[Object.keys(lastMessage)[0]];
-                                            console.log(lastMessage)
                                             get(ref(db, `users/${lastMessage.sender}`)).then((snapshot) => {
                                                 var sender = snapshot.val();
                                                 lastMessage.senderInfo = sender;
@@ -353,13 +358,11 @@ export default {
                         if (snapshot.exists()) {
                             var lastMessage = snapshot.val();
                             lastMessage = lastMessage[Object.keys(lastMessage)[0]];
-                        } else {
-                            console.log(snapshot.val())
                         }
                         get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
                             if (lastMessage) {
-                            var sender = snapshot.val();
-                            lastMessage.senderInfo = sender;
+                                var sender = snapshot.val();
+                                lastMessage.senderInfo = sender;
                             }
                             this.chats[chatId] = { name: chat.name, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
                             var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
@@ -493,8 +496,88 @@ export default {
         checkEnterKey(e) {
             if (e.key == 'Enter') {
                 e.preventDefault();
+                if (userTypedColon) {
+                    console.log(this.emojiComplete.emojis[this.emojiComplete.selectedIndex]);
+                    const text = this.emojiComplete.emojis[this.emojiComplete.selectedIndex].short_name.replace(emojiQuery, "") + ": ";
+                    let selection = window.getSelection();
+                    let range = selection.getRangeAt(0);
+                    range.deleteContents();
+                    let node = document.createTextNode(text);
+                    range.insertNode(node);
+                    for (let position = 0; position != text.length; position++) {
+                        selection.modify("move", "right", "character");
+                    };
+                    this.clearEmojiSearch();
+                    return
+                }
                 this.sendMessage();
+                userTypedColon = false;
             }
+            if (!e.ctrlKey && !e.shiftKey && e.key != "Backspace" && !e.key.includes("Arrow") && e.key.length == 1) {
+                if (userTypedColon) {
+                    emojiQuery += e.key;
+                    emojiQuery.replace(":", "");
+                    this.searchEmojisForCompletion(emojiQuery);
+                    this.emojiComplete.selectedIndex = 0;
+                }
+            } else if (e.key == "Backspace") {
+                // To be honest, even I don't know exactly how this code is working. One thing ik is that .slice(0,-1) is used to simulate a Backspace, .slice(-1) is used to get the last letter of the word
+                emojiQuery = emojiQuery.slice(0, -1);
+                this.searchEmojisForCompletion(emojiQuery);
+                if (e.target.innerText.slice(0, -1).replace(emojiQuery, "").slice(-1) != ":") {
+                    this.clearEmojiSearch();
+                }
+                if (!emojiQuery) {
+                    this.emojiComplete.emojis = [];
+                    return
+                }
+            } else if (e.key.includes("Arrow")) {
+                if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    this.emojiComplete.selectedIndex = (this.emojiComplete.selectedIndex == 0) ? this.emojiComplete.emojis.length - 1 : this.emojiComplete.selectedIndex - 1;
+                } else if (e.key == "ArrowDown") {
+                    e.preventDefault();
+                    this.emojiComplete.selectedIndex = (this.emojiComplete.selectedIndex == this.emojiComplete.emojis.length - 1) ? 0 : this.emojiComplete.selectedIndex + 1;
+                }
+                if (!this.isScrolledIntoView(document.querySelector("#emojiComplete .selected"), document.getElementById("emojiComplete"))) {
+                    document.querySelector("#emojiComplete .selected").scrollIntoView();
+                }
+            }
+            if (e.key == ":") {
+                userTypedColon = !userTypedColon;
+                if (!userTypedColon) {
+                    emojiQuery = "";
+                    this.emojiComplete.emojis = [];
+                }
+            }
+            if (e.key == "Escape") {
+                this.clearEmojiSearch();
+            }
+        },
+        isScrolledIntoView(el, holder) {
+            holder = holder || document.body
+            const { top, bottom, height } = el.getBoundingClientRect()
+            const holderRect = holder.getBoundingClientRect()
+
+            return top <= holderRect.top
+                ? holderRect.top - top <= height
+                : bottom - holderRect.bottom <= height
+        },
+        searchEmojisForCompletion(q) {
+            this.emojiComplete.emojis = [];
+            Object.keys(emojiIndex._nativeEmojis).forEach(key => {
+                const emoji = emojiIndex._nativeEmojis[key];
+                if (emoji.short_name.startsWith(q)) {
+                    this.emojiComplete.emojis.push(emoji);
+                }
+            });
+
+        },
+        clearEmojiSearch() {
+            userTypedColon = false;
+            emojiQuery = "";
+            this.emojiComplete.emojis = [];
+            this.emojiComplete.selectedIndex = 0;
         },
         checkIfScrolledToTop(e) {
             if (e.target.scrollTop == 0) {
@@ -506,7 +589,7 @@ export default {
             }
             this.scrollDownBtn = ((e.target.scrollTop + 75) < (e.target.scrollHeight - e.target.offsetHeight));
         },
-        checkIfUserTyping() {
+        checkIfUserTyping(e) {
             update(child(ref(db), `typing/${this.user.id}`), { chat: this.chat.id, typing: true, user: this.user });
             if (searchTimeout != undefined) clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {

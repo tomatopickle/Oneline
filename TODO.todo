@@ -1,11 +1,12 @@
-✔ Bugs: @done(22-01-04 17:52)
+✔ Bugs: @done(22-01-04 17:57)
 Features:
-    - Emoji text autocomplete
     - Read messages notify
     - File uploading
     - Audio recording 
     - Full support light mode
-✔ Added Features: @done(22-01-04 17:49)
+Archive:
+  ✔ Added Features: @done(22-01-05 12:16)
+    - Emoji text autocomplete
     - Linkify texts
     - Automatically select a chat when app is opened
     - New messages
@@ -22,7 +23,7 @@ Features:
     - Reactions
     - Emoji picker
     - Make the site a PWA
-✔ Fixed Bugs: @done(22-01-04 17:52)
+  ✔ Fixed Bugs:
     - Cancel button in invite page not working
     - Emojis are not being added (add to innerText not modelValue)
     - Default emssages UI only shows send avatar once if its in the same minute

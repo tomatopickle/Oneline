@@ -257,6 +257,14 @@
         </transition>
       </div>
       <div id="messageInp" v-if="chat.id">
+      <div id="emojiComplete">
+        <div v-for="(emoji,i) in emojiComplete.emojis" :key="i" :class="i == emojiComplete.selectedIndex ? 'selected':''"> 
+          <b-flex>
+            <emoji :size="32"  :data="emojiIndex"  :emoji="emoji.colons"/> 
+            <span>{{emoji.colons}}</span>          
+             </b-flex>
+        </div>
+      </div>
         <transition name="fade" :duration="{ enter: 200, leave: 300 }">
           <div id="typingBar" v-if="checkIfUsersAreTyping">
             <span v-for="username in typing" :key="username">{{
@@ -267,7 +275,7 @@
         </transition>
         <b-icon name="mdi mdi-plus messageBtn"></b-icon>
         <content-editable-div
-          @keypress="checkIfUserTyping()"
+          @keypress="checkIfUserTyping($event)"
           @keydown="checkEnterKey($event)"
           @blur="userLeftMessageBox()"
           v-model="message.text"
