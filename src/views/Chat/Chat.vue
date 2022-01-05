@@ -256,7 +256,7 @@
           </b-btn>
         </transition>
       </div>
-      <div id="messageInp" v-if="chat.id">
+      <div id="messageInp" v-if="chat?.id">
       <div id="emojiComplete">
         <div v-for="(emoji,i) in emojiComplete.emojis" :key="i" :class="i == emojiComplete.selectedIndex ? 'selected':''"> 
           <b-flex>
@@ -295,7 +295,7 @@
             <div>
               <Picker
                 color="#286ef1"
-                autoFocus
+                :autoFocus="true"
                 title="Pick your emoji…"
                 emoji="point_up"
                 :data="emojiIndex"

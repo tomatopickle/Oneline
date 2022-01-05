@@ -242,7 +242,7 @@ export default {
       get(
         child(
           ref(db),
-          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji}/${this.user.id}`
+          `messages/${this.chat.id}/${messageId}/reactions/${emoji}/${this.user.id}`
         )
       ).then((snapshot) => {
         var data = snapshot.val();
@@ -250,14 +250,14 @@ export default {
           remove(
             child(
               ref(db),
-              `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji}/${this.user.id}`
+              `messages/${this.chat.id}/${messageId}/reactions/${emoji}/${this.user.id}`
             )
           );
         } else {
           set(
             child(
               ref(db),
-              `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji}/${this.user.id}`
+              `messages/${this.chat.id}/${messageId}/reactions/${emoji}/${this.user.id}`
             ),
             { user: this.user.id }
           );
@@ -273,7 +273,7 @@ export default {
       get(
         child(
           ref(db),
-          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}/${this.user.id}`
+          `messages/${this.chat.id}/${messageId}/reactions/${emoji.id}/${this.user.id}`
         )
       ).then((snapshot) => {
         var data = snapshot.val();
@@ -281,7 +281,7 @@ export default {
           remove(
             child(
               ref(db),
-              `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}/${this.user.id}`
+              `messages/${this.chat.id}/${messageId}/reactions/${emoji.id}/${this.user.id}`
             )
           );
         }
@@ -289,7 +289,7 @@ export default {
       set(
         child(
           ref(db),
-          `messages/${this.chat.id}/messages/${messageId}/reactions/${emoji.id}/${this.user.id}`
+          `messages/${this.chat.id}/${messageId}/reactions/${emoji.id}/${this.user.id}`
         ),
         { user: this.user.id }
       );

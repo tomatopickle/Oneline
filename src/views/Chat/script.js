@@ -11,7 +11,7 @@ import ContentEditableDiv from "./ContentEditableDiv/ContentEditableDiv";
 import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
 import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
-import EmojiConvertor from "emoji-js"; 
+import EmojiConvertor from "emoji-js";
 let emojiConvertor = new EmojiConvertor();
 emojiConvertor.allow_native = true;
 emojiConvertor.replace_mode = 'unified';
@@ -123,13 +123,16 @@ export default {
             onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
             this.loading = false;
             this.getChats();
-            const settings = JSON.parse(JSON.stringify(this.user.settings));
-            Object.keys(settings).forEach((key) => {
-                if (!this.user?.settings[key]) return
-                this.settings.data[key] = this.user?.settings[key];
+            if (this.user?.settings) {
+                const settings = JSON.parse(JSON.stringify(this.user.settings));
+                Object.keys(settings).forEach((key) => {
+                    if (!this.user?.settings[key]) return
+                    this.settings.data[key] = this.user?.settings[key];
 
-            });
-            this.applySettings();
+                });
+                this.applySettings();
+
+            }
             // Checking if a new contact is made
             if (Object.keys(data?.chats).length != Object.keys(this.user?.chats).length) {
                 this.$notify("New Chat Added");
@@ -137,8 +140,9 @@ export default {
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
             });
-
-            this.openChat(JSON.parse(localStorage.getItem("lastOpenedChat")));
+            if (localStorage.getItem("lastOpenedChat")) {
+                this.openChat(JSON.parse(localStorage.getItem("lastOpenedChat")));
+            }
         });
     },
     computed: {
@@ -227,7 +231,7 @@ export default {
         },
         sendGif(gif) {
             update(child(ref(db), `recent-gifs/${this.user.id}/${Date.now()}`), gif);
-            update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { src: gif.images.fixed_height.webp, title: gif.title, sender: this.user.id, time: Date.now(), type: "gif" });
+            update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { src: gif.images.fixed_height.webp, title: gif.title, sender: this.user.id, time: Date.now(), type: "gif" });
         },
         changeGroupInfo() {
             this.groupInfo.loading = true;
@@ -235,7 +239,7 @@ export default {
                 .then((response) => {
                     // handle success
                     console.log(response);
-                    update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" }); information - outlin
+                    update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" }); information - outlin
                 })
                 .catch(function (error) {
                     // handle error
@@ -247,7 +251,7 @@ export default {
                 });
         },
         sendHi() {
-            update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() });
+            update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() });
 
         },
         // The controlled arg is used for functions calling this method, like the scrolled top function
@@ -257,13 +261,18 @@ export default {
             }
             localStorage.setItem("lastOpenedChat", JSON.stringify(chat));
             this.members = {};
-            onValue(query(ref(db, `messages/${chat.id}`)), (snapshot) => {
+            onValue(query(ref(db, `chats/${chat.id}`)), (snapshot) => { 
+                if(!snapshot.exists()){
+                    localStorage.removeItem("lastOpenedChat");
+                    return
+                }
                 let chatData = snapshot.val();
                 this.chat = chatData;
+                console.log(chatData)
                 if (!chatData.name) {
                     this.chat.name = chat.name;
                 }
-                onValue(query(ref(db, `messages/${chat.id}/messages`), limitToLast(this.limit)), (snapshot) => {
+                onValue(query(ref(db, `messages/${chat.id}`), limitToLast(this.limit)), (snapshot) => {
                     var data = snapshot.val();
                     if (this.chat.id != chat.id) {
                         return
@@ -320,12 +329,16 @@ export default {
                                     var data = snapshot.val();
                                     onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
                                         var status = snapshot.exists() ? snapshot.val().status : "offline";
-                                        onValue(query(ref(db, `messages/${chatId}/messages`), limitToLast(1)), (snapshot) => {
-                                            var lastMessage = snapshot.val();
-                                            lastMessage = lastMessage[Object.keys(lastMessage)[0]];
-                                            get(ref(db, `users/${lastMessage.sender}`)).then((snapshot) => {
-                                                var sender = snapshot.val();
-                                                lastMessage.senderInfo = sender;
+                                        onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
+                                            if (snapshot.exists()) {
+                                                var lastMessage = snapshot.val();
+                                                lastMessage = lastMessage[Object.keys(lastMessage)[0]];
+                                            }
+                                            get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                                                if (lastMessage) {
+                                                    var sender = snapshot.val();
+                                                    lastMessage.senderInfo = sender;
+                                                }
                                                 this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
                                                 var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                                                     return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
@@ -354,7 +367,7 @@ export default {
                 } else {
                     const index = i;
                     const chatId = id;
-                    onValue(query(ref(db, `messages/${id}/messages`), limitToLast(1)), (snapshot) => {
+                    onValue(query(ref(db, `messages/${id}`), limitToLast(1)), (snapshot) => {
                         if (snapshot.exists()) {
                             var lastMessage = snapshot.val();
                             lastMessage = lastMessage[Object.keys(lastMessage)[0]];
@@ -406,7 +419,7 @@ export default {
                                 addedTime: Date.now()
                             };
                             if (usr.email == this.newChat.data.personal.email) {
-                                set(ref(db, "messages/" + chatId), chat);
+                                set(ref(db, "chats/" + chatId), chat);
                                 update(child(ref(db), `users/${this.user.id}/chats`), { [chatId]: chat });
                                 update(child(ref(db), `users/${usr.id}/chats`), { [chatId]: chat });
                                 this.newChat.data.personal.loading = false;
@@ -433,7 +446,7 @@ export default {
                 members: [this.user.id],
                 addedTime: Date.now()
             };
-            set(ref(db, "messages/" + chatId), chat);
+            set(ref(db, "chats/" + chatId), chat);
             delete chat.members;
             update(child(ref(db), `users/${this.user.id}/chats`), { [chatId]: chat });
             this.newChat.data.newGroup.loading = false;
@@ -441,7 +454,7 @@ export default {
 
         },
         joinGroup() {
-            get(child(ref(db), "messages/" + this.newChat.data.group.id))
+            get(child(ref(db), "chats/" + this.newChat.data.group.id))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         var data = snapshot.val();
@@ -451,7 +464,7 @@ export default {
                         members.push(this.user.id);
                         const chat = data;
                         chat.addedTime = Date.now();
-                        update(child(ref(db), `messages/${this.newChat.data.group.id}`), { members });
+                        update(child(ref(db), `chats/${this.newChat.data.group.id}`), { members });
                         delete chat.messages;
                         update(child(ref(db), `users/${this.user.id}/chats`), { [data.id]: chat });
                         this.newChat.data.group.loading = false;
@@ -469,7 +482,7 @@ export default {
             axios.post('https://oneline-functions.abaanshanid.repl.co/group/leave', { id: this.chat.id, user: this.user.id })
                 .then((response) => {
                     // handle success  
-                    update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: `${this.user.username} left the group`, type: "info", time: Date.now(), sender: this.user.id, action: "groupLeft" });
+                    update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} left the group`, type: "info", time: Date.now(), sender: this.user.id, action: "groupLeft" });
                     console.log(response);
                     this.leavingGroup = false;
                     this.leaveGroup = false;
@@ -486,7 +499,7 @@ export default {
         },
         sendMessage() {
             if (this.message.text.trim().length < 1) return
-            update(child(ref(db), `messages/${this.chat.id}/messages/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
+            update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
             this.message.text = "";
             document.querySelector("#messageInp .editable").innerHTML = "";
         },
@@ -497,7 +510,6 @@ export default {
             if (e.key == 'Enter') {
                 e.preventDefault();
                 if (userTypedColon) {
-                    console.log(this.emojiComplete.emojis[this.emojiComplete.selectedIndex]);
                     const text = this.emojiComplete.emojis[this.emojiComplete.selectedIndex].short_name.replace(emojiQuery, "") + ": ";
                     let selection = window.getSelection();
                     let range = selection.getRangeAt(0);

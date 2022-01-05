@@ -62,11 +62,11 @@ export default {
       if (!userId) {
         this.$router.push("/login");
       }
-      get(child(ref(db), "messages/" + groupId)).then((snapshot) => {
+      get(child(ref(db), "chats/" + groupId)).then((snapshot) => {
         if (snapshot.exists()) {
           get(child(ref(db), "users/" + userId)).then((snapshot) => {
             update(
-              child(ref(db), `messages/${groupId}/messages/${Date.now()}`),
+              child(ref(db), `messages/${groupId}/${Date.now()}`),
               {
                 text: `${snapshot.val().username} joined the group`,
                 type: "info",
