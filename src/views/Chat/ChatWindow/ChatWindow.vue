@@ -348,6 +348,6 @@ export default {
   },
 };
 </script>
-<style>
-@import url("./styles.css");
+<style lang="stylus">
+@import "./styles.styl";
 </style>

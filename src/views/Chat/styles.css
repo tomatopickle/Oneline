@@ -153,9 +153,11 @@ html {
 .emoji-mart .emoji-mart-emoji {
     transition: transform .15s cubic-bezier(0.2, 0, 0.13, 2);
 }
-.emoji-mart-emoji-selected{
+
+.emoji-mart-emoji-selected {
     transform: scale(1.5);
 }
+
 .emoji-mart .emoji-mart-emoji:hover {
     transform: scale(1.5);
 }
@@ -221,7 +223,7 @@ section.emoji-mart.emoji-mart-static * {
 }
 
 #contacts .b-list-item+#contacts .b-list-item {
-    border-top: 1px solid rgba(255, 255, 255, 0.2); 
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .b-list-item .list-item-content {
@@ -333,7 +335,7 @@ section.emoji-mart.emoji-mart-static * {
 }
 
 #messageInp .editable {
-    width: 83%;
+    width: 80%;
     flex-grow: 1;
     padding-block: 15px;
     padding-inline: 5px;
@@ -373,10 +375,12 @@ section.emoji-mart.emoji-mart-static * {
     position: relative;
     top: 15px;
 }
-.chatName{
+
+.chatName {
     font-size: 15px;
 }
-.chatMessagePreview{
+
+.chatMessagePreview {
     display: block;
     width: 200px;
     white-space: nowrap;
@@ -385,7 +389,8 @@ section.emoji-mart.emoji-mart-static * {
     margin: 0;
     margin-right: -36px !important;
 }
-#emojiComplete{ 
+
+#emojiComplete {
     position: absolute;
     bottom: 60px;
     background-color: #242424;
@@ -396,6 +401,13 @@ section.emoji-mart.emoji-mart-static * {
     overflow-y: auto;
     z-index: 6;
 }
-#emojiComplete .selected{
+
+#emojiComplete .selected {
     background-color: var(--primary);
+}
+
+#seenIndicator {
+    position: absolute;
+    right: 10px;
+    top: -20px;
 }

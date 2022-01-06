@@ -1,12 +1,14 @@
 ✔ Bugs: @done(22-01-04 17:57)
 Features:
-    - Read messages notify
+    - Make notifcations optional, add it in settings
     - Double click like emoji
     - File uploading
     - Audio recording 
+    - Offline Capablity
     - Full support light mode
 Archive:
-  ✔ Added Features: @done(22-01-05 12:16)
+  ✔ Added Features: @done(22-01-06 14:10)
+    - Read messages notify
     - Emoji text autocomplete
     - Linkify texts
     - Automatically select a chat when app is opened

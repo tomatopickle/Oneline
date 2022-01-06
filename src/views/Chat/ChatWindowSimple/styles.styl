@@ -1,0 +1,250 @@
+.chatWindowSimple {
+     .msg .msg-text {
+        padding: 8px;
+        border-radius: 1.125rem 1.125rem 1.125rem 0.15rem;
+        background-color: #262626;
+        min-width: 50px;
+        font-size: 17px;
+        word-break: break-word;
+        transition: border-radius 0.5s;
+        /* This is to align the emojis perfectly with the text */
+        display: flex;
+        align-items: center;
+        white-space: break-spaces;
+    }
+
+    .msg {
+        position: relative;
+    }
+
+    .reaction {
+        transition: background 0.2s;
+        border-radius: 20px;
+    }
+
+    .reactions .flex-box span {
+        margin: 0;
+    }
+
+    .reactions .reactionNumber {
+        padding-right: 5px;
+        font-size: 13px;
+    }
+
+    .me .msg-text {
+        background-color: var(--primary);
+        border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
+    }
+
+    .me.sub .msg-text {
+        border-radius: 1.125rem;
+    }
+
+    .last .msg-text {
+        border-radius: 0.15rem 1.125rem 1.125rem 1.125rem;
+    }
+
+    .me.last .msg-text {
+        border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
+    }
+
+    .username {
+        position: absolute;
+        left: 55px;
+        top: 5px;
+        color: grey;
+    }
+
+    .time {
+        text-align: center;
+        color: #dbdbdb 6b;
+        font-size: 11px;
+    }
+
+    .user-reacted {
+        color: #3e81ff;
+    }
+
+    @keyframes messageAnimation {
+        from {
+            opacity: 0;
+            transform: translate3d(50px, 0, 0);
+        }
+
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .messageAnimation-enter-active, .messageAnimationIn, .messageAnimation-leave-active, .messageAnimationOut {
+        animation-duration: 0.5s;
+        animation-fill-mode: both;
+    }
+
+    .messageAnimation-enter-active, .messageAnimationIn {
+        animation-name: messageAnimation;
+    }
+
+    .messageAnimation-leave-active, .messageAnimationOut {
+        animation-name: messageAnimation;
+    }
+
+    .msg-text .emojiImg {
+        width: 17px;
+        height: 17px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+
+    .oneEmoji .emojiImg {
+        width: 50px;
+        height: 50px;
+    }
+
+    .reactions {
+        position: absolute;
+        bottom: -8px;
+        background-color: #1c1c1c;
+        border-radius: 35px;
+        height: max-content;
+        left: 50px;
+        display: flex;
+    }
+
+    .reaction:hover {
+        background-color: #2c2c2c;
+        cursor: pointer;
+    }
+
+    .me .reactions {
+        left: unset;
+        right: 10px;
+    }
+
+    .messageActionBtn {
+        transform: scale(0);
+        transition: transform 0.2s;
+        position: absolute;
+        display: block;
+        padding: 0;
+        margin: 0;
+        left: 45px;
+    }
+
+    .msg:hover .messageActionBtn {
+        transform: scale(1);
+    }
+
+    .msg:not(.last):not(.sub) .messageActionBtn {
+        top: 5px;
+    }
+
+    .msg.last .messageActionBtn {
+        top: -10px;
+    }
+
+    .msg.sub .messageActionBtn {
+        top: -10px;
+    }
+
+    .msg.sub.last .messageActionBtn {
+        top: -10px;
+    }
+
+    .me .messageActionBtn {
+        right: 5px;
+        left: unset;
+    }
+
+    .inline-block {
+        display: block !important;
+    }
+
+    .messageActions {
+        width: max-content;
+        min-width: 50px;
+    }
+
+    .messageActions .card-text {
+        margin: 0;
+        padding: 0 !important;
+        padding-left: 10px;
+        padding-right: 10px;
+        display: block;
+    }
+
+    .messageActions .list-item-content p {
+        padding-inline: 15px;
+    }
+
+    .messageActions .b-list-item {
+        margin: 0;
+        width: 95%;
+    }
+
+    .messageActions .b-list-item .list-item-content {
+        padding: 0;
+    }
+
+    .reactions .flex-box span {
+        margin: 0;
+    }
+
+    .reactions .reactionNumber {
+        padding-right: 5px;
+        font-size: 13px;
+    }
+
+    html:not(.dark) .msg-text {
+        color: white;
+    }
+
+    html:not(.dark) .time {
+        color: #000 a8;
+    }
+
+    html:not(.dark) .msg:not(.me) .msg-text {
+        background-color: #e1e1e1;
+        color: black;
+    }
+
+    html:not(.dark) .reactions {
+        background-color: #fff;
+    }
+
+    html:not(.dark) .reaction:hover {
+        background-color: #e5e5e5;
+    }
+
+    html:not(.dark) #emojiBtn {
+        color: #565656;
+    }
+
+    textarea {
+        min-height: 50px;
+    }
+
+    .msg-gif img {
+        border-radius: var(--ui-radius);
+    }
+
+    .msg .senderAvatar {
+        align-self: baseline;
+    }
+
+    .info-message {
+        font-size: 15px;
+        margin: auto;
+        display: block;
+        width: max-content;
+        background-color: rgb(37, 37, 37);
+        border-radius: var(--ui-radius);
+        margin-bottom: 5px;
+    }
+
+    .me a {
+        text-decoration: underline;
+        color: white;
+    }
+}

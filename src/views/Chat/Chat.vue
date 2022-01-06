@@ -145,8 +145,10 @@
                       <span class="chatName">
                         {{ chat.name }}
                       </span>
-                      <br>
-                      <small class="chatMessagePreview">{{ getMessagePreview(chat)}}</small> 
+                      <br />
+                      <small class="chatMessagePreview">{{
+                        getMessagePreview(chat)
+                      }}</small>
                     </span>
                   </b-flex>
                 </b-list-item>
@@ -243,7 +245,6 @@
           :chat="chat"
           :enableScroll="enableScroll"
         ></chat-window>
-        <br /><br /><br />
         <transition name="fadeUp">
           <b-btn
             v-if="scrollDownBtn"
@@ -256,22 +257,35 @@
           </b-btn>
         </transition>
       </div>
+      <br><br><br>
       <div id="messageInp" v-if="chat?.id">
-      <div id="emojiComplete">
-        <div v-for="(emoji,i) in emojiComplete.emojis" :key="i" :class="i == emojiComplete.selectedIndex ? 'selected':''"> 
-          <b-flex>
-            <emoji :size="32"  :data="emojiIndex"  :emoji="emoji.colons"/> 
-            <span>{{emoji.colons}}</span>          
-             </b-flex>
+        <div id="emojiComplete">
+          <div
+            v-for="(emoji, i) in emojiComplete.emojis"
+            :key="i"
+            :class="i == emojiComplete.selectedIndex ? 'selected' : ''"
+          >
+            <b-flex>
+              <emoji :size="32" :data="emojiIndex" :emoji="emoji.colons" />
+              <span>{{ emoji.colons }}</span>
+            </b-flex>
+          </div>
         </div>
-      </div>
-        <transition name="fade" :duration="{ enter: 200, leave: 300 }">
+        <transition name="fade" :duration="{ leave: 300 }">
           <div id="typingBar" v-if="checkIfUsersAreTyping">
             <span v-for="username in typing" :key="username">{{
               (username == this.user.username ? "You" : username) + " "
             }}</span>
             typing...
           </div>
+        </transition>
+        <transition name="fade" :duration="{ enter: 200, leave: 300 }">
+        <small id="seenIndicator"  v-if="seen && Object.keys(seen).length != 0">  
+          <span> Seen by </span> 
+          <span v-for="(i, usr) in seen" :key="usr">
+            {{ usr }}
+          </span>
+        </small>
         </transition>
         <b-icon name="mdi mdi-plus messageBtn"></b-icon>
         <content-editable-div
@@ -316,8 +330,9 @@
               style="
                 height: 29px;
                 display: block;
-                margin-right: 50px;
-                margin-left: 0;
+                margin-right: 15px;
+                margin-left: 10px;
+                width: 40px;
               "
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 30 30"
@@ -482,9 +497,9 @@
               <p>
                 Found a bug? Great!, please report it
                 <a
-                  href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
-                  title="Ilham Fitrotul Hayat"
-                  >here</a
+                  href="https://github.com/tomatopickle/Oneline/issues/new"
+                  title="Report Bug"
+                  >at our issues section</a
                 >
               </p>
               <h4>Credits</h4>

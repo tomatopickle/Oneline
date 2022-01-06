@@ -1,6 +1,5 @@
 <template>
-  <div 
-        class="chatWindowSimple" >
+  <div class="chatWindowSimple">
     <transition-group name="messageAnimation" tag="div">
       <template v-for="(message, i) in messages" :key="i">
         <div
@@ -234,9 +233,12 @@ export default {
   },
   methods: {
     convertMessageToHTML(text) {
-      return twemoji.parse(linkifyHtml(text, { defaultProtocol: "https",target: "_blank" }), {
-        className: "emojiImg",
-      });
+      return twemoji.parse(
+        linkifyHtml(text, { defaultProtocol: "https", target: "_blank" }),
+        {
+          className: "emojiImg",
+        }
+      );
     },
     reactionClicked(messageId, emoji) {
       get(
@@ -367,6 +369,6 @@ export default {
   },
 };
 </script>
-<style>
-@import url("./styles.css");
+<style lang="stylus">
+@import "./styles.styl";
 </style>

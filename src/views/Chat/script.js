@@ -1,7 +1,7 @@
 /* eslint-disable */
 import axios from "axios";
 import db from "../../fire.js";
-import { ref, set, get, child, onValue, update, limitToLast, query, onDisconnect } from "firebase/database";
+import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
 import stringify from "json-stable-stringify";
@@ -61,6 +61,7 @@ export default {
             limit: 25,
             leaveGroup: false,
             messages: [],
+            seen: {},
             settings: {
                 modal: false,
                 button: {
@@ -139,6 +140,9 @@ export default {
             }
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
+                if(!this.windowHidden && this.chat.id && this.messages[Object.keys(this.messages)[Object.keys(this.messages).length-1]].sender != this.user.id){ 
+                    set(ref(db, "seen/" + this.chat.id), { [this.user.username]: true });
+                }
             });
             if (localStorage.getItem("lastOpenedChat")) {
                 this.openChat(JSON.parse(localStorage.getItem("lastOpenedChat")));
@@ -261,8 +265,8 @@ export default {
             }
             localStorage.setItem("lastOpenedChat", JSON.stringify(chat));
             this.members = {};
-            onValue(query(ref(db, `chats/${chat.id}`)), (snapshot) => { 
-                if(!snapshot.exists()){
+            onValue(query(ref(db, `chats/${chat.id}`)), (snapshot) => {
+                if (!snapshot.exists()) {
                     localStorage.removeItem("lastOpenedChat");
                     return
                 }
@@ -298,7 +302,11 @@ export default {
                                 }
                             }
                         });
-
+                        onValue((child(ref(db), `seen/${chat.id}`)), (snapshot) => {
+                            if (snapshot.exists()) {
+                               console.log(snapshot.val());
+                            }
+                        });
                     });
 
                 });
@@ -322,6 +330,31 @@ export default {
                 if (chat.type == "personal") {
                     const chatId = id;
                     const index = i;
+                    onValue(query(ref(db, `seen/${chatId}`)), (snapshot) => {
+                    this.seen = snapshot.val();
+                    delete this.seen[this.user.username];
+                    if(this.enableScroll){
+                         this.scrollDown();
+                    }
+                    });
+                    onChildAdded(query(ref(db, 'messages/' + chatId),limitToLast(1)), (data) => {
+                        var lastMessage = data.val();
+                        get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => { 
+                            if (lastMessage) {
+                                var sender = snapshot.val();
+                                lastMessage.senderInfo = sender;
+                            }
+                            Notification.requestPermission().then((result) => {
+                                if (this.windowHidden && this.user.id != lastMessage?.sender) {
+                                    console.log(lastMessage);
+                                    new Notification(`${sender.username} in dms`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
+                                } else if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
+                                    set(ref(db, "seen/" + chatId), { [this.user.username]: true });
+                                    console.log("seen");
+                                }
+                            });
+                        });
+                    });
                     this.user.chats[chatId].members.forEach((usr) => {
                         if (usr != this.user.id) {
                             get(ref(db, `users/${usr}`)).then((snapshot) => {
@@ -344,12 +377,6 @@ export default {
                                                     return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                                                 });
                                                 this.chats = JSON.parse(s);
-                                                Notification.requestPermission().then((result) => {
-                                                    if (this.windowHidden) {
-                                                        console.log(lastMessage);
-                                                        new Notification(`${sender.username} in dms`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
-                                                    }
-                                                });
                                             });
 
                                         });
@@ -367,6 +394,20 @@ export default {
                 } else {
                     const index = i;
                     const chatId = id;
+                    onChildAdded(ref(db, 'messages/' + chatId), (data) => {
+                        var lastMessage = data.val();
+                        get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                            if (lastMessage) {
+                                var sender = snapshot.val();
+                                lastMessage.senderInfo = sender;
+                            }
+                            Notification.requestPermission().then(() => {
+                                if (this.windowHidden && this.user.id != lastMessage?.sender) {
+                                    new Notification(`${sender.username} in ${chat.name}`, { body: lastMessage.text });
+                                }
+                            });
+                        });
+                    });
                     onValue(query(ref(db, `messages/${id}`), limitToLast(1)), (snapshot) => {
                         if (snapshot.exists()) {
                             var lastMessage = snapshot.val();
@@ -382,12 +423,6 @@ export default {
                                 return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                             });
                             this.chats = JSON.parse(s);
-                            Notification.requestPermission().then(() => {
-                                if (this.windowHidden) {
-                                    new Notification(`${sender.username} in ${chat.name}`, { body: lastMessage.text });
-
-                                }
-                            });
                         });
                     });
                 }
@@ -502,6 +537,7 @@ export default {
             update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
             this.message.text = "";
             document.querySelector("#messageInp .editable").innerHTML = "";
+            remove(ref(db, `seen/${this.chat.id}`));
         },
         getTime(time) {
             return new Date(time).toLocaleString();
