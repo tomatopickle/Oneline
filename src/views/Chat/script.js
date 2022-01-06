@@ -347,7 +347,7 @@ export default {
                             Notification.requestPermission().then((result) => {
                                 if (this.windowHidden && this.user.id != lastMessage?.sender) {
                                     console.log(lastMessage);
-                                    new Notification(`${sender.username} in dms`, { body: lastMessage[Object.keys(lastMessage)[0]].text });
+                                    new Notification(`${sender.username} in dms`, { body: lastMessage.text });
                                 } else if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
                                     set(ref(db, "seen/" + chatId), { [this.user.username]: true });
                                     console.log("seen");

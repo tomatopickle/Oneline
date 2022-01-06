@@ -1,4 +1,4 @@
-✔ Bugs: @done(22-01-04 17:57)
+✔ Bugs: @done(22-01-06 14:15)
 Features:
     - Make notifcations optional, add it in settings
     - Double click like emoji
@@ -26,7 +26,8 @@ Archive:
     - Reactions
     - Emoji picker
     - Make the site a PWA
-  ✔ Fixed Bugs:
+  ✔ Fixed Bugs: 
+    - Notifcation body doesn't come
     - Message.text doesn't update when autocomplete adds emoji
     - Cancel button in invite page not working
     - Emojis are not being added (add to innerText not modelValue)
