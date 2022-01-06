@@ -78,6 +78,7 @@ a {
 #splashScreen:after{
   content: "Oneline";
   position: fixed;
+  color: white;
   top: 65vh;
   left: 50%;
   transform: translateX(-50%);

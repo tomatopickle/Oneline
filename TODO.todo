@@ -1,5 +1,4 @@
-☐ Bugs:
-    - Notifcations coming multiple times
+✔ Bugs: @done(22-01-06 21:33)
 Features:
     - Double click like emoji
     - File uploading
@@ -29,6 +28,7 @@ Archive:
     - Emoji picker
     - Make the site a PWA
   ✔ Fixed Bugs: 
+    - Splash screen text color is black 
     - Chat window avatar doesn't come when info messages are sent
     - Group invite saying invalid URL
     - Notifcation body doesn't come

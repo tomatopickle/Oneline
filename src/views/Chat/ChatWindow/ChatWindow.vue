@@ -246,6 +246,7 @@ export default {
       });
     },
     addReaction(emoji) {
+      console.log(emoji);
       const messageId = this.reaction.message;
       // At times the reaction dialog just closes weirdly, therefore this will reopen it
       if (!(typeof emoji == "object")) {
