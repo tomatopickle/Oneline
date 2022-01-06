@@ -42,7 +42,7 @@ export default {
   },
   mounted() {
     const groupId = this.$route.query.groupId;
-    get(child(ref(db), "messages/" + groupId)).then((snapshot) => {
+    get(child(ref(db), "chats/" + groupId)).then((snapshot) => {
       if (snapshot.exists()) {
         var data = snapshot.val();
         this.inv = data;
@@ -62,7 +62,7 @@ export default {
       if (!userId) {
         this.$router.push("/login");
       }
-      get(child(ref(db), "chats/" + groupId)).then((snapshot) => {
+      get(child(ref(db), "chats/" + groupId)).then((snapshot) => { 
         if (snapshot.exists()) {
           get(child(ref(db), "users/" + userId)).then((snapshot) => {
             update(
@@ -83,7 +83,7 @@ export default {
           members.push(userId);
           const chat = data;
           chat.addedTime = Date.now();
-          update(child(ref(db), `messages/${groupId}`), { members });
+          update(child(ref(db), `chats/${groupId}`), { members });
           // We don't want members property in user data
           delete chat.messages;
           update(child(ref(db), `users/${userId}/chats`), { [data.id]: chat });

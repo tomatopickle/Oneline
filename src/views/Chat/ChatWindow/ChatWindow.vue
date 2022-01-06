@@ -303,7 +303,7 @@ export default {
     checkMsgFromSameUser(message, i) {
       const messages = this.messages;
       const msgIndex = Object.keys(messages).indexOf(i);
-      if (message.sender == this.getByIndex(messages, msgIndex - 1)?.sender) {
+      if (message.sender == this.getByIndex(messages, msgIndex - 1)?.sender && this.getByIndex(messages, msgIndex - 1)?.type != "info") {
         return true;
       } else {
         return false;

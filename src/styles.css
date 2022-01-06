@@ -62,3 +62,27 @@ a {
   color: #6fa1ff;
   text-decoration: none;
 }
+#splashScreen{
+  background-image: url(./assets/logos/logo.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 9555;
+  background-color: #0c0b0b;
+  background-size: 30%;
+  background-position-y: 15vh;
+  display: none; 
+}
+#splashScreen:after{
+  content: "Oneline";
+  position: fixed;
+  top: 65vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 35px;
+}
+#app[v-cloak] + #splashScreen{
+  display: block; 
+}

@@ -257,7 +257,7 @@
           </b-btn>
         </transition>
       </div>
-      <br><br><br>
+      <br /><br /><br />
       <div id="messageInp" v-if="chat?.id">
         <div id="emojiComplete">
           <div
@@ -280,12 +280,15 @@
           </div>
         </transition>
         <transition name="fade" :duration="{ enter: 200, leave: 300 }">
-        <small id="seenIndicator"  v-if="seen && Object.keys(seen).length != 0">  
-          <span> Seen by </span> 
-          <span v-for="(i, usr) in seen" :key="usr">
-            {{ usr }}
-          </span>
-        </small>
+          <small
+            id="seenIndicator"
+            v-if="seen && Object.keys(seen).length != 0"
+          >
+            <span> Seen by </span>
+            <span v-for="(i, usr) in seen" :key="usr">
+              {{ usr }}
+            </span>
+          </small>
         </transition>
         <b-icon name="mdi mdi-plus messageBtn"></b-icon>
         <content-editable-div
@@ -495,11 +498,11 @@
             <template v-slot:1>
               <h4 class="my-0">Bugs</h4>
               <p>
-                Found a bug? Great!, please report it
+                Found a bug? Great!, please report it at our
                 <a
                   href="https://github.com/tomatopickle/Oneline/issues/new"
                   title="Report Bug"
-                  >at our issues section</a
+                  >issues section</a
                 >
               </p>
               <h4>Credits</h4>
