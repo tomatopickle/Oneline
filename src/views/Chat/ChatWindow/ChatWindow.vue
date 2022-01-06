@@ -16,6 +16,9 @@
               : '')
           "
           v-if="message.type != 'info'"
+          v-on:dblclick="
+          reaction.message = i;
+          addReaction(settings.data.likeEmoji);"
         >
           <div>
             <div class="messageActions">
@@ -162,6 +165,7 @@ export default {
     messages: Object,
     limit: Number,
     enableScroll: Boolean,
+    settings: Object, 
   },
   data: () => {
     return {
@@ -304,7 +308,10 @@ export default {
     checkMsgFromSameUser(message, i) {
       const messages = this.messages;
       const msgIndex = Object.keys(messages).indexOf(i);
-      if (message.sender == this.getByIndex(messages, msgIndex - 1)?.sender && this.getByIndex(messages, msgIndex - 1)?.type != "info") {
+      if (
+        message.sender == this.getByIndex(messages, msgIndex - 1)?.sender &&
+        this.getByIndex(messages, msgIndex - 1)?.type != "info"
+      ) {
         return true;
       } else {
         return false;

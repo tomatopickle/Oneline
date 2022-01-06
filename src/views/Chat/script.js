@@ -33,7 +33,7 @@ export default {
             emojiIndex: emojiIndex,
             emojisOutput: "",
             user: {},
-            settingsHeading: ["Appearance", "Notifications", "About"],
+            settingsHeading: ["Appearance", "Chat", "Notifications", "About"],
             chats: {},
             baseUrl: location.href,
             chatInfo: false,
@@ -71,8 +71,10 @@ export default {
                 },
                 index: 0,
                 notificationGranted: false,
+                likeEmojiModal: false,
                 data: {
                     lightMode: false,
+                    likeEmoji: { "_data": { "name": "Thumbs Up Sign", "unified": "1F44D", "has_img_apple": true, "has_img_google": true, "has_img_twitter": true, "has_img_facebook": true, "keywords": ["thumbs_up", "thumbsup", "yes", "awesome", "good", "agree", "accept", "cool", "hand", "like"], "text": "", "short_names": ["+1", "thumbsup"], "added_in": "6.0", "sheet_x": 13, "sheet_y": 28, "search": "+1,thumbsup,thumbs,up,sign,thumbs_up,yes,awesome,good,agree,accept,cool,hand,like", "skin_tone": 1 }, "_skins": null, "_sanitized": { "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍" }, "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍", "short_names": ["+1", "thumbsup"], "short_name": "+1" },
                     messagesSimpleMode: false,
                     notification: {
                         granted: false,
@@ -172,9 +174,22 @@ export default {
             const cb = navigator.clipboard;
             cb.writeText(text);
         },
+        setNewLikeEmoji(emoji) {
+            if (!(typeof emoji == "object")) {
+                return;
+            }
+             emoji = JSON.parse(JSON.stringify(emoji));
+            Object.keys(emoji).forEach((key) => {
+                if (!emoji[key]) {
+                    delete emoji[key]
+                }
+            })
+            this.settings.data.likeEmoji = emoji;
+            this.settings.likeEmojiModal = false;
+        },
         addedEmoji(emoji) {
             if (!(typeof emoji == "object")) {
-                return
+                return;
             }
             document.querySelector("#messageInp .editable").innerHTML += emoji.native;
         },
@@ -264,7 +279,7 @@ export default {
             update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() });
         },
         askNotificationPermission() {
-            Notification.requestPermission().then( (result) =>{
+            Notification.requestPermission().then((result) => {
                 this.settings.notificationGranted = result == "granted";
             });
         },

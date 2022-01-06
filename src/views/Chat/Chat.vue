@@ -233,6 +233,7 @@
           v-if="settings.data.messagesSimpleMode"
           :limit="limit"
           :messages="messages"
+          :settings="settings"
           :user="user"
           :chat="chat"
           :enableScroll="enableScroll"
@@ -241,6 +242,7 @@
           v-else
           :limit="limit"
           :messages="messages"
+          :settings="settings"
           :user="user"
           :chat="chat"
           :enableScroll="enableScroll"
@@ -475,8 +477,9 @@
               <h4>Settings</h4>
             </template>
             <template #1> Appearance </template>
-            <template #2> Notifications </template>
-            <template #3> About </template>
+            <template #2> Chat </template>
+            <template #3> Notifications </template>
+            <template #4> About </template>
           </b-nav-panel></template
         >
         <b-card bare height="275px" width="100%">
@@ -497,31 +500,48 @@
               </b-flex>
             </template>
             <template v-slot:1>
-              <div v-show="!settings.notificationGranted">
-                <span>We need your permission to send notifications</span>
-                <br><br> 
-                <b-btn size="medium" block color="primary" @click="askNotificationPermission()">Give Permission</b-btn>
-              </div>
-              <div v-show="settings.notificationGranted">
               <b-flex>
-                <span>Enable Notifications</span>
+                <div class="flex flex-col">
+                  <span>Like Emoji</span>
+                  <small style="margin-left: 0;">{{"Current emoji: " + settings.data.likeEmoji.native}}</small>
+                </div>
                 <b-spacer></b-spacer>
-                <b-switch
-                  @change="applySettings()" 
-                  v-model="settings.data.notification.enabled" 
-                ></b-switch>
+                <b-btn color="secondary" @click="settings.likeEmojiModal = true;"> Change </b-btn>
               </b-flex>
-              <b-flex v-show="settings.data.notification.enabled">
-                <span>Notifications for a new message</span>
-                <b-spacer></b-spacer>
-                <b-switch
-                  @change="applySettings()" 
-                  v-model="settings.data.notification.newMessage" 
-                ></b-switch>
-              </b-flex>
-              </div>
+              <p class="text-sm opacity-75 pl-1 block">When you double click a message, we'll add this emoji as your reaction</p>
             </template>
             <template v-slot:2>
+              <div v-show="!settings.notificationGranted">
+                <span>We need your permission to send notifications</span>
+                <br /><br />
+                <b-btn
+                  size="medium"
+                  block
+                  color="primary"
+                  @click="askNotificationPermission()"
+                  >Give Permission</b-btn
+                >
+              </div>
+              <div v-show="settings.notificationGranted">
+                <b-flex>
+                  <span>Enable Notifications</span>
+                  <b-spacer></b-spacer>
+                  <b-switch
+                    @change="applySettings()"
+                    v-model="settings.data.notification.enabled"
+                  ></b-switch>
+                </b-flex>
+                <b-flex v-show="settings.data.notification.enabled">
+                  <span>Notifications for a new message</span>
+                  <b-spacer></b-spacer>
+                  <b-switch
+                    @change="applySettings()"
+                    v-model="settings.data.notification.newMessage"
+                  ></b-switch>
+                </b-flex>
+              </div>
+            </template>
+            <template v-slot:3>
               <h4 class="my-0">Bugs</h4>
               <p>
                 Found a bug? Great!, please report it at our
@@ -547,7 +567,10 @@
             </template>
           </b-tab-content>
           <template #footer>
-            <b-flex style="height: max-content" v-if="settingsHeading[settings.index] != 'About'">
+            <b-flex
+              style="height: max-content"
+              v-if="settingsHeading[settings.index] != 'About'"
+            >
               <b-spacer></b-spacer>
               <b-btn
                 @click="updateSettings()"
@@ -568,6 +591,17 @@
         </b-card>
       </b-card>
     </b-modal>
+    <b-modal v-model="settings.likeEmojiModal">
+    <Picker
+      color="#286ef1"
+      autoFocus
+      size="15"
+      title="Pick a Reaction…"
+      emoji="point_up"
+      :data="emojiIndex"
+      set="apple"
+      @select="setNewLikeEmoji"
+  /></b-modal>
     <b-modal v-model="groupInfo.modal" width="400px">
       <b-card height="100%">
         <template #header>

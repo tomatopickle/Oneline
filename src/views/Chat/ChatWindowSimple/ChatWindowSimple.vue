@@ -16,6 +16,9 @@
               : '')
           "
           v-if="message.type != 'info'"
+          v-on:dblclick="
+          reaction.message = i;
+          addReaction(settings.data.likeEmoji);"
         >
           <div>
             <div
@@ -183,6 +186,7 @@ export default {
     messages: Object,
     limit: Number,
     enableScroll: Boolean,
+    settings:Object
   },
   data: () => {
     return {
