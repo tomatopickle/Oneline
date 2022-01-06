@@ -33,7 +33,7 @@ export default {
             emojiIndex: emojiIndex,
             emojisOutput: "",
             user: {},
-            settingsHeading: ["Appearance", "About"],
+            settingsHeading: ["Appearance", "Notifications", "About"],
             chats: {},
             baseUrl: location.href,
             chatInfo: false,
@@ -70,9 +70,15 @@ export default {
                     check: false
                 },
                 index: 0,
+                notificationGranted: false,
                 data: {
                     lightMode: false,
-                    messagesSimpleMode: false
+                    messagesSimpleMode: false,
+                    notification: {
+                        granted: false,
+                        enabled: false,
+                        newMessage: false
+                    }
                 }
             },
             loading: true,
@@ -111,6 +117,7 @@ export default {
         };
     },
     mounted() {
+        this.settings.notificationGranted = Notification.permission == "granted";
         onValue(child(ref(db), `users/${localStorage.getItem("id")}`), (snapshot) => {
             const data = snapshot.val();
             console.log(data);
@@ -140,7 +147,7 @@ export default {
             }
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
-                if(!this.windowHidden && this.chat.id && this.messages[Object.keys(this.messages)[Object.keys(this.messages).length-1]].sender != this.user.id){ 
+                if (!this.windowHidden && this.chat.id && this.messages[Object.keys(this.messages)[Object.keys(this.messages).length - 1]].sender != this.user.id) {
                     set(ref(db, "seen/" + this.chat.id), { [this.user.username]: true });
                 }
             });
@@ -242,7 +249,6 @@ export default {
             axios.post('https://oneline-functions.abaanshanid.repl.co/group/update', { id: this.chat.id, name: this.groupInfo.data.name, description: this.groupInfo.data.description })
                 .then((response) => {
                     // handle success
-                    console.log(response);
                     update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" }); information - outlin
                 })
                 .catch(function (error) {
@@ -256,7 +262,11 @@ export default {
         },
         sendHi() {
             update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(":wave: Hi"), sender: this.user.id, time: Date.now() });
-
+        },
+        askNotificationPermission() {
+            Notification.requestPermission().then( (result) =>{
+                this.settings.notificationGranted = result == "granted";
+            });
         },
         // The controlled arg is used for functions calling this method, like the scrolled top function
         openChat(chat, controlled) {
@@ -265,6 +275,7 @@ export default {
             }
             localStorage.setItem("lastOpenedChat", JSON.stringify(chat));
             this.members = {};
+            this.seen = {};
             onValue(query(ref(db, `chats/${chat.id}`)), (snapshot) => {
                 if (!snapshot.exists()) {
                     localStorage.removeItem("lastOpenedChat");
@@ -272,7 +283,6 @@ export default {
                 }
                 let chatData = snapshot.val();
                 this.chat = chatData;
-                console.log(chatData)
                 if (!chatData.name) {
                     this.chat.name = chat.name;
                 }
@@ -302,11 +312,6 @@ export default {
                                 }
                             }
                         });
-                        onValue((child(ref(db), `seen/${chat.id}`)), (snapshot) => {
-                            if (snapshot.exists()) {
-                               console.log(snapshot.val());
-                            }
-                        });
                     });
 
                 });
@@ -331,28 +336,26 @@ export default {
                     const chatId = id;
                     const index = i;
                     onValue(query(ref(db, `seen/${chatId}`)), (snapshot) => {
-                    this.seen = snapshot.val();
-                    delete this.seen[this.user.username];
-                    if(this.enableScroll){
-                         this.scrollDown();
-                    }
+                        this.seen = snapshot.val();
+                        delete this.seen[this.user.username];
+                        if (this.enableScroll) {
+                            this.scrollDown();
+                        }
                     });
-                    onChildAdded(query(ref(db, 'messages/' + chatId),limitToLast(1)), (data) => {
+                    onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
                         var lastMessage = data.val();
-                        get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => { 
+                        get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
                             if (lastMessage) {
                                 var sender = snapshot.val();
                                 lastMessage.senderInfo = sender;
                             }
-                            Notification.requestPermission().then((result) => {
+                            if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
                                 if (this.windowHidden && this.user.id != lastMessage?.sender) {
-                                    console.log(lastMessage);
-                                    new Notification(`${sender.username} in dms`, { body: lastMessage.text });
+                                    new Notification(`${sender.username} in DMs`, { body: lastMessage.text });
                                 } else if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
                                     set(ref(db, "seen/" + chatId), { [this.user.username]: true });
-                                    console.log("seen");
                                 }
-                            });
+                            }
                         });
                     });
                     this.user.chats[chatId].members.forEach((usr) => {
@@ -401,11 +404,11 @@ export default {
                                 var sender = snapshot.val();
                                 lastMessage.senderInfo = sender;
                             }
-                            Notification.requestPermission().then(() => {
+                            if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
                                 if (this.windowHidden && this.user.id != lastMessage?.sender) {
                                     new Notification(`${sender.username} in ${chat.name}`, { body: lastMessage.text });
                                 }
-                            });
+                            };
                         });
                     });
                     onValue(query(ref(db, `messages/${id}`), limitToLast(1)), (snapshot) => {
@@ -494,7 +497,6 @@ export default {
                     if (snapshot.exists()) {
                         var data = snapshot.val();
                         delete data.messages;
-                        console.log(data);
                         let members = data.members;
                         members.push(this.user.id);
                         const chat = data;
@@ -518,7 +520,6 @@ export default {
                 .then((response) => {
                     // handle success  
                     update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} left the group`, type: "info", time: Date.now(), sender: this.user.id, action: "groupLeft" });
-                    console.log(response);
                     this.leavingGroup = false;
                     this.leaveGroup = false;
                     this.chat = {};

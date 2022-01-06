@@ -475,7 +475,8 @@
               <h4>Settings</h4>
             </template>
             <template #1> Appearance </template>
-            <template #2> About </template>
+            <template #2> Notifications </template>
+            <template #3> About </template>
           </b-nav-panel></template
         >
         <b-card bare height="275px" width="100%">
@@ -496,6 +497,31 @@
               </b-flex>
             </template>
             <template v-slot:1>
+              <div v-show="!settings.notificationGranted">
+                <span>We need your permission to send notifications</span>
+                <br><br> 
+                <b-btn size="medium" block color="primary" @click="askNotificationPermission()">Give Permission</b-btn>
+              </div>
+              <div v-show="settings.notificationGranted">
+              <b-flex>
+                <span>Enable Notifications</span>
+                <b-spacer></b-spacer>
+                <b-switch
+                  @change="applySettings()" 
+                  v-model="settings.data.notification.enabled" 
+                ></b-switch>
+              </b-flex>
+              <b-flex v-show="settings.data.notification.enabled">
+                <span>Notifications for a new message</span>
+                <b-spacer></b-spacer>
+                <b-switch
+                  @change="applySettings()" 
+                  v-model="settings.data.notification.newMessage" 
+                ></b-switch>
+              </b-flex>
+              </div>
+            </template>
+            <template v-slot:2>
               <h4 class="my-0">Bugs</h4>
               <p>
                 Found a bug? Great!, please report it at our
@@ -505,8 +531,8 @@
                   >issues section</a
                 >
               </p>
-              <h4>Credits</h4>
-              <div>
+              <h4 class="my-0">Credits</h4>
+              <p>
                 Icons made by
                 <a
                   href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
@@ -517,11 +543,11 @@
                 <a href="https://www.flaticon.com/" title="Flaticon"
                   >www.flaticon.com</a
                 >
-              </div>
+              </p>
             </template>
           </b-tab-content>
           <template #footer>
-            <b-flex style="height: max-content">
+            <b-flex style="height: max-content" v-if="settingsHeading[settings.index] != 'About'">
               <b-spacer></b-spacer>
               <b-btn
                 @click="updateSettings()"

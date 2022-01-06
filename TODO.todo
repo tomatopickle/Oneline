@@ -1,13 +1,14 @@
-✔ Bugs: @done(22-01-06 14:39)
+☐ Bugs:
+    - Notifcations coming multiple times
 Features:
-    - Make notifcations optional, add it in settings
     - Double click like emoji
     - File uploading
     - Audio recording 
     - Offline Capablity
     - Full support light mode
 Archive:
-  ✔ Added Features: @done(22-01-06 14:57)
+  ✔ Added Features: @done(22-01-06 18:24)
+    - Make notifcations optional, add it in settings
     - Splash screen and loading in the title when the app is loading
     - Read messages notify
     - Emoji text autocomplete
