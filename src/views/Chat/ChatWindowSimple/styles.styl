@@ -1,8 +1,10 @@
+@import '../../../variables.styl';
+
 .chatWindowSimple {
-     .msg .msg-text {
+    .msg .msg-text {
         padding: 8px;
         border-radius: 1.125rem 1.125rem 1.125rem 0.15rem;
-        background-color: #262626;
+        background-color: lighten($bg-dark, 5);
         min-width: 50px;
         font-size: 17px;
         word-break: break-word;
@@ -29,12 +31,24 @@
     .reactions .reactionNumber {
         padding-right: 5px;
         font-size: 13px;
-        user-select: none; 
+        user-select: none;
     }
 
     .me .msg-text {
         background-color: var(--primary);
         border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
+    }
+
+    :not(.me) {
+        &.sub, &.sub.last {
+            .msg-text, .fileMsg, .msg-image {
+                margin-left: 35px;
+            }
+        }
+    }
+
+    .sub .msg-text {
+        border-radius: 1.125rem;
     }
 
     .me.sub .msg-text {
@@ -49,6 +63,90 @@
         border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
     }
 
+    .fileMsg {
+        background-color: lighten($bg-dark, 5);
+        position: relative;
+        margin-bottom: 5px;
+        width: max-content;
+        margin-left: 35px;
+        padding: 7px;
+        padding-inline: 12px;
+        font-size: 17px;
+        border-radius: var(--ui-radius);
+
+        .btn {
+            height: max-content;
+            margin: auto;
+            margin-bottom: 0px;
+            padding: 4px;
+            box-shadow: none !important;
+
+            &.loading {
+                height: 32px;
+                position: relative;
+                top: -4px;
+            }
+
+            .spinner_parent {
+                height: max-content;
+            }
+        }
+    }
+
+    .me .fileMsg {
+        background-color: var(--primary);
+        border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
+    }
+
+    .sub .fileMsg {
+        border-radius: 1.125rem;
+    }
+
+    .me.sub .fileMsg {
+        border-radius: 1.125rem;
+    }
+
+    .last .fileMsg {
+        border-radius: 0.15rem 1.125rem 1.125rem 1.125rem;
+    }
+
+    .me.last .fileMsg {
+        border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
+    }
+
+    .msg .fileMsg .flex-box {
+        padding: 0;
+    }
+
+    .msg-image {
+        width: max-content;
+        display: block;
+        position: relative;
+
+        img {
+            border-radius: var(--ui-radius);
+        }
+
+        .controls {
+            display: flex;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            transition: opacity 0.2s;
+
+            .btn {
+                transition: transform 0.2s, background-color 0.2s;
+                transform: scale(0);
+            }
+        }
+
+        &:hover {
+            .controls .btn {
+                transform: scale(1);
+            }
+        }
+    }
+
     .username {
         position: absolute;
         left: 55px;
@@ -58,7 +156,7 @@
 
     .time {
         text-align: center;
-        color: #dbdbdb 6b;
+        color: lighten($bg-dark, 50);
         font-size: 11px;
     }
 

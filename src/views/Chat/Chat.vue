@@ -292,7 +292,7 @@
             </span>
           </small>
         </transition>
-        <b-icon name="mdi mdi-plus messageBtn"></b-icon>
+        <b-icon name="mdi mdi-plus messageBtn" @click="fileUpload.show = true;"></b-icon>
         <content-editable-div
           @keypress="checkIfUserTyping($event)"
           @keydown="checkEnterKey($event)"
@@ -569,7 +569,7 @@
           <template #footer>
             <b-flex
               style="height: max-content"
-              v-if="settingsHeading[settings.index] != 'About'"
+              v-if="settingsHeading[settings.index] != 'About'" 
             >
               <b-spacer></b-spacer>
               <b-btn
@@ -602,6 +602,9 @@
       set="apple"
       @select="setNewLikeEmoji"
   /></b-modal>
+  <b-modal v-model="fileUpload.show" width="50vw" @dragover.prevent @drop.prevent> 
+   <file-upload :user="user" :chat="chat" @uploaded="fileUpload.show=false;message.text = ``;"></file-upload> 
+  </b-modal>
     <b-modal v-model="groupInfo.modal" width="400px">
       <b-card height="100%">
         <template #header>

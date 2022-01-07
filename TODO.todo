@@ -1,11 +1,11 @@
 ✔ Bugs: @done(22-01-06 21:33)
 Features:
-    - File uploading
     - Audio recording 
     - Offline Capablity
     - Full support light mode
 Archive:
-  ✔ Added Features: @done(22-01-06 23:47)
+  ✔ Added Features: @done(22-01-07 23:44)
+    - File uploading
     - Double click like emoji
     - Make notifcations optional, add it in settings
     - Splash screen and loading in the title when the app is loading

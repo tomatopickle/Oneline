@@ -32,6 +32,10 @@ export default {
             emoji: false,
             emojiIndex: emojiIndex,
             emojisOutput: "",
+            fileUpload: {
+                show: false
+            },
+            downloading: false,
             user: {},
             settingsHeading: ["Appearance", "Chat", "Notifications", "About"],
             chats: {},
@@ -178,7 +182,7 @@ export default {
             if (!(typeof emoji == "object")) {
                 return;
             }
-             emoji = JSON.parse(JSON.stringify(emoji));
+            emoji = JSON.parse(JSON.stringify(emoji));
             Object.keys(emoji).forEach((key) => {
                 if (!emoji[key]) {
                     delete emoji[key]
@@ -449,11 +453,12 @@ export default {
         },
         getMessagePreview(chat) {
             if (!chat.lastMessage.senderInfo) { return `New Chat` }
-            if (chat.type == "personal") {
-                return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
-            } else {
-                return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
+            if (chat.lastMessage.type == "file") {
+                return `${chat.lastMessage.senderInfo.username}: (File) ${chat.lastMessage.file.name}`
+            } else if (chat.lastMessage.type == "image") {
+                return `${chat.lastMessage.senderInfo.username}: (Image) ${chat.lastMessage.file.name}`
             }
+            return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
         },
 
         createPersonalChat() {

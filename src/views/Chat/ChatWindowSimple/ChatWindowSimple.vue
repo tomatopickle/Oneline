@@ -17,8 +17,9 @@
           "
           v-if="message.type != 'info'"
           v-on:dblclick="
-          reaction.message = i;
-          addReaction(settings.data.likeEmoji);"
+            reaction.message = i;
+            addReaction(settings.data.likeEmoji);
+          "
         >
           <div>
             <div
@@ -90,7 +91,9 @@
               <b-spacer v-if="message.sender == user.id"></b-spacer>
               <div class="senderAvatar">
                 <b-avatar
-                  v-if="message.sender != user.id"
+                  v-if="
+                    message.sender != user.id && checkTimeDifference(message, i)
+                  "
                   :size="30"
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
@@ -105,6 +108,51 @@
                   height="200"
                   :src="message.src"
                   :alt="message.title"
+                />
+              </div>
+              <div v-else-if="message.type == 'file'">
+                <div class="fileMsg">
+                  <b-flex>
+                    <span>
+                      {{ message.file.name }}
+                    </span>
+                    <b-spacer></b-spacer>
+                    <b-btn
+                      icon
+                      ghost
+                      v-on:click="downloadFile(message.file)"
+                      :loading="
+                        download.loading && message.file.time == download.time
+                      "
+                    >
+                      <b-icon ghost name="mdi mdi-download"></b-icon>
+                    </b-btn>
+                  </b-flex>
+                </div>
+              </div>
+              <div v-else-if="message.type == 'image'" class="msg-image">
+                <div class="controls">
+                  <b-btn
+                    icon
+                    class="mr-1"
+                    glass
+                    color="primary"
+                    v-on:click="downloadFile(message.file)"
+                    :loading="
+                      download.loading && message.file.time == download.time
+                    "
+                  >
+                    <b-icon name="mdi mdi-download"></b-icon>
+                  </b-btn>
+                  <b-btn icon glass color="primary">
+                    <b-icon name="mdi mdi-fullscreen"></b-icon>
+                  </b-btn>
+                </div>
+                <v-lazy-image
+                  src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                  height="200"
+                  :src="message.file.url"
+                  :alt="message.file.name"
                 />
               </div>
               <div
@@ -160,6 +208,7 @@
 <script>
 /* eslint-disable */
 import db from "../../../fire.js";
+import { storage } from "../../../fire.js";
 import linkifyHtml from "linkify-html";
 import {
   ref,
@@ -170,6 +219,12 @@ import {
   update,
   remove,
 } from "firebase/database";
+import {
+  ref as storageRef,
+  getDownloadURL,
+  uploadBytesResumable,
+  getBlob,
+} from "firebase/storage";
 import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
 import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
@@ -186,12 +241,16 @@ export default {
     messages: Object,
     limit: Number,
     enableScroll: Boolean,
-    settings:Object
+    settings: Object,
   },
   data: () => {
     return {
       users: {},
       emojiIndex: emojiIndex,
+      download: {
+        loading: false,
+        time: "",
+      },
       reaction: {
         message: "",
         show: false,
@@ -236,6 +295,24 @@ export default {
     });
   },
   methods: {
+    async downloadFile(file) {
+      this.download.loading = true;
+      this.download.time = file.time;
+      console.log(file);
+      getBlob(storageRef(storage, file.path))
+        .then((blob) => {
+          // `url` is the download URL for 'images/stars.jpg'
+          let downloadLink = document.getElementById("downloadLink");
+          downloadLink.download = file.name;
+          downloadLink.href = URL.createObjectURL(blob);
+          downloadLink.click();
+          this.download.time = "";
+          this.download.loading = false;
+        })
+        .catch((error) => {
+          // Handle any errors
+        });
+    },
     convertMessageToHTML(text) {
       return twemoji.parse(
         linkifyHtml(text, { defaultProtocol: "https", target: "_blank" }),
@@ -271,6 +348,7 @@ export default {
       });
     },
     addReaction(emoji) {
+      console.log(emoji);
       const messageId = this.reaction.message;
       // At times the reaction dialog just closes weirdly, therefore this will reopen it
       if (!(typeof emoji == "object")) {
@@ -328,7 +406,10 @@ export default {
     checkMsgFromSameUser(message, i) {
       const messages = this.messages;
       const msgIndex = Object.keys(messages).indexOf(i);
-      if (message.sender == this.getByIndex(messages, msgIndex - 1)?.sender &&  this.getByIndex(messages, msgIndex - 1)?.type != "info") {
+      if (
+        message.sender == this.getByIndex(messages, msgIndex - 1)?.sender &&
+        this.getByIndex(messages, msgIndex - 1)?.type != "info"
+      ) {
         return true;
       } else {
         return false;

@@ -1,3 +1,5 @@
+@import '../../../variables.styl';
+
 .chatWindowDefault {
     .msg .msg-text {
         padding: 8px;
@@ -44,7 +46,7 @@
     .reactions .reactionNumber {
         padding-right: 5px;
         font-size: 14px;
-        user-select: none; 
+        user-select: none;
     }
 
     .username {
@@ -246,5 +248,66 @@
         background-color: rgb(37, 37, 37);
         border-radius: var(--ui-radius);
         margin-bottom: 5px;
+    }
+
+    .fileMsg {
+        background-color: lighten($bg-dark, 5);
+        border-radius: 5px;
+        position: relative;
+        margin-bottom: 5px;
+        width: max-content;
+        margin-left: 35px;
+        padding: 7px;
+        padding-inline: 12px;
+        font-size: 17px;
+        border-radius: var(--ui-radius);
+
+        .btn {
+            height: max-content;
+            margin: auto;
+            margin-bottom: 0px;
+            padding: 4px;
+            box-shadow: none !important;
+
+            &.loading {
+                height: 32px;
+                position: relative;
+                top: -4px;
+            }
+
+            .spinner_parent {
+                height: max-content;
+            }
+        }
+    }
+
+    .msg-image {
+        margin-left: 35px;
+        width: max-content;
+        display: block;
+        position: relative;
+
+        img {
+            border-radius: var(--ui-radius);
+        }
+
+        .controls {
+            display: flex;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            transition: opacity 0.2s;
+
+            .btn {
+                transition: transform 0.2s, background-color 0.2s;
+                transform: scale(0);
+            }
+        }
+
+        &:hover {
+            .controls .btn {
+                transform: scale(1);
+            }
+        }
     }
 }
