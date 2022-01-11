@@ -14,7 +14,7 @@
         align-items: center;
         white-space: break-spaces;
     }
-
+    
     .msg {
         position: relative;
     }
@@ -62,7 +62,13 @@
     .me.last .msg-text {
         border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
     }
-
+    .me .link-preview-wrapper{
+        max-width: unset;
+        margin-right: calc(50% - 250px);
+    }
+    :not(.me) .link-preview-wrapper{
+        margin-left: 45px;
+    }
     .fileMsg {
         background-color: lighten($bg-dark, 5);
         position: relative;
