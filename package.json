@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^2.3.4",
+    "@vime/vue-next": "^5.3.1",
     "axios": "^0.24.0",
     "bootbox": "^5.5.2",
     "bounce-ui-vue": "^0.1.12",
@@ -30,6 +31,7 @@
     "stylus-loader": "3.0.2",
     "v-lazy-image": "^2.0.1",
     "vue": "^3.0.0",
+    "vue-plyr": "^7.0.0",
     "vue-router": "^4.0.12",
     "vue3-popper": "^1.4.0"
   },

@@ -1,6 +1,5 @@
 <template>
   <div class="chatWindowDefault">
-    <transition-group name="messageAnimation" tag="div">
       <template v-for="(message, i) in messages" :key="i">
         <div
           :class="
@@ -106,6 +105,23 @@
                   </b-flex>
                 </div>
               </div>
+              <div v-else-if="message.type == 'audio'">
+                <div class="fileMsg">
+                  <b-flex>
+                    <b-btn
+                      icon
+                      ghost
+                      v-on:click="$emit('playAudio', message); 
+                      log(message.src);"
+                    >
+                      <b-icon ghost name="mdi mdi-play"></b-icon>
+                    </b-btn>
+                    <span style="font-size: 16px">
+                      {{ message.duration }}
+                    </span>
+                  </b-flex>
+                </div>
+              </div>
               <div v-else-if="message.type == 'image'" class="msg-image">
                 <div class="controls">
                   <b-btn
@@ -166,7 +182,6 @@
           </span>
         </div>
       </template>
-    </transition-group>
   </div>
   <b-modal v-model="reaction.show">
     <Picker
@@ -212,6 +227,7 @@ twemoji.base =
 export default {
   name: "ChatWindow",
   components: { Picker, Emoji },
+  emits: ["playAudio"],
   props: {
     user: Object,
     chat: Object,
@@ -272,6 +288,9 @@ export default {
     });
   },
   methods: {
+    log(e) {
+      console.log(e);
+    },
     async downloadFile(file) {
       this.download.loading = true;
       this.download.time = file.time;
@@ -432,5 +451,5 @@ export default {
 };
 </script>
 <style lang="stylus">
-@import "./styles.styl";
+@import './styles.styl';
 </style>

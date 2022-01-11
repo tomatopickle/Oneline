@@ -1,5 +1,6 @@
 <template>
   <b-card
+    glass
     class="fileUpload"
     height="65vh"
     @drop.prevent="dragFile"
@@ -14,7 +15,6 @@
       @change="addFile($event)"
       hidden
     />
-
     <div class="mt-32" v-show="Object.keys(files).length == 0">
       <h2 class="text-center">Drop a file or click to Upload</h2>
       <b-btn color="primary center" @click="$refs.fileInp.click()"
@@ -32,7 +32,13 @@
               <span class="text-lg">{{ file.name }}</span>
               <b-spacer></b-spacer>
               <transition name="zoom" mode="out-in">
-                <b-btn icon ghost v-if="file.done" class="p-0.5">
+                <b-btn
+                  icon
+                  v-on:click="deleteFile(file)"
+                  ghost
+                  v-if="file.done"
+                  class="p-0.5"
+                >
                   <b-icon name="mdi mdi-close"></b-icon
                 ></b-btn>
                 <b-spinner v-else></b-spinner>
@@ -45,52 +51,55 @@
           </div>
         </div>
       </transition-group>
+      <b-btn
+        block
+        @click="$refs.fileInp.click()"
+        style="margin: 0; width: 100%"
+      >
+        <b-icon name="mdi mdi-plus" left></b-icon> Upload More
+      </b-btn>
     </div>
     <template #footer>
       <div v-show="allFilesLoaded">
-        <b-input placeholder="Message" v-model="message"></b-input>
         <br />
         <b-flex style="height: max-content">
+          <b-input
+            ghost
+            style="height: '50px'"
+            placeholder="Message (Optional)"
+            v-model="message"
+          ></b-input>
           <b-spacer></b-spacer>
-          <b-btn color="secondary" @click="$refs.fileInp.click()"
-            >Upload More</b-btn
-          >
-          <b-btn color="primary" @click="sendFiles()">
-            Send
-            <b-icon name="mdi mdi-send" right class="pl-0.5"></b-icon>
+          <b-btn color="primary" @click="sendFiles()" class="flex">
+            Send <b-icon name="mdi mdi-send" right class="pl-3"></b-icon>
           </b-btn>
         </b-flex>
       </div>
     </template>
   </b-card>
-</template>
-
+</template> 
 <script>
 /* eslint-disable */
 import { BCard, BBtn, BFlex } from "bounce-ui-vue";
 import EmojiConvertor from "emoji-js";
 let emojiConvertor = new EmojiConvertor();
 emojiConvertor.allow_native = true;
-emojiConvertor.replace_mode = 'unified';
-import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { child, update, ref as dbRef,remove } from "firebase/database";
+emojiConvertor.replace_mode = "unified";
+import {
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
+import { child, update, ref as dbRef, remove } from "firebase/database";
 import { nanoid } from "nanoid";
 import { storage } from "../../fire.js";
 import db from "../../fire.js";
 export default {
-  components: {
-    BCard,
-    BBtn,
-    BFlex,
-  },
+  components: { BCard, BBtn, BFlex },
   props: { chat: Object, user: Object },
   data: () => {
-    return {
-      dragging: false,
-      files: {},
-      allFilesLoaded: false,
-      message: "",
-    };
+    return { dragging: false, files: {}, allFilesLoaded: false, message: "" };
   },
   methods: {
     addFile(e) {
@@ -110,6 +119,16 @@ export default {
         this.uploadFile(files[key]);
       });
     },
+    deleteFile(file) {
+      console.log(file);
+      this.files[file.id].done = false;
+      deleteObject(ref(storage, file.path)).then(() => {
+        delete this.files[file.id];
+        if (Object.keys(this.files).length == 0) {
+          this.allFilesLoaded = false;
+        }
+      });
+    },
     async uploadFile(file) {
       this.allFilesLoaded = false;
       var id = nanoid();
@@ -119,6 +138,7 @@ export default {
         progress: 0,
         done: false,
         url: "",
+        id,
         path: `messages/${id}_${file.name}`,
         time: Date.now(),
         type: file.type,
@@ -199,8 +219,7 @@ export default {
     },
   },
 };
-</script>
-
+</script> 
 <style lang="stylus" scoped>
-@import "./style.styl"
-</style>
+@import './style.styl';
+</style> 

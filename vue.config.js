@@ -1,4 +1,7 @@
 module.exports = {
+  devServer: {
+    disableHostCheck: true
+  },
   pages: {
     index: {
       entry: 'src/main.js',
@@ -20,7 +23,7 @@ module.exports = {
       msTileImage: 'img/icons/mstile-150x150.png'
     },
     workboxOptions: {
-        exclude: [/_redirects/]
-      }
+      exclude: [/_redirects/]
+    }
   }
 }

@@ -1,6 +1,7 @@
 /* eslint-disable */
 import axios from "axios";
 import db from "../../fire.js";
+import { storage } from "../../fire.js";
 import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
@@ -12,6 +13,10 @@ import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
 import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
 import EmojiConvertor from "emoji-js";
+import { ref as storageRef, getDownloadURL, uploadBytes } from "firebase/storage";
+import recordAudio from "./scripts/recordAudio.js";
+import Player from '../../components/Player/Player.vue';
+// Variables for emoji search and display
 let emojiConvertor = new EmojiConvertor();
 emojiConvertor.allow_native = true;
 emojiConvertor.replace_mode = 'unified';
@@ -19,11 +24,28 @@ let userTypedColon = false;
 let emojiQuery = "";
 let emojiIndex = new EmojiIndex(data);
 let searchTimeout;
+// Variables for the audio recorder
+let audioRecordingTimer;
+let audioRecorder;
 export default {
     name: "App",
-    components: { ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji },
+    components: {
+        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player
+    },
     data: () => {
         return {
+            audio: {
+                show: false,
+                src: ""
+            },
+            recording: {
+                show: false,
+                time: {
+                    minutes: 0,
+                    seconds: 0
+                },
+                uploading: false
+            },
             emojiComplete: {
                 emojis: [],
                 selectedIndex: 0
@@ -174,6 +196,62 @@ export default {
         }
     },
     methods: {
+        log(e) {
+            console.log(e)
+        },
+        startRecording() {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(async stream => {
+                    this.recording.show = true;
+                    audioRecorder = await recordAudio();
+                    audioRecorder.start();
+                    let sec = 0;
+                    function pad(val) { return val > 9 ? val : "0" + val; }
+                    audioRecordingTimer = setInterval(() => {
+                        this.recording.time.seconds = pad(++sec % 60);
+                        this.recording.time.minutes = pad(parseInt(sec / 60, 10));
+                    }, 1000);
+                });
+        },
+        async sendRecording() {
+            // recordingMediaRecorder.stop();
+            const audio = await audioRecorder.stop();
+            this.recording.uploading = true;
+            console.log(audio);
+            const audioBlob = audio.audioBlob;
+            var file = new File([audioBlob], "recording.webm", { type: "audio/webm" });
+            console.log(file);
+            const time = Date.now();
+            // setTimeout(() => {
+            //     this.recording.uploading = false;
+            // }, 1000);
+            uploadBytes(storageRef(storage, `messages/${time}`), file).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                console.log(snapshot);
+                getDownloadURL(snapshot.metadata.ref).then((url) => {
+                    update(child(ref(db), `messages/${this.chat.id}/${time}`), {
+                        sender: this.user.id,
+                        src: url,
+                        time: time,
+                        duration: `${this.recording.time.minutes}:${this.recording.time.seconds}`,
+                        type: "audio",
+                    });
+                    // this.clearAudioRecordingVars();
+                })
+            });
+            this.recording.show = false;
+        },
+        async stopRecording() {
+            await audioRecorder.stop();
+            this.clearAudioRecordingVars();
+            this.recording.show = false;
+        },
+        clearAudioRecordingVars() {
+            clearInterval(audioRecordingTimer);
+            audioRecordingTimer = "";
+            this.recording.time.seconds = 0;
+            this.recording.time.minutes = 0;
+        },
         copy(text) {
             const cb = navigator.clipboard;
             cb.writeText(text);
@@ -302,14 +380,20 @@ export default {
                 }
                 let chatData = snapshot.val();
                 this.chat = chatData;
+                onValue(query(ref(db, `seen/${chat.id}`)), (snapshot) => {
+                    if (this.chat.id != chat.id) return
+                    this.seen = snapshot.val();
+                    delete this.seen[this.user.username];
+                    if (this.enableScroll) {
+                        this.scrollDown();
+                    }
+                });
                 if (!chatData.name) {
                     this.chat.name = chat.name;
                 }
                 onValue(query(ref(db, `messages/${chat.id}`), limitToLast(this.limit)), (snapshot) => {
                     var data = snapshot.val();
-                    if (this.chat.id != chat.id) {
-                        return
-                    }
+                    if (this.chat.id != chat.id) return
                     this.groupInfo.data.name = chatData?.name;
                     this.groupInfo.data.description = chatData?.description;
                     this.typing = {};
@@ -354,13 +438,6 @@ export default {
                 if (chat.type == "personal") {
                     const chatId = id;
                     const index = i;
-                    onValue(query(ref(db, `seen/${chatId}`)), (snapshot) => {
-                        this.seen = snapshot.val();
-                        delete this.seen[this.user.username];
-                        if (this.enableScroll) {
-                            this.scrollDown();
-                        }
-                    });
                     onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
                         var lastMessage = data.val();
                         get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
@@ -457,6 +534,8 @@ export default {
                 return `${chat.lastMessage.senderInfo.username}: (File) ${chat.lastMessage.file.name}`
             } else if (chat.lastMessage.type == "image") {
                 return `${chat.lastMessage.senderInfo.username}: (Image) ${chat.lastMessage.file.name}`
+            } else if (chat.lastMessage.type == "audio") {
+                return `${chat.lastMessage.senderInfo.username}: (Audio) ${chat.lastMessage.duration}`
             }
             return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
         },
