@@ -155,13 +155,24 @@
                   :alt="message.file.name"
                 />
               </div>
-              <div
-                v-else
-                :class="`msg-text ${
-                  checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
-                }`"
-                v-html="convertMessageToHTML(message.text)"
-              ></div>
+              <div v-else>
+                <div
+                  :class="`msg-text ${
+                    checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
+                  }`"
+                  v-html="
+                    message?.text ? convertMessageToHTML(message?.text) : ''
+                  "
+                ></div>
+              </div>
+            </b-flex>
+            <b-flex bare>
+              <b-spacer v-if="message.sender == user.id"></b-spacer>
+              <link-preview
+                v-if="findLink(message?.text) != false"
+                :url="findLink(message?.text)"
+              >
+              </link-preview>
             </b-flex>
           </div>
           <div class="reactions">
@@ -232,9 +243,12 @@ let emojiIndex = new EmojiIndex(data);
 twemoji.size = "";
 twemoji.base =
   "https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-160";
+import { find } from "linkifyjs";
+import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 export default {
   name: "ChatWindow",
-  components: { Picker, Emoji },
+  components: { Picker, Emoji, LinkPreview },
+  emits: ["playAudio"],
   props: {
     user: Object,
     chat: Object,
@@ -295,6 +309,9 @@ export default {
     });
   },
   methods: {
+    log(e) {
+      console.log(e);
+    },
     async downloadFile(file) {
       this.download.loading = true;
       this.download.time = file.time;
@@ -312,6 +329,13 @@ export default {
         .catch((error) => {
           // Handle any errors
         });
+    },
+    findLink(text) {
+      console.log(text);
+      if (!text || text == undefined) {
+        return false;
+      }
+      return find(text)[0]?.href || false;
     },
     convertMessageToHTML(text) {
       return twemoji.parse(
@@ -455,5 +479,5 @@ export default {
 };
 </script>
 <style lang="stylus">
-@import "./styles.styl";
+@import './styles.styl';
 </style>

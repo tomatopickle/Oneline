@@ -1,187 +1,191 @@
 <template>
   <div class="chatWindowDefault">
-      <template v-for="(message, i) in messages" :key="i">
-        <div
-          :class="
-            'msg ' +
-            (message.sender == user.id ? 'me' : '') +
-            (checkMsgFromSameUser(message, i) &&
-            !checkTimeDifference(message, i)
-              ? ' sub'
-              : '') +
-            (checkLastMsgFromSameUser(message, i) ||
-            checkLastTimeForSameUser(message, i)
-              ? ' last'
-              : '')
-          "
-          v-if="message.type != 'info'"
-          v-on:dblclick="
-            reaction.message = i;
-            addReaction(settings.data.likeEmoji);
-          "
-        >
-          <div>
-            <div class="messageActions">
-              <b-flex>
-                <b-icon
-                  style="height: 22px"
-                  v-on:click="
-                    reaction.message = i;
-                    reaction.show = true;
-                  "
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    aria-hidden="true"
-                    role="img"
-                    width="1em"
-                    height="1em"
-                    preserveAspectRatio="xMidYMid meet"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </b-icon>
-                <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
-                <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
-              </b-flex>
-            </div>
-            <div>
-              <b-flex
-                style="align-items: baseline"
-                v-if="
-                  !(
-                    checkMsgFromSameUser(message, i) &&
-                    !checkTimeDifference(message, i)
-                  )
+    <template v-for="(message, i) in messages" :key="i">
+      <div
+        :class="
+          'msg ' +
+          (message.sender == user.id ? 'me' : '') +
+          (checkMsgFromSameUser(message, i) && !checkTimeDifference(message, i)
+            ? ' sub'
+            : '') +
+          (checkLastMsgFromSameUser(message, i) ||
+          checkLastTimeForSameUser(message, i)
+            ? ' last'
+            : '')
+        "
+        v-if="message.type != 'info'"
+        v-on:dblclick="
+          reaction.message = i;
+          addReaction(settings.data.likeEmoji);
+        "
+      >
+        <div>
+          <div class="messageActions">
+            <b-flex>
+              <b-icon
+                style="height: 22px"
+                v-on:click="
+                  reaction.message = i;
+                  reaction.show = true;
                 "
               >
-                <div class="senderAvatar">
-                  <b-avatar
-                    :size="30"
-                    :username="
-                      users[message.sender]
-                        ? users[message.sender].username
-                        : ''
-                    "
-                  >
-                  </b-avatar>
-                </div>
-                <small class="username">{{
-                  users[message.sender]?.username
-                }}</small>
-                <div class="time" v-html="getTime(message.time)"></div>
-              </b-flex>
-              <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
-              <div v-if="message.type == 'gif'" class="msg-gif">
-                <v-lazy-image
-                  src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-                  height="200"
-                  :src="message.src"
-                  :alt="message.title"
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  aria-hidden="true"
+                  role="img"
+                  width="1em"
+                  height="1em"
+                  preserveAspectRatio="xMidYMid meet"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M24 4c0 .55-.45 1-1 1h-1v1c0 .55-.45 1-1 1s-1-.45-1-1V5h-1c-.55 0-1-.45-1-1s.45-1 1-1h1V2c0-.55.45-1 1-1s1 .45 1 1v1h1c.55 0 1 .45 1 1zm-2.48 4.95c.31.96.48 1.99.48 3.05c0 5.52-4.48 10-10 10S2 17.52 2 12S6.48 2 12 2c1.5 0 2.92.34 4.2.94c-.12.33-.2.68-.2 1.06c0 1.35.9 2.5 2.13 2.87A3.003 3.003 0 0 0 21 9c.18 0 .35-.02.52-.05zM7 9.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5S9.33 8 8.5 8S7 8.67 7 9.5zm9.31 4.5H7.69c-.38 0-.63.42-.44.75c.95 1.64 2.72 2.75 4.75 2.75s3.8-1.11 4.75-2.75a.503.503 0 0 0-.44-.75zM17 9.5c0-.83-.67-1.5-1.5-1.5S14 8.67 14 9.5s.67 1.5 1.5 1.5s1.5-.67 1.5-1.5z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </b-icon>
+              <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
+              <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
+            </b-flex>
+          </div>
+          <div>
+            <b-flex
+              style="align-items: baseline"
+              v-if="
+                !(
+                  checkMsgFromSameUser(message, i) &&
+                  !checkTimeDifference(message, i)
+                )
+              "
+            >
+              <div class="senderAvatar">
+                <b-avatar
+                  :size="30"
+                  :username="
+                    users[message.sender] ? users[message.sender].username : ''
+                  "
+                >
+                </b-avatar>
               </div>
-              <div v-else-if="message.type == 'file'">
-                <div class="fileMsg">
-                  <b-flex>
-                    <span>
-                      {{ message.file.name }}
-                    </span>
-                    <b-spacer></b-spacer>
-                    <b-btn
-                      icon
-                      ghost
-                      v-on:click="downloadFile(message.file)"
-                      :loading="
-                        download.loading && message.file.time == download.time
-                      "
-                    >
-                      <b-icon ghost name="mdi mdi-download"></b-icon>
-                    </b-btn>
-                  </b-flex>
-                </div>
-              </div>
-              <div v-else-if="message.type == 'audio'">
-                <div class="fileMsg">
-                  <b-flex>
-                    <b-btn
-                      icon
-                      ghost
-                      v-on:click="$emit('playAudio', message); 
-                      log(message.src);"
-                    >
-                      <b-icon ghost name="mdi mdi-play"></b-icon>
-                    </b-btn>
-                    <span style="font-size: 16px">
-                      {{ message.duration }}
-                    </span>
-                  </b-flex>
-                </div>
-              </div>
-              <div v-else-if="message.type == 'image'" class="msg-image">
-                <div class="controls">
+              <small class="username">{{
+                users[message.sender]?.username
+              }}</small>
+              <div class="time" v-html="getTime(message.time)"></div>
+            </b-flex>
+            <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
+            <div v-if="message.type == 'gif'" class="msg-gif">
+              <v-lazy-image
+                src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                height="200"
+                :src="message.src"
+                :alt="message.title"
+              />
+            </div>
+            <div v-else-if="message.type == 'file'">
+              <div class="fileMsg">
+                <b-flex>
+                  <span>
+                    {{ message.file.name }}
+                  </span>
+                  <b-spacer></b-spacer>
                   <b-btn
                     icon
-                    class="mr-1"
-                    glass
-                    color="primary"
+                    ghost
                     v-on:click="downloadFile(message.file)"
                     :loading="
                       download.loading && message.file.time == download.time
                     "
                   >
-                    <b-icon name="mdi mdi-download"></b-icon>
+                    <b-icon ghost name="mdi mdi-download"></b-icon>
                   </b-btn>
-                  <b-btn icon glass color="primary">
-                    <b-icon name="mdi mdi-fullscreen"></b-icon>
-                  </b-btn>
-                </div>
-                <v-lazy-image
-                  src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-                  height="200"
-                  :src="message.file.url"
-                  :alt="message.file.name"
-                />
+                </b-flex>
               </div>
-              <div
-                v-else
-                :class="`msg-text ${
-                  checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
-                }`"
-                v-html="convertMessageToHTML(message.text)"
-              ></div>
             </div>
-          </div>
-          <!-- We don't want the reactions component if they aren't any reactions, the take up space -->
-          <div class="reactions" v-if="!!message.reactions">
-            <span
-              v-for="(users, key) in message.reactions"
-              :key="key"
-              class="reaction"
-              v-on:click="reactionClicked(i, key)"
-            >
-              <b-flex style="padding: 0" v-if="key != 'undefined'">
-                <emoji :size="18" :data="emojiIndex" :emoji="key"></emoji>
-                <span :class="'reactionNumber ' + checkIfUserReacted(users)">{{
-                  getNumberOfReactions(users)
-                }}</span>
-              </b-flex>
-            </span>
+            <div v-else-if="message.type == 'audio'">
+              <div class="fileMsg">
+                <b-flex>
+                  <b-btn
+                    icon
+                    ghost
+                    v-on:click="
+                      $emit('playAudio', message);
+                      log(message.src);
+                    "
+                  >
+                    <b-icon ghost name="mdi mdi-play"></b-icon>
+                  </b-btn>
+                  <span style="font-size: 16px">
+                    {{ message.duration }}
+                  </span>
+                </b-flex>
+              </div>
+            </div>
+            <div v-else-if="message.type == 'image'" class="msg-image">
+              <div class="controls">
+                <b-btn
+                  icon
+                  class="mr-1"
+                  glass
+                  color="primary"
+                  v-on:click="downloadFile(message.file)"
+                  :loading="
+                    download.loading && message.file.time == download.time
+                  "
+                >
+                  <b-icon name="mdi mdi-download"></b-icon>
+                </b-btn>
+                <b-btn icon glass color="primary">
+                  <b-icon name="mdi mdi-fullscreen"></b-icon>
+                </b-btn>
+              </div>
+              <v-lazy-image
+                src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                height="200"
+                :src="message.file.url"
+                :alt="message.file.name"
+              />
+            </div>
+            <div
+              v-else
+              :class="`msg-text ${
+                checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
+              }`"
+              v-html="convertMessageToHTML(message.text)"
+            ></div>
           </div>
         </div>
-        <div v-else>
-          <span class="info-message">
-            <b-flex>
-              <b-icon name="mdi mdi-information-outline"></b-icon>
-              <span>{{ message.text }}</span>
+        <!-- We don't want the reactions component if they aren't any reactions, the take up space -->
+        <div class="reactions" v-if="!!message.reactions">
+          <span
+            v-for="(users, key) in message.reactions"
+            :key="key"
+            class="reaction"
+            v-on:click="reactionClicked(i, key)"
+          >
+            <b-flex style="padding: 0" v-if="key != 'undefined'">
+              <emoji :size="18" :data="emojiIndex" :emoji="key"></emoji>
+              <span :class="'reactionNumber ' + checkIfUserReacted(users)">{{
+                getNumberOfReactions(users)
+              }}</span>
             </b-flex>
           </span>
         </div>
-      </template>
+      </div>
+      <div v-else>
+        <span class="info-message">
+          <b-flex>
+            <b-icon name="mdi mdi-information-outline"></b-icon>
+            <span>{{ message.text }}</span>
+          </b-flex>
+        </span>
+      </div>
+      <link-preview
+        v-if="findLink(message?.text) != false"
+        :url="findLink(message?.text)"
+      >
+      </link-preview>
+    </template>
   </div>
   <b-modal v-model="reaction.show">
     <Picker
@@ -224,9 +228,11 @@ let emojiIndex = new EmojiIndex(data);
 twemoji.size = "";
 twemoji.base =
   "https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-160";
+import { find } from "linkifyjs";
+import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 export default {
   name: "ChatWindow",
-  components: { Picker, Emoji },
+  components: { Picker, Emoji, LinkPreview },
   emits: ["playAudio"],
   props: {
     user: Object,
@@ -308,6 +314,10 @@ export default {
         .catch((error) => {
           // Handle any errors
         });
+    },
+    findLink(text) {
+      if (!text) return false;
+      return find(text)[0]?.href || false;
     },
     convertMessageToHTML(text) {
       return twemoji.parse(
