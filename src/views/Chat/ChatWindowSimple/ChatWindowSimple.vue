@@ -331,7 +331,6 @@ export default {
         });
     },
     findLink(text) {
-      console.log(text);
       if (!text || text == undefined) {
         return false;
       }
