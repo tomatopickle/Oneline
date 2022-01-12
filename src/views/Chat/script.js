@@ -440,6 +440,9 @@ export default {
                     const index = i;
                     onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
                         var lastMessage = data.val();
+                        if (this.chat.id == chatId) {
+                            this.newMessage(lastMessage);
+                        }
                         get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
                             if (lastMessage) {
                                 var sender = snapshot.val();
@@ -495,6 +498,9 @@ export default {
                     const chatId = id;
                     onChildAdded(ref(db, 'messages/' + chatId), (data) => {
                         var lastMessage = data.val();
+                        if (this.chat.id == chatId) {
+                            this.newMessage(lastMessage);
+                        }
                         get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
                             if (lastMessage) {
                                 var sender = snapshot.val();
@@ -526,6 +532,13 @@ export default {
                     });
                 }
 
+            }
+        },
+        newMessage(lastMessage) {
+            const congratsWords = ["congrats", "congratulations", "🎉", ":tada:"]
+            if (congratsWords.some(el => lastMessage.text.includes(el))) {
+                startConfetti();
+                setTimeout(stopConfetti, 3000);
             }
         },
         getMessagePreview(chat) {
@@ -646,7 +659,7 @@ export default {
             if (e.key == 'Enter') {
                 e.preventDefault();
                 if (userTypedColon) {
-                    const text = this.emojiComplete.emojis[this.emojiComplete.selectedIndex]?.short_name.replace(emojiQuery, "") + ": "; 
+                    const text = this.emojiComplete.emojis[this.emojiComplete.selectedIndex]?.short_name.replace(emojiQuery, "") + ": ";
                     let selection = window.getSelection();
                     let range = selection.getRangeAt(0);
                     range.deleteContents();
