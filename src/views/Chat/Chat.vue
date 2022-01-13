@@ -230,6 +230,14 @@
         </div>
         <br />
         <chat-window-simple
+          @reply="
+            reply.show = true;
+            reply.message = $event;
+          "
+          @playAudio="
+            audio.show = true;
+            audio.src = $event.src;
+          "
           v-if="settings.data.messagesSimpleMode"
           :limit="limit"
           :messages="messages"
@@ -239,10 +247,13 @@
           :enableScroll="enableScroll"
         ></chat-window-simple>
         <chat-window
+          @reply="
+            reply.show = true;
+            reply.message = $event;
+          "
           @playAudio="
             audio.show = true;
             audio.src = $event.src;
-            log($event.src);
           "
           v-else
           :limit="limit"
@@ -265,8 +276,25 @@
         </transition>
       </div>
       <br /><br /><br />
-      <template v-if="audio.show"><br /><br /></template>
+      <template v-if="audio.show || reply.show"><br /><br /></template>
       <div id="messageInp" v-if="chat?.id">
+        <div v-show="reply.show">
+          <div id="replyMessage">
+            <span class="text-blue-600">{{
+              members[reply.message.sender]?.username
+            }}</span
+            >:&nbsp;<span>{{ getReplyPreview(reply.message) }}</span>
+            <b-spacer></b-spacer>
+            <b-btn
+              icon
+              ghost
+              style="padding: 0"
+              @click="reply = { show: false, message: {} }"
+            >
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
+          </div>
+        </div>
         <div id="emojiComplete">
           <div
             v-for="(emoji, i) in emojiComplete.emojis"
@@ -325,7 +353,7 @@
             ></b-btn>
           </b-flex>
           <b-flex v-else>
-            <b-spinner style="transform: scale(.5);"></b-spinner>
+            <b-spinner style="transform: scale(0.5)"></b-spinner>
             <span>Uploading...</span>
           </b-flex>
         </div>

@@ -65,7 +65,7 @@
                       <span>React</span>
                     </b-flex>
                   </b-list-item>
-                  <b-list-item clickable>
+                  <b-list-item clickable v-on:click="$emit('reply', message)">
                     <b-flex>
                       <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
                       <span>Reply</span>
@@ -154,6 +154,36 @@
                   :src="message.file.url"
                   :alt="message.file.name"
                 />
+              </div>
+              <div v-else-if="message.type == 'reply'" class="msg-reply-parent">
+                <div class="flex">
+                  <b-spacer v-if="message.sender == user.id"></b-spacer>
+                  <div :class="`msg-reply`">
+                    <b-avatar
+                      :size="20"
+                      :username="
+                        users[message.sender]
+                          ? users[message.sender].username
+                          : ''
+                      "
+                    ></b-avatar>
+                    <div
+                      v-html="
+                        message.replyingTo.text
+                          ? convertMessageToHTML(message.replyingTo.text)
+                          : ''
+                      "
+                    ></div>
+                  </div>
+                </div>
+                <div
+                  :class="`msg-text ${
+                    checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
+                  }`"
+                  v-html="
+                    message?.text ? convertMessageToHTML(message?.text) : ''
+                  "
+                ></div>
               </div>
               <div v-else>
                 <div
@@ -248,7 +278,7 @@ import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 export default {
   name: "ChatWindow",
   components: { Picker, Emoji, LinkPreview },
-  emits: ["playAudio"],
+  emits: ["playAudio", "reply"],
   props: {
     user: Object,
     chat: Object,
@@ -331,9 +361,7 @@ export default {
         });
     },
     findLink(text) {
-      if (!text || text == undefined) {
-        return false;
-      }
+      if (!text) return false;
       return find(text)[0]?.href || false;
     },
     convertMessageToHTML(text) {

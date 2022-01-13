@@ -42,17 +42,17 @@
     :not(.me) {
         &.sub, &.sub.last {
             .msg-text, .fileMsg, .msg-image {
-                margin-left: 35px;
+                margin-left: 30px;
             }
         }
     }
 
     .sub .msg-text {
-        border-radius: 1.125rem;
+        border-radius: 0 1.125rem 1.125rem 0;
     }
 
     .me.sub .msg-text {
-        border-radius: 1.125rem;
+        border-radius: 1.125rem 0 0 1.125rem;
     }
 
     .last .msg-text {
@@ -74,7 +74,7 @@
         position: relative;
         margin-bottom: 5px;
         width: max-content;
-        margin-left: 35px;
+        margin-left: 30px;
         padding: 7px;
         padding-inline: 12px;
         font-size: 17px;
@@ -194,14 +194,64 @@
     .messageAnimation-leave-active, .messageAnimationOut {
         animation-name: messageAnimation;
     }
-
+    .msg .flex-box {
+        padding-block: 1px;
+    }
     .msg-text .emojiImg {
         width: 17px;
         height: 17px;
         margin-left: 5px;
         margin-right: 5px;
     }
-
+    .msg-reply .emojiImg {
+        width: 17px;
+        height: 17px;
+        margin-left: 5px;
+        margin-right: 5px;
+    }
+    .msg:not(.me):not(.sub):not(.last) div.msg-text { 
+        margin-top: 10px;
+    }
+    .msg:not(.me):not(.sub):not(.last) .msg-reply-parent{
+        .msg-text{
+            margin-top: 0;
+        } 
+        .msg-reply { 
+            margin-top: 10px;
+        }
+    } 
+    .msg:not(.me):not(.sub):not(.sub.last) .msg-reply-parent
+    :not(.me) .sub{
+        .msg-reply-parent .msg-reply{
+            margin-left: 30px;
+        }
+    }
+    .me{
+        .msg-reply-parent{
+            .msg-text{   
+                float: right;
+            }
+            .msg-reply{
+                margin-right: -5px;
+            }
+        }
+    }
+    .msg-reply-parent{
+        .msg-text{
+            width: max-content;
+            margin: 0;
+        }
+        .msg-reply{
+            background-color: lighten($bg-dark, 5);
+            border-radius: 30px;
+            padding-inline: 5px;
+            padding-block: 4px;
+            margin-bottom: 5px;
+            width: max-content;
+            display: flex;
+            align-items: center;
+        }
+    }
     .oneEmoji .emojiImg {
         width: 50px;
         height: 50px;

@@ -6,7 +6,20 @@ body,
 html {
   font-family: Inter, sans-serif;
 }
-
+#replyMessage {
+  z-index: 6;
+  display: flex;
+  position: absolute;
+  top: -38px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background-color: hsl(var(--bg-dark), 12%);
+  border-radius: var(--ui-radius);
+  padding-inline: 10px;
+  font-size: 18px;
+  padding-block: 5px;
+}
 .card-text {
   flex-grow: 1;
 }
@@ -340,7 +353,7 @@ section.emoji-mart.emoji-mart-static * {
   align-items: center;
   left: -6px;
   font-size: 15px;
-  background-color: #2c2a2a;
+  background-color: hsl(var(--bg-dark), 15%);
   border-radius: var(--ui-radius);
   width: 95%;
   margin: auto;
@@ -436,6 +449,7 @@ section.emoji-mart.emoji-mart-static * {
   width: 100%;
   display: flex;
 }
-audio.sc-vm-file, video.sc-vm-file{
+audio.sc-vm-file,
+video.sc-vm-file {
   display: none;
 }

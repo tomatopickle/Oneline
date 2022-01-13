@@ -45,7 +45,12 @@
                   />
                 </svg>
               </b-icon>
-              <b-icon size="18px" name="mdi mdi-reply"> </b-icon>
+              <b-icon
+                size="18px"
+                name="mdi mdi-reply"
+                v-on:click="$emit('reply', message)"
+              >
+              </b-icon>
               <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
             </b-flex>
           </div>
@@ -146,6 +151,23 @@
                 :alt="message.file.name"
               />
             </div>
+            <div v-else-if="message.type == 'reply'" :class="`msg-reply`">
+              <b-flex bare class="msg-text opacity-70">
+                <span class="font-semibold">{{
+                  `${users[message.replyingTo.sender]?.username}: `
+                }}</span>
+                <div
+                  class="parent-message"
+                  v-html="convertMessageToHTML(message.replyingTo.text)"
+                ></div>
+              </b-flex>
+              <div
+                :class="`msg-text ${
+                  checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
+                }`"
+                v-html="convertMessageToHTML(message.text)"
+              ></div>
+            </div>
             <div
               v-else
               :class="`msg-text ${
@@ -233,7 +255,7 @@ import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 export default {
   name: "ChatWindow",
   components: { Picker, Emoji, LinkPreview },
-  emits: ["playAudio"],
+  emits: ["playAudio", "reply"],
   props: {
     user: Object,
     chat: Object,
