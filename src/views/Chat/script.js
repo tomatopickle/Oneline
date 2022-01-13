@@ -38,6 +38,10 @@ export default {
                 show: false,
                 src: ""
             },
+            reply: {
+                show: false,
+                message: {}
+            },
             recording: {
                 show: false,
                 time: {
@@ -222,9 +226,6 @@ export default {
             var file = new File([audioBlob], "recording.webm", { type: "audio/webm" });
             console.log(file);
             const time = Date.now();
-            // setTimeout(() => {
-            //     this.recording.uploading = false;
-            // }, 1000);
             uploadBytes(storageRef(storage, `messages/${time}`), file).then((snapshot) => {
                 console.log('Uploaded a blob or file!');
                 console.log(snapshot);
@@ -236,10 +237,11 @@ export default {
                         duration: `${this.recording.time.minutes}:${this.recording.time.seconds}`,
                         type: "audio",
                     });
-                    // this.clearAudioRecordingVars();
+                    this.recording.uploading = false;
+                    this.recording.show = false;
+                    this.clearAudioRecordingVars();
                 })
             });
-            this.recording.show = false;
         },
         async stopRecording() {
             await audioRecorder.stop();
@@ -535,7 +537,7 @@ export default {
             }
         },
         newMessage(lastMessage) {
-            const congratsWords = ["congrats", "congratulations", "🎉", ":tada:"]
+            const congratsWords = ["congrats", "congratulations", "🎉", ":tada:","happy birthday"]
             if (congratsWords.some(el => lastMessage.text.includes(el))) {
                 startConfetti();
                 setTimeout(stopConfetti, 3000);
@@ -552,7 +554,24 @@ export default {
             }
             return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
         },
-
+        getReplyPreview(message) {
+            if (message.type == "file") {
+                return `(File) ${message.file.name}`
+            } else if (message.type == "image") {
+                return `(Image) ${message.file.name}`
+            } else if (message.type == "audio") {
+                return `(Audio) ${message.duration}`
+            }
+            return `${message.text}`
+        },
+        sendReplyMessage() {
+            if (this.message.text.trim().length < 1) return
+            update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), type: "reply", replyingTo: this.reply.message, sender: this.user.id, time: Date.now() });
+            this.message.text = "";
+            this.reply = { show: false, message: {} };
+            document.querySelector("#messageInp .editable").innerHTML = "";
+            remove(ref(db, `seen/${this.chat.id}`));
+        },
         createPersonalChat() {
             this.newChat.data.personal.loading = true;
             var chatId = nanoid(15);
@@ -672,7 +691,11 @@ export default {
                     this.clearEmojiSearch();
                     return
                 }
-                this.sendMessage();
+                if (!this.reply.show) {
+                    this.sendMessage();
+                } else {
+                    this.sendReplyMessage();
+                }
                 userTypedColon = false;
             }
             if (!e.ctrlKey && !e.shiftKey && e.key != "Backspace" && !e.key.includes("Arrow") && e.key.length == 1) {
