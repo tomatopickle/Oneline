@@ -134,6 +134,9 @@
                   v-on:click="openChat(chat)"
                   class="contact"
                 >
+                  <div class="badge" v-show="chat.unreadMessages > 0">
+                    <span>{{ chat.unreadMessages }}</span>
+                  </div>
                   <b-flex>
                     <b-avatar
                       :size="35"
