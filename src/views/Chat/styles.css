@@ -6,6 +6,26 @@ body,
 html {
   font-family: Inter, sans-serif;
 }
+.b-list-item.item-clickable.contact {
+  position: relative;
+}
+.b-list-item.item-clickable.contact .badge {
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  background-color: var(--primary);
+  padding: 5px;
+  border-radius: 30px;
+  font-size: 13px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  padding-top: 6px;
+}
+.b-list-item.b-list-item.item-clickable.contact .badge span {
+  position: relative;
+  bottom: 5px;
+}
 #replyMessage {
   z-index: 6;
   display: flex;
