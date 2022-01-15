@@ -149,9 +149,13 @@
                         {{ chat.name }}
                       </span>
                       <br />
-                      <small class="chatMessagePreview">{{
-                        getMessagePreview(chat)
-                      }}</small>
+                      <small
+                        :class="{
+                          chatMessagePreview: true,
+                          newMessage: chat.unreadMessages > 0,
+                        }"
+                        >{{ getMessagePreview(chat) }}</small
+                      >
                     </span>
                   </b-flex>
                 </b-list-item>
