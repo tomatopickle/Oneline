@@ -446,7 +446,7 @@ export default {
                     const chatId = id;
                     const index = i;
                     let unreadMessages = 0;
-                    onValue(query(ref(db, `messages/${id}`), orderByKey(), startAfter(this.user.lastOnline.toString()), limitToLast(100)), (snapshot) => {
+                    onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline.toString()), limitToLast(100)), (snapshot) => {
                         if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
                             console.log("chat aint there")
                             unreadMessages = Object.keys(snapshot.val()).length;
@@ -516,7 +516,7 @@ export default {
                     const index = i;
                     const chatId = id;
                     let unreadMessages = 0;
-                    onValue(query(ref(db, `messages/${id}`), orderByKey(), startAfter(this.user.lastOnline.toString()), limitToLast(100)), (snapshot) => {
+                    onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline.toString()), limitToLast(100)), (snapshot) => {
                         if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
                             console.log("chat aint there")
                             unreadMessages = Object.keys(snapshot.val()).length;
