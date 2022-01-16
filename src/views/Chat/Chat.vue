@@ -150,10 +150,7 @@
                       </span>
                       <br />
                       <small
-                        :class="{
-                          chatMessagePreview: true,
-                          newMessage: chat.unreadMessages > 0,
-                        }"
+                        class="chatMessagePreview"
                         >{{ getMessagePreview(chat) }}</small
                       >
                     </span>
