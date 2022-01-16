@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "link-preview",
   props: {
@@ -51,7 +52,7 @@ export default {
     },
     apiUrl: {
       type: String,
-      default: "https://link-prevue-api-v2.herokuapp.com/preview/",
+      default: "https://api.linkpreview.net/?key=d0ecbf9c55d1f93cb6f40cb5f0bd3663&q=",
     },
   },
   watch: {
@@ -86,15 +87,9 @@ export default {
     },
     getLinkPreview: function () {
       if (this.isValidUrl(this.url)) {
-        this.httpRequest(
-          (response) => {
-            this.response = JSON.parse(response);
-          },
-          () => {
-            this.response = null;
-            this.validUrl = false;
-          }
-        );
+        axios.get(this.apiUrl + this.url, {}).then((response) => {
+          this.response = response.data;
+        });
       }
     },
     httpRequest: function (success, error) {
