@@ -152,12 +152,10 @@ export default {
         this.settings.notificationGranted = Notification.permission == "granted";
         onValue(child(ref(db), `users/${localStorage.getItem("id")}`), (snapshot) => {
             const data = snapshot.val();
-            console.log(data);
             if (!data) {
                 router.push("login");
             }
             this.user = data;
-            console.log(data);
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
             onDisconnect(child(ref(db), `users/${this.user.id}`)).update({ lastOnline: Date.now() });
             onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
@@ -547,7 +545,6 @@ export default {
                                         if (snapshot.exists()) {
                                             var lastMessage = snapshot.val();
                                             lastMessage = lastMessage[Object.keys(lastMessage)[0]];
-                                            console.log(lastMessage);
                                         }
                                         get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
                                             if (lastMessage) {
@@ -584,7 +581,6 @@ export default {
             } else if (chat.lastMessage.type == "audio") {
                 return `${chat.lastMessage.senderInfo.username}: (Audio) ${chat.lastMessage.duration}`
             }
-            console.log(chat);
             return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
         },
         getReplyPreview(message) {
