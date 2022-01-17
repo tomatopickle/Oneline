@@ -3,18 +3,16 @@
     <transition-group name="messageAnimation" tag="div">
       <template v-for="(message, i) in messages" :key="i">
         <div
-          :class="
-            'msg ' +
-            (message.sender == user.id ? 'me' : '') +
-            (checkMsgFromSameUser(message, i) &&
-            !checkTimeDifference(message, i)
-              ? ' sub'
-              : '') +
-            (checkLastMsgFromSameUser(message, i) ||
-            checkLastTimeForSameUser(message, i)
-              ? ' last'
-              : '')
-          "
+          :class="{
+            msg: true,
+            me: message.sender == user.id,
+            sub:
+              checkMsgFromSameUser(message, i) &&
+              !checkTimeDifference(message, i),
+            last:
+              checkLastMsgFromSameUser(message, i) ||
+              checkLastTimeForSameUser(message, i),
+          }"
           v-if="message.type != 'info'"
           v-on:dblclick="
             reaction.message = i;
@@ -83,7 +81,12 @@
             <small
               class="username"
               v-if="
-                message.sender != user.id && checkTimeDifference(message, i)
+                message.sender != user.id &&
+                (checkTimeDifference(message, i) ||
+                  !(
+                    checkMsgFromSameUser(message, i) &&
+                    !checkTimeDifference(message, i)
+                  ))
               "
               >{{ users[message.sender]?.username }}</small
             >
@@ -92,7 +95,12 @@
               <div class="senderAvatar">
                 <b-avatar
                   v-if="
-                    message.sender != user.id && checkTimeDifference(message, i)
+                    message.sender != user.id &&
+                    (checkTimeDifference(message, i) ||
+                      !(
+                        checkMsgFromSameUser(message, i) &&
+                        !checkTimeDifference(message, i)
+                      ))
                   "
                   :size="30"
                   :username="
@@ -177,9 +185,10 @@
                   </div>
                 </div>
                 <div
-                  :class="`msg-text ${
-                    checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
-                  }`"
+                  :class="{
+                    'msg-text': true,
+                    oneEmoji: checkOnlyOneEmoji(message.text),
+                  }"
                   v-html="
                     message?.text ? convertMessageToHTML(message?.text) : ''
                   "
@@ -187,9 +196,10 @@
               </div>
               <div v-else>
                 <div
-                  :class="`msg-text ${
-                    checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
-                  }`"
+                  :class="{
+                    'msg-text': true,
+                    oneEmoji: checkOnlyOneEmoji(message.text),
+                  }"
                   v-html="
                     message?.text ? convertMessageToHTML(message?.text) : ''
                   "

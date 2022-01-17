@@ -14,7 +14,11 @@
         align-items: center;
         white-space: break-spaces;
     }
-    
+    .link-preview-parent {
+        width: 60% !important;
+        margin-right: 7px;
+        margin-top: 7px;
+    }   
     .msg {
         position: relative;
     }
@@ -62,12 +66,8 @@
     .me.last .msg-text {
         border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
     }
-    .me .link-preview-wrapper{
-        max-width: unset;
-        margin-right: calc(50% - 250px);
-    }
     :not(.me) .link-preview-wrapper{
-        margin-left: 45px;
+        margin-left: 50px;
     }
     .fileMsg {
         background-color: lighten($bg-dark, 5);
@@ -209,7 +209,7 @@
         margin-left: 5px;
         margin-right: 5px;
     }
-    .msg:not(.me):not(.sub):not(.last) div.msg-text { 
+    .msg:not(.me):not(.sub):not(.sub.last) div.msg-text { 
         margin-top: 10px;
     }
     .msg:not(.me):not(.sub):not(.last) .msg-reply-parent{
