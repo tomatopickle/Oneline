@@ -143,7 +143,7 @@ export default {
             this.login.loading = false;
           } else {
             alert(
-              "An error occurred with Oneline, please try again later. \nError: Users not available"
+              "An error occurred with Oneline, please try again later. \nError: /users/ not available"
             );
             this.login.loading = false;
           }

@@ -193,10 +193,10 @@
             <transition name="fade" :duration="{ enter: 1000, leave: 10 }">
               <small
                 id="lastOnline"
-                v-show="chat?.lastOnline && chat?.lastOnline != 0"
+                v-show="chat?.lastOnline && chat.lastOnline != 0"
+                ref="lastOnline"
               >
-                <span>Available</span>{{ timeSince(chat?.lastOnline)
-                }}<span>ago</span>
+                <span>Available {{ timeSince(chat?.lastOnline) }} ago</span>
               </small>
             </transition>
           </template>
