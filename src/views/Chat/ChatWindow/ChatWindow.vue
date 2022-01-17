@@ -2,17 +2,16 @@
   <div class="chatWindowDefault">
     <template v-for="(message, i) in messages" :key="i">
       <div
-        :class="
-          'msg ' +
-          (message.sender == user.id ? 'me' : '') +
-          (checkMsgFromSameUser(message, i) && !checkTimeDifference(message, i)
-            ? ' sub'
-            : '') +
-          (checkLastMsgFromSameUser(message, i) ||
-          checkLastTimeForSameUser(message, i)
-            ? ' last'
-            : '')
-        "
+        :class="{
+          msg: true,
+          me: message.sender == user.id,
+          sub:
+            checkMsgFromSameUser(message, i) &&
+            !checkTimeDifference(message, i),
+          last:
+            checkLastMsgFromSameUser(message, i) ||
+            checkLastTimeForSameUser(message, i),
+        }"
         v-if="message.type != 'info'"
         v-on:dblclick="
           reaction.message = i;
@@ -162,17 +161,19 @@
                 ></div>
               </b-flex>
               <div
-                :class="`msg-text ${
-                  checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
-                }`"
+                :class="{
+                  'msg-text': true,
+                  oneEmoji: checkOnlyOneEmoji(message.text),
+                }"
                 v-html="convertMessageToHTML(message.text)"
               ></div>
             </div>
             <div
               v-else
-              :class="`msg-text ${
-                checkOnlyOneEmoji(message.text) ? 'oneEmoji' : ''
-              }`"
+              :class="{
+                'msg-text': true,
+                oneEmoji: checkOnlyOneEmoji(message.text),
+              }"
               v-html="convertMessageToHTML(message.text)"
             ></div>
           </div>

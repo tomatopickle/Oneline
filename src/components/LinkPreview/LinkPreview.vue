@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="link-preview-parent">
     <div v-if="response?.title">
       <slot
         :img="response.image"
@@ -7,7 +7,12 @@
         :description="response.description"
         :url="url"
       >
-        <a :href="url" target="_blank" style="all: inherit">
+        <a
+          :href="url"
+          target="_blank"
+          style="text-decoration: none; color: inherit"
+          class="link-preview-a-element"
+        >
           <div
             class="link-preview-wrapper"
             :style="{ width: link - previewWidth }"
@@ -52,7 +57,8 @@ export default {
     },
     apiUrl: {
       type: String,
-      default: "https://api.linkpreview.net/?key=d0ecbf9c55d1f93cb6f40cb5f0bd3663&q=",
+      default:
+        "https://api.linkpreview.net/?key=d0ecbf9c55d1f93cb6f40cb5f0bd3663&q=",
     },
   },
   watch: {
@@ -85,7 +91,7 @@ export default {
       this.validUrl = regex.test(url);
       return this.validUrl;
     },
-    getLinkPreview: function () {
+    getLinkPreview: async function () {
       if (this.isValidUrl(this.url)) {
         axios.get(this.apiUrl + this.url, {}).then((response) => {
           this.response = response.data;
@@ -115,6 +121,11 @@ export default {
 </script>
 
 <style>
+.link-preview-parent {
+  width: 60% !important;
+  margin-right: 7px;
+  margin-top: 7px;
+}
 .link-preview-wrapper {
   overflow: hidden;
   border-radius: 7px 7px 7px 7px;
@@ -122,10 +133,9 @@ export default {
   display: flex;
   align-items: center;
   height: 150px;
-  width: max-content;
-  max-width: 90%;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: break-spaces;
 }
 .link-preview-wrapper:hover {
   background-color: hsla(var(--bg-dark), 17%);
@@ -135,7 +145,7 @@ export default {
   all: inherit;
 }
 .link-preview-img {
-  width: 30%;
+  width: 100%;
   height: 100%;
 }
 .link-preview-img img {
@@ -149,6 +159,8 @@ img {
 }
 .link-preview-info {
   border-radius: 0 0 7px 7px;
+  /* A little spacing */
+  height: 90%;
 }
 .link-preview-text {
   margin-left: 20px;
@@ -158,8 +170,9 @@ img {
   margin: 5px 0 5px 0;
 }
 .link-preview-text p {
-  overflow: hidden;
   margin: 0;
   padding-right: 7px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>
