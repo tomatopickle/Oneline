@@ -383,6 +383,7 @@ export default {
                 }
                 let chatData = snapshot.val();
                 this.chat = chatData;
+                this.chat.lastOnline = chat?.lastOnline;
                 onValue(query(ref(db, `seen/${chat.id}`)), (snapshot) => {
                     if (this.chat.id != chat.id) return
                     this.seen = snapshot.val();
@@ -539,8 +540,13 @@ export default {
                         get(ref(db, `users/${usr}`)).then((snapshot) => {
                             if (snapshot.exists()) {
                                 var data = snapshot.val();
+                                let lastOnline = 0;
                                 onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
                                     var status = snapshot.exists() ? snapshot.val().status : "offline";
+                                    if (status == "offline") {
+                                        console.log(data.lastOnline);
+                                        lastOnline = data.lastOnline || 0;
+                                    }
                                     onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
                                         if (snapshot.exists()) {
                                             var lastMessage = snapshot.val();
@@ -551,7 +557,7 @@ export default {
                                                 var sender = snapshot.val();
                                                 lastMessage.senderInfo = sender;
                                             }
-                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
+                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
                                             var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                                                 return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                                             });
@@ -582,6 +588,34 @@ export default {
                 return `${chat.lastMessage.senderInfo.username}: (Audio) ${chat.lastMessage.duration}`
             }
             return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
+        },
+        timeSince(date) {
+            console.log(date);
+            date = new Date(date);
+            var seconds = Math.floor((new Date() - date) / 1000);
+
+            var interval = seconds / 31536000;
+
+            if (interval > 1) {
+                return Math.floor(interval) + " year" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 2592000;
+            if (interval > 1) {
+                return Math.floor(interval) + " month" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 86400;
+            if (interval > 1) {
+                return Math.floor(interval) + " day" + (Math.floor(interval) == 1 ? "" : "s");
+            } 
+            interval = seconds / 3600;
+            if (interval > 1) {
+                return Math.floor(interval) + " hour" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 60;
+            if (interval > 1) {
+                return Math.floor(interval) + " minute" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            return Math.floor(seconds) + " second" + (Math.floor(interval) == 1 ? "" : "s");
         },
         getReplyPreview(message) {
             if (message.type == "file") {
