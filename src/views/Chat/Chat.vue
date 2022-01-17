@@ -149,10 +149,9 @@
                         {{ chat.name }}
                       </span>
                       <br />
-                      <small
-                        class="chatMessagePreview"
-                        >{{ getMessagePreview(chat) }}</small
-                      >
+                      <small class="chatMessagePreview">{{
+                        getMessagePreview(chat)
+                      }}</small>
                     </span>
                   </b-flex>
                 </b-list-item>
@@ -191,6 +190,15 @@
               <b-avatar :username="chat?.name || ''" :size="35"></b-avatar>
               <h3 class="mt-0 mb-0">{{ chat?.name }}</h3>
             </b-flex>
+            <transition name="fade" :duration="{ enter: 1000, leave: 10 }">
+              <small
+                id="lastOnline"
+                v-show="chat?.lastOnline && chat.lastOnline != 0"
+                ref="lastOnline"
+              >
+                <span>Available {{ timeSince(chat?.lastOnline) }} ago</span>
+              </small>
+            </transition>
           </template>
           <template v-slot:actions>
             <b-btn ghost color="primary" icon @click="chatInfo = !chatInfo"

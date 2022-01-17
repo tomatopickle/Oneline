@@ -2,7 +2,7 @@
 import axios from "axios";
 import db from "../../fire.js";
 import { storage } from "../../fire.js";
-import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter } from "firebase/database";
+import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
 import stringify from "json-stable-stringify";
@@ -157,7 +157,7 @@ export default {
             }
             this.user = data;
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
-            onDisconnect(child(ref(db), `users/${this.user.id}`)).update({ lastOnline: Date.now() });
+            onDisconnect(ref(db, `users/${this.user.id}/lastOnline`)).set(serverTimestamp());
             onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
             this.loading = false;
             this.getChats();
@@ -383,6 +383,7 @@ export default {
                 }
                 let chatData = snapshot.val();
                 this.chat = chatData;
+                this.chat.lastOnline = chat?.lastOnline;
                 onValue(query(ref(db, `seen/${chat.id}`)), (snapshot) => {
                     if (this.chat.id != chat.id) return
                     this.seen = snapshot.val();
@@ -536,11 +537,20 @@ export default {
                 });
                 this.user.chats[chatId].members.forEach((usr) => {
                     if (usr != this.user.id) {
-                        get(ref(db, `users/${usr}`)).then((snapshot) => {
+                        onValue((child(ref(db), `users/${usr}`)), (snapshot) => {
                             if (snapshot.exists()) {
                                 var data = snapshot.val();
+                                let lastOnline = 0;
                                 onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
                                     var status = snapshot.exists() ? snapshot.val().status : "offline";
+                                    if (status == "offline") {
+                                        lastOnline = data.lastOnline || 0;
+                                    } else {
+                                        lastOnline = 0;
+                                    }
+                                    if (this.chat.id == chatId) {
+                                        this.chat.lastOnline = lastOnline;
+                                    }
                                     onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
                                         if (snapshot.exists()) {
                                             var lastMessage = snapshot.val();
@@ -551,7 +561,7 @@ export default {
                                                 var sender = snapshot.val();
                                                 lastMessage.senderInfo = sender;
                                             }
-                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
+                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
                                             var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                                                 return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                                             });
@@ -582,6 +592,34 @@ export default {
                 return `${chat.lastMessage.senderInfo.username}: (Audio) ${chat.lastMessage.duration}`
             }
             return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
+        },
+        timeSince(date) {
+            if (date == 0) return ''
+            date = new Date(date);
+            var seconds = Math.floor((new Date() - date) / 1000);
+
+            var interval = seconds / 31536000;
+
+            if (interval > 1) {
+                return Math.floor(interval) + " year" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 2592000;
+            if (interval > 1) {
+                return Math.floor(interval) + " month" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 86400;
+            if (interval > 1) {
+                return Math.floor(interval) + " day" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 3600;
+            if (interval > 1) {
+                return Math.floor(interval) + " hour" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            interval = seconds / 60;
+            if (interval > 1) {
+                return Math.floor(interval) + " minute" + (Math.floor(interval) == 1 ? "" : "s");
+            }
+            return Math.floor(seconds) + " second" + (Math.floor(interval) == 1 ? "" : "s");
         },
         getReplyPreview(message) {
             if (message.type == "file") {
