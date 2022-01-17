@@ -543,7 +543,6 @@ export default {
                                 let lastOnline = 0;
                                 onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
                                     var status = snapshot.exists() ? snapshot.val().status : "offline";
-                                    console.log(status);
                                     if (status == "offline") {
                                         lastOnline = data.lastOnline || 0;
                                     } else {
@@ -596,7 +595,6 @@ export default {
         },
         timeSince(date) {
             if (date == 0) return ''
-            console.log(date);
             date = new Date(date);
             var seconds = Math.floor((new Date() - date) / 1000);
 
