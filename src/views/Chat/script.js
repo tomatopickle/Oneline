@@ -103,6 +103,7 @@ export default {
                 notificationGranted: false,
                 likeEmojiModal: false,
                 data: {
+                    showExactTime: false,
                     lightMode: false,
                     likeEmoji: { "_data": { "name": "Thumbs Up Sign", "unified": "1F44D", "has_img_apple": true, "has_img_google": true, "has_img_twitter": true, "has_img_facebook": true, "keywords": ["thumbs_up", "thumbsup", "yes", "awesome", "good", "agree", "accept", "cool", "hand", "like"], "text": "", "short_names": ["+1", "thumbsup"], "added_in": "6.0", "sheet_x": 13, "sheet_y": 28, "search": "+1,thumbsup,thumbs,up,sign,thumbs_up,yes,awesome,good,agree,accept,cool,hand,like", "skin_tone": 1 }, "_skins": null, "_sanitized": { "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍" }, "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍", "short_names": ["+1", "thumbsup"], "short_name": "+1" },
                     messagesSimpleMode: false,

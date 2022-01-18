@@ -592,6 +592,11 @@
             </template>
             <template v-slot:1>
               <b-flex>
+                <span>Show Exact Time</span>
+                <b-spacer></b-spacer>
+                <b-switch v-model="settings.data.showExactTime"></b-switch> 
+              </b-flex>
+              <b-flex>
                 <div class="flex flex-col">
                   <span>Like Emoji</span>
                   <small style="margin-left: 0">{{
@@ -606,7 +611,7 @@
                   Change
                 </b-btn>
               </b-flex>
-              <p class="text-sm opacity-75 pl-1 block">
+              <p class="text-sm opacity-75 pl-2 block mb-0 w-11/12">
                 When you double click a message, we'll add this emoji as your
                 reaction
               </p>

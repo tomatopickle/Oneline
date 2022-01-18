@@ -19,11 +19,23 @@
             addReaction(settings.data.likeEmoji);
           "
         >
+          <div v-if="!settings.data.showExactTime">
+            <div
+              class="sameDay"
+              v-if="checkDayDifference(message, i)"
+              v-html="formatToDay(message.time)"
+            ></div>
+            <br />
+          </div>
           <div>
             <div
               class="time"
               v-if="checkTimeDifference(message, i)"
-              v-html="getTime(message.time)"
+              v-html="
+                settings.data.showExactTime
+                  ? getTime(message.time)
+                  : formatTimeToAMPM(message.time)
+              "
             ></div>
             <Popper
               style="width: 100%"
@@ -484,6 +496,64 @@ export default {
       } else {
         return false;
       }
+    },
+    formatToDay(timestamp) {
+      var in_the_last_7days_date_options = { weekday: "long" };
+      var same_year_date_options = { month: "short", day: "numeric" };
+      var far_date_options = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      };
+
+      var dt = new Date(timestamp);
+      var date = dt.getDate();
+      var time_diff = timestamp - Date.now();
+      var diff_days = new Date().getDate() - date;
+      var diff_months = new Date().getMonth() - dt.getMonth();
+      var diff_years = new Date().getFullYear() - dt.getFullYear();
+
+      var is_today = diff_years === 0 && diff_months === 0 && diff_days === 0;
+      var is_yesterday =
+        diff_years === 0 && diff_months === 0 && diff_days === 1;
+      var is_in_the_last_7days =
+        diff_years === 0 && diff_months === 0 && diff_days > 1 && diff_days < 7;
+      var is_same_year = diff_years === 0;
+
+      if (is_today) {
+        return "Today";
+      } else if (is_yesterday) {
+        return "Yesterday";
+      } else if (is_in_the_last_7days) {
+        return dt.toLocaleString("en", in_the_last_7days_date_options);
+      } else if (is_same_year) {
+        return dt.toLocaleString("en", same_year_date_options);
+      } else {
+        return dt.toLocaleString("en", far_date_options);
+      }
+    },
+    checkDayDifference(message, i) {
+      const messages = this.messages;
+      const msgIndex = Object.keys(messages).indexOf(i);
+      const d1 = new Date(message?.time);
+      const d2 = new Date(this.getByIndex(this.messages, msgIndex - 1)?.time);
+      console.log(d1.getMonth(), d2.getMonth());
+      return !(
+        d1.getFullYear() === d2.getFullYear() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getDate() === d2.getDate()
+      );
+    },
+    formatTimeToAMPM(timestamp) {
+      const date = new Date(timestamp);
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var ampm = hours >= 12 ? "pm" : "am";
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? "0" + minutes : minutes;
+      var strTime = hours + ":" + minutes + " " + ampm;
+      return strTime;
     },
     checkTimeDifference(message, i) {
       const messages = this.messages;

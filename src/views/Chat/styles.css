@@ -6,6 +6,15 @@ body,
 html {
   font-family: Inter, sans-serif;
 }
+.sameDay {
+  background-color: hsla(var(--bg-dark), 17%, 0.75);
+  width: max-content;
+  padding: 5px;
+  border-radius: var(--ui-radius);
+  min-width: 80px;
+  text-align: center;
+  margin: auto;
+}
 #lastOnline {
   position: absolute;
   bottom: 6px;
