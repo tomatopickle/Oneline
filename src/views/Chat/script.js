@@ -115,8 +115,9 @@ export default {
                     messagesSimpleMode: false,
                     notification: {
                         granted: false,
-                        enabled: false,
-                        newMessage: false
+                        enabled: true,
+                        newMessage: true,
+                        meetingNotifcations: true
                     }
                 }
             },
