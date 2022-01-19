@@ -10,6 +10,7 @@
     "publish": "npm run build && npm run deploy"
   },
   "dependencies": {
+    "@daily-co/daily-js": "^0.22.0",
     "@kyvg/vue3-notification": "^2.3.4",
     "@vime/vue-next": "^5.3.1",
     "axios": "^0.24.0",

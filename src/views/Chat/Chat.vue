@@ -188,7 +188,7 @@
           ><template v-slot:branding>
             <b-flex class="m-0 p-0 w-full">
               <b-avatar :username="chat?.name || ''" :size="35"></b-avatar>
-              <h3 class="mt-0 mb-0">{{ chat?.name }}</h3>
+              <h3 class="mt-0 mb-1">{{ chat?.name }}</h3>
             </b-flex>
             <transition name="fade" :duration="{ enter: 1000, leave: 10 }">
               <small
@@ -201,9 +201,14 @@
             </transition>
           </template>
           <template v-slot:actions>
-            <b-btn ghost color="primary" icon @click="chatInfo = !chatInfo"
-              ><b-icon name="mdi mdi-information-outline"></b-icon
-            ></b-btn>
+            <b-flex bare>
+              <b-btn icon @click="startMeeting()" :loading="newMeetingLoading">
+                <b-icon name="mdi mdi-video"></b-icon>
+              </b-btn>
+              <b-btn color="secondary" icon @click="chatInfo = !chatInfo"
+                ><b-icon name="mdi mdi-information-outline"></b-icon
+              ></b-btn>
+            </b-flex>
           </template>
         </b-nav>
         <br /><br /><br /><br />
@@ -551,6 +556,44 @@
         </template>
       </div>
     </div>
+    <transition name="fadeUp">
+      <b-card
+        id="meetingInvite"
+        width="210px"
+        style="min-width: 0"
+        v-show="meetingInvite.show"
+      >
+        <h4>Meeting Invite</h4>
+        <b-avatar
+          :username="meetingInvite.data?.from || ''"
+          class="center"
+        ></b-avatar>
+        <h3>{{ meetingInvite.data.from }}</h3>
+        <b-btn
+          @click="
+            joinMeeting(meetingInvite.data.room);
+            meetingInvite.show = false;
+          "
+          size="medium"
+          block
+          style="margin-bottom: 5px"
+          color="success"
+          >
+          <b-icon left name="mdi mdi-phone"></b-icon>
+          Join</b-btn
+        >
+        <b-btn
+          size="medium"
+          block
+          color="danger"
+          @click="meetingInvite.show = false"
+          >
+          <b-icon left name="mdi mdi-phone-hangup"></b-icon>
+          Decline</b-btn
+        >
+        <br>
+      </b-card>
+    </transition>
     <b-modal v-model="settings.modal" width="750px">
       <b-card height="350px" width="750px" glass-sidebar>
         <template #header>
@@ -594,7 +637,7 @@
               <b-flex>
                 <span>Show Exact Time</span>
                 <b-spacer></b-spacer>
-                <b-switch v-model="settings.data.showExactTime"></b-switch> 
+                <b-switch v-model="settings.data.showExactTime"></b-switch>
               </b-flex>
               <b-flex>
                 <div class="flex flex-col">

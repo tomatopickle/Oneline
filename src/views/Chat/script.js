@@ -28,12 +28,16 @@ let searchTimeout;
 let audioRecordingTimer;
 let audioRecorder;
 export default {
-    name: "App",
+    name: "Chat",
     components: {
         ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player
     },
     data: () => {
         return {
+            meetingInvite: {
+                show: false,
+                data: {}
+            },
             audio: {
                 show: false,
                 src: ""
@@ -153,6 +157,7 @@ export default {
         this.settings.notificationGranted = Notification.permission == "granted";
         onValue(child(ref(db), `users/${localStorage.getItem("id")}`), (snapshot) => {
             const data = snapshot.val();
+            localStorage.setItem("user", JSON.stringify(data));
             if (!data) {
                 router.push("login");
             }
@@ -201,6 +206,26 @@ export default {
     methods: {
         log(e) {
             console.log(e)
+        },
+        startMeeting() {
+            axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
+                .then((response) => {
+                    const room = response.data;
+                    console.log(room);
+                    set(ref(db, "meetingInvite/" + this.chat.id), { from: this.user.username, room, chat: this.chat });
+                    const data = router.resolve({ path: '/meeting', query: { meetingId: room.url } });
+                    window.open(data.href, '_blank');
+                    setTimeout(() => { remove(ref(db, "meetingInvite/" + this.chat.id)) }, 3000);
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+
+        },
+        joinMeeting(room) {
+            const data = router.resolve({ path: '/meeting', query: { meetingId: room.url } });
+            window.open(data.href, '_blank');
         },
         startRecording() {
             navigator.mediaDevices.getUserMedia({ audio: true })
@@ -435,7 +460,15 @@ export default {
             for (var id in chats) {
                 i++;
                 const chat = this.user.chats[id];
-
+                onValue((child(ref(db), `meetingInvite/${id}`)), (snapshot) => {
+                    if (snapshot.exists()) {
+                        console.log("inv coming", snapshot.val());
+                        if (snapshot.val().from != this.user.username) {
+                            this.meetingInvite.show = true;
+                            this.meetingInvite.data = snapshot.val();
+                        }
+                    }
+                });
                 /* A little info about some weird stuff in this function
                     1) I added const chatId = id; coz the id var changes with the loop and the callback functions only get the last id
                     2) The JSON sorting function is called a bunch of times rather than calling it once after it's all over, I did this because
@@ -507,7 +540,7 @@ export default {
         },
         getPersonalChat(chatId, chat) {
             let unreadMessages = 0;
-            onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline.toString()), limitToLast(100)), (snapshot) => {
+            onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)), (snapshot) => {
                 if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
                     console.log("chat aint there")
                     unreadMessages = Object.keys(snapshot.val()).length;
