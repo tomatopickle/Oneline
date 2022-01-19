@@ -586,7 +586,7 @@
           size="medium"
           block
           color="danger"
-          @click="meetingInvite.show = false"
+          @click="declineMeeting()"
           >
           <b-icon left name="mdi mdi-phone-hangup"></b-icon>
           Decline</b-btn
@@ -686,6 +686,14 @@
                   <b-switch
                     @change="applySettings()"
                     v-model="settings.data.notification.newMessage"
+                  ></b-switch>
+                </b-flex>
+                <b-flex v-show="settings.data.notification.enabled">
+                  <span>Enable Meeting Notifications</span>
+                  <b-spacer></b-spacer>
+                  <b-switch
+                    @change="applySettings()"
+                    v-model="settings.data.notification.meetingNotifcations"
                   ></b-switch>
                 </b-flex>
               </div>

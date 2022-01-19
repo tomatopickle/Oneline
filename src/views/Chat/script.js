@@ -2,6 +2,7 @@
 import axios from "axios";
 import db from "../../fire.js";
 import { storage } from "../../fire.js";
+import PubNub from "pubnub";
 import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
@@ -27,6 +28,7 @@ let searchTimeout;
 // Variables for the audio recorder
 let audioRecordingTimer;
 let audioRecorder;
+let pubnub;
 export default {
     name: "Chat",
     components: {
@@ -113,8 +115,9 @@ export default {
                     messagesSimpleMode: false,
                     notification: {
                         granted: false,
-                        enabled: false,
-                        newMessage: false
+                        enabled: true,
+                        newMessage: true,
+                        meetingNotifcations: true
                     }
                 }
             },
@@ -162,6 +165,12 @@ export default {
                 router.push("login");
             }
             this.user = data;
+            pubnub = new PubNub({
+                publishKey: "pub-c-c7a63789-7f5f-4050-826c-e75505e9631e",
+                subscribeKey: "sub-c-2a2cb9c6-7935-11ec-add2-a260b15b99c5",
+                uuid: data.id
+            });
+            console.log(data);
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
             onDisconnect(ref(db, `users/${this.user.id}/lastOnline`)).set(serverTimestamp());
             onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
@@ -172,7 +181,6 @@ export default {
                 Object.keys(settings).forEach((key) => {
                     if (!this.user?.settings[key]) return
                     this.settings.data[key] = this.user?.settings[key];
-
                 });
                 this.applySettings();
 
@@ -211,17 +219,42 @@ export default {
             axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
                 .then((response) => {
                     const room = response.data;
-                    console.log(room);
                     set(ref(db, "meetingInvite/" + this.chat.id), { from: this.user.username, room, chat: this.chat });
                     const data = router.resolve({ path: '/meeting', query: { meetingId: room.url } });
                     window.open(data.href, '_blank');
                     setTimeout(() => { remove(ref(db, "meetingInvite/" + this.chat.id)) }, 3000);
+                    if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.meetingNotifcations) {
+                        if (this.chat.type == "personal") {
+                            new Notification(`${this.chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
+                        } else {
+                            new Notification(`Everyone in ${this.chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
+                        }
+                        pubnub.subscribe({ channels: [`declineMeeting.${this.chat.id}`] });
+                        pubnub.addListener({
+                            message: (m) => {
+                                console.log(m);
+                                new Notification(`${m.message} declined your invitation`);
+                            },
+                        });
+                    };
                 })
                 .catch(function (error) {
                     // handle error
                     console.log(error);
                 })
 
+        },
+        declineMeeting() {
+            pubnub.publish(
+                {
+                    channel: `declineMeeting.${this.chat.id}`,
+                    message: this.user.username
+                },
+                function (status, response) {
+                    console.log(status, response);
+                }
+            );
+            this.meetingInvite.show = false;
         },
         joinMeeting(room) {
             const data = router.resolve({ path: '/meeting', query: { meetingId: room.url } });
