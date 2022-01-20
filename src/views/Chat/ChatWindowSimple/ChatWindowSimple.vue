@@ -118,6 +118,7 @@
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
                   "
+                  :src="users[message.sender]?.avatar"
                 >
                 </b-avatar>
               </div>
@@ -186,6 +187,7 @@
                           ? users[message.sender].username
                           : ''
                       "
+                      :src="users[message.sender]?.avatar"
                     ></b-avatar>
                     <div
                       v-html="

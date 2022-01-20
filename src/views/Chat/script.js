@@ -70,7 +70,7 @@ export default {
             },
             downloading: false,
             user: {},
-            settingsHeading: ["Appearance", "Chat", "Notifications", "Sounds", "About"],
+            settingsHeading: ["Appearance", "Account", "Chat", "Notifications", "Sounds", "About"],
             chats: {},
             baseUrl: location.href,
             chatInfo: false,
@@ -94,6 +94,14 @@ export default {
                     description: ""
                 }
             },
+            userInfo: {
+                loading: false,
+                data: {
+                    username: "",
+                    avatar: "",
+                    description: ""
+                }
+            },
             scrollDownBtn: false,
             limit: 25,
             leaveGroup: false,
@@ -101,6 +109,7 @@ export default {
             seen: {},
             settings: {
                 modal: false,
+                loading: false,
                 button: {
                     text: "Save",
                     color: "primary",
@@ -167,6 +176,7 @@ export default {
                 router.push("login");
             }
             this.user = data;
+            this.userInfo.data = data;
             pubnub = new PubNub({
                 publishKey: "pub-c-c7a63789-7f5f-4050-826c-e75505e9631e",
                 subscribeKey: "sub-c-2a2cb9c6-7935-11ec-add2-a260b15b99c5",
@@ -217,13 +227,35 @@ export default {
         log(e) {
             console.log(e)
         },
+        uploadAvatar() {
+            var input = document.createElement('input');
+            input.type = 'file';
+
+            input.onchange = e => {
+                this.settings.loading = true;
+                var file = e.target.files[0];
+                input.remove();
+                console.log(file);
+                uploadBytes(storageRef(storage, `userAvatar/${this.user.id}`), file).then((snapshot) => {
+                    console.log('Uploaded a blob or file!');
+                    console.log(snapshot);
+                    getDownloadURL(snapshot.metadata.ref).then((url) => {
+                        update(child(ref(db), `users/${this.user.id}`), {
+                            avatar: url
+                        });
+                        this.settings.loading = false;
+                    });
+                });
+            }
+            input.click();
+        },
         startMeeting() {
             axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
                 .then((response) => {
                     const room = response.data.room;
                     const token = response.data.token;
                     console.log(response.data);
-                    set(ref(db, "meetingInvite/" + this.chat.id), { from: this.user.username, room, chat: this.chat });
+                    set(ref(db, "meetingInvite/" + this.chat.id), { from: this.user, room, chat: this.chat });
                     const data = router.resolve({ path: '/meeting', query: { meetingId: room.url, token } });
                     window.open(data.href, '_blank');
                     setTimeout(() => { remove(ref(db, "meetingInvite/" + this.chat.id)) }, 3000);
@@ -504,8 +536,8 @@ export default {
                 onValue((child(ref(db), `meetingInvite/${id}`)), (snapshot) => {
                     if (snapshot.exists()) {
                         console.log("inv coming", snapshot.val());
-                        if (snapshot.val().from != this.user.username) {
-                            if(this.settings.data.ringtoneForMeetingInvite){
+                        if (snapshot.val().from.username != this.user.username) {
+                            if (this.settings.data.ringtoneForMeetingInvite) {
                                 meetingRingtone.play();
                             }
                             this.meetingInvite.show = true;
@@ -639,7 +671,7 @@ export default {
                                                 var sender = snapshot.val();
                                                 lastMessage.senderInfo = sender;
                                             }
-                                            this.chats[chatId] = { name: data.username, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
+                                            this.chats[chatId] = { name: data.username, src: data.avatar, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
                                             var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                                                 return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                                             });
@@ -933,6 +965,7 @@ export default {
         updateSettings() {
             // this.settings.loading = true;
             set(ref(db, `users/${this.user.id}/settings`), this.settings.data);
+            update(ref(db, `users/${this.user.id}`), this.userInfo.data);
             this.settings.button.text = "Saved";
             this.settings.button.color = "success";
             this.settings.button.check = true;
