@@ -18,6 +18,7 @@ import { ref as storageRef, getDownloadURL, uploadBytes } from "firebase/storage
 import recordAudio from "./scripts/recordAudio.js";
 import Player from '../../components/Player/Player.vue';
 // Variables for emoji search and display
+let meetingRingtone = new Audio(require("./assets/ringtone.mp3"));
 let emojiConvertor = new EmojiConvertor();
 emojiConvertor.allow_native = true;
 emojiConvertor.replace_mode = 'unified';
@@ -69,7 +70,7 @@ export default {
             },
             downloading: false,
             user: {},
-            settingsHeading: ["Appearance", "Chat", "Notifications", "About"],
+            settingsHeading: ["Appearance", "Chat", "Notifications", "Sounds", "About"],
             chats: {},
             baseUrl: location.href,
             chatInfo: false,
@@ -109,6 +110,7 @@ export default {
                 notificationGranted: false,
                 likeEmojiModal: false,
                 data: {
+                    ringtoneForMeetingInvite: true,
                     showExactTime: false,
                     lightMode: false,
                     likeEmoji: { "_data": { "name": "Thumbs Up Sign", "unified": "1F44D", "has_img_apple": true, "has_img_google": true, "has_img_twitter": true, "has_img_facebook": true, "keywords": ["thumbs_up", "thumbsup", "yes", "awesome", "good", "agree", "accept", "cool", "hand", "like"], "text": "", "short_names": ["+1", "thumbsup"], "added_in": "6.0", "sheet_x": 13, "sheet_y": 28, "search": "+1,thumbsup,thumbs,up,sign,thumbs_up,yes,awesome,good,agree,accept,cool,hand,like", "skin_tone": 1 }, "_skins": null, "_sanitized": { "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍" }, "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍", "short_names": ["+1", "thumbsup"], "short_name": "+1" },
@@ -218,9 +220,11 @@ export default {
         startMeeting() {
             axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
                 .then((response) => {
-                    const room = response.data;
+                    const room = response.data.room;
+                    const token = response.data.token;
+                    console.log(response.data);
                     set(ref(db, "meetingInvite/" + this.chat.id), { from: this.user.username, room, chat: this.chat });
-                    const data = router.resolve({ path: '/meeting', query: { meetingId: room.url } });
+                    const data = router.resolve({ path: '/meeting', query: { meetingId: room.url, token } });
                     window.open(data.href, '_blank');
                     setTimeout(() => { remove(ref(db, "meetingInvite/" + this.chat.id)) }, 3000);
                     if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.meetingNotifcations) {
@@ -254,9 +258,13 @@ export default {
                     console.log(status, response);
                 }
             );
+            meetingRingtone.pause();
+            meetingRingtone.currentTime = 0;
             this.meetingInvite.show = false;
         },
         joinMeeting(room) {
+            meetingRingtone.pause();
+            meetingRingtone.currentTime = 0;
             const data = router.resolve({ path: '/meeting', query: { meetingId: room.url } });
             window.open(data.href, '_blank');
         },
@@ -497,6 +505,9 @@ export default {
                     if (snapshot.exists()) {
                         console.log("inv coming", snapshot.val());
                         if (snapshot.val().from != this.user.username) {
+                            if(this.settings.data.ringtoneForMeetingInvite){
+                                meetingRingtone.play();
+                            }
                             this.meetingInvite.show = true;
                             this.meetingInvite.data = snapshot.val();
                         }

@@ -578,20 +578,15 @@
           block
           style="margin-bottom: 5px"
           color="success"
-          >
+        >
           <b-icon left name="mdi mdi-phone"></b-icon>
           Join</b-btn
         >
-        <b-btn
-          size="medium"
-          block
-          color="danger"
-          @click="declineMeeting()"
-          >
+        <b-btn size="medium" block color="danger" @click="declineMeeting()">
           <b-icon left name="mdi mdi-phone-hangup"></b-icon>
           Decline</b-btn
         >
-        <br>
+        <br />
       </b-card>
     </transition>
     <b-modal v-model="settings.modal" width="750px">
@@ -613,7 +608,8 @@
             <template #1> Appearance </template>
             <template #2> Chat </template>
             <template #3> Notifications </template>
-            <template #4> About </template>
+            <template #4> Sounds </template>
+            <template #5> About </template>
           </b-nav-panel></template
         >
         <b-card bare height="275px" width="100%">
@@ -699,6 +695,16 @@
               </div>
             </template>
             <template v-slot:3>
+              <b-flex>
+                <span>Ringtones for Meeting Invites</span>
+                <b-spacer></b-spacer>
+                <b-switch
+                  @change="applySettings()"
+                  v-model="settings.data.ringtoneForMeetingInvite"
+                ></b-switch>
+              </b-flex>
+            </template>
+            <template v-slot:4>
               <h4 class="my-0">Bugs</h4>
               <p>
                 Found a bug? Great!, please report it at our
