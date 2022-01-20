@@ -1,4 +1,13 @@
 <template>
+  <transition name="fadeUp">
+    <div id="leftMeeting" v-show="leftMeeting">
+      <h1>You left the Meeting</h1>
+      <br />
+      <b-btn class="center" color="primary" @click="$router.push('/')"
+        >Go Back to Oneline</b-btn
+      >
+    </div>
+  </transition>
   <main class="wrapper">
     <div class="call-container">
       <!-- The Daily Prebuilt iframe is embedded in the div below using the ref -->
@@ -24,6 +33,7 @@ export default {
   name: "Meeting",
   data() {
     return {
+      leftMeeting: false,
       roomUrl: "",
       status: "call",
       user: localStorage.getItem("user")
@@ -65,8 +75,8 @@ export default {
       const goToCall = () => (this.status = "call");
       const leaveCall = () => {
         if (this.callFrame) {
-          this.status = "home";
           this.callFrame.destroy();
+          this.leftMeeting = true;
         }
       };
       // DailyIframe container element
@@ -78,6 +88,7 @@ export default {
         cssFile: "./meetingStyle.css",
         showLeaveButton: true,
         userName: this.user.username || "",
+        token: this.$route.query.token || "",
       });
       callFrame.setTheme({
         colors: {
@@ -104,7 +115,7 @@ export default {
         .on("joined-meeting", goToCall)
         .on("left-meeting", leaveCall);
 
-      callFrame.join({ url, showFullscreenButton: true });
+      callFrame.join({ url });
     },
     submitJoinRoom(e) {
       e.preventDefault();
@@ -119,10 +130,17 @@ export default {
 
 <style>
 html,
-body ,#app,.wrapper,
+body,
+#app,
+.wrapper,
 .call-container,
-#call {
+#call,
+#leftMeeting {
   height: 100%;
   width: 100%;
+}
+#leftMeeting h1 {
+  text-align: center;
+  margin-top: 15%;
 }
 </style>
