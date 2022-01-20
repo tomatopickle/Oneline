@@ -165,6 +165,7 @@
             <b-flex class="m-0 p-0">
               <b-avatar
                 :username="user.username ? user?.username : 'loading'"
+                :src="user.avatar"
                 :size="35"
               ></b-avatar>
               <b-list-item style="padding: 0">
@@ -187,7 +188,11 @@
         <b-nav sticky v-if="chat.id"
           ><template v-slot:branding>
             <b-flex class="m-0 p-0 w-full">
-              <b-avatar :username="chat?.name || ''" :size="35"></b-avatar>
+              <b-avatar
+                :username="chat?.name || ''"
+                :src="chat.src"
+                :size="35"
+              ></b-avatar>
               <h3 class="mt-0 mb-1">{{ chat?.name }}</h3>
             </b-flex>
             <transition name="fade" :duration="{ enter: 1000, leave: 10 }">
@@ -232,6 +237,7 @@
           <b-avatar
             class="center"
             :username="chat.name || ''"
+            :src="chat.src"
             size="65"
           ></b-avatar>
           <h2 class="text-center">{{ chat.name }}</h2>
@@ -564,11 +570,10 @@
         v-show="meetingInvite.show"
       >
         <h4>Meeting Invite</h4>
-        <b-avatar
-          :username="meetingInvite.data?.from || ''"
+        <b-avatar  :username="meetingInvite.data?.from?.username || ''"   :src="meetingInvite.data?.from?.avatar"
           class="center"
         ></b-avatar>
-        <h3>{{ meetingInvite.data.from }}</h3>
+        <h3>{{ meetingInvite.data?.from?.username}}</h3>
         <b-btn
           @click="
             joinMeeting(meetingInvite.data.room);
@@ -590,7 +595,12 @@
       </b-card>
     </transition>
     <b-modal v-model="settings.modal" width="750px">
-      <b-card height="350px" width="750px" glass-sidebar>
+      <b-card
+        height="400px"
+        width="750px"
+        glass-sidebar
+        :loading="settings.loading"
+      >
         <template #header>
           <b-flex>
             <h4 class="m-0">{{ this.settingsHeading[settings.index] }}</h4>
@@ -606,13 +616,14 @@
               <h4>Settings</h4>
             </template>
             <template #1> Appearance </template>
-            <template #2> Chat </template>
-            <template #3> Notifications </template>
-            <template #4> Sounds </template>
-            <template #5> About </template>
+            <template #2> Account </template>
+            <template #3> Chat </template>
+            <template #4> Notifications </template>
+            <template #5> Sounds </template>
+            <template #6> About </template>
           </b-nav-panel></template
         >
-        <b-card bare height="275px" width="100%">
+        <b-card bare height="325px" width="100%">
           <b-tab-content v-model="settings.index">
             <template v-slot:0>
               <b-flex>
@@ -630,6 +641,41 @@
               </b-flex>
             </template>
             <template v-slot:1>
+              <b-card
+                bare
+                width="200px"
+                height="200px"
+                class="center relative bottom-9"
+              >
+                <b-avatar
+                  class="center"
+                  :src="userInfo.data.avatar"
+                  :username="userInfo.data.username || ''"
+                  size="75"
+                ></b-avatar>
+                <b-btn
+                  @click="uploadAvatar()"
+                  icon
+                  class="center mt-2 mb-2"
+                  size="small"
+                  ><b-icon name="mdi mdi-camera" left></b-icon> Change</b-btn
+                >
+                <b-input
+                  v-model="userInfo.data.username"
+                  placeholder="Username"
+                  label="User Name"
+                ></b-input>
+
+                <b-textarea
+                  v-model="userInfo.data.description"
+                  placeholder="Description"
+                  label="Description"
+                ></b-textarea>
+                <br />
+                <br />
+              </b-card>
+            </template>
+            <template v-slot:2>
               <b-flex>
                 <span>Show Exact Time</span>
                 <b-spacer></b-spacer>
@@ -655,7 +701,7 @@
                 reaction
               </p>
             </template>
-            <template v-slot:2>
+            <template v-slot:3>
               <div v-show="!settings.notificationGranted">
                 <span>We need your permission to send notifications</span>
                 <br /><br />
@@ -694,7 +740,7 @@
                 </b-flex>
               </div>
             </template>
-            <template v-slot:3>
+            <template v-slot:4>
               <b-flex>
                 <span>Ringtones for Meeting Invites</span>
                 <b-spacer></b-spacer>
@@ -704,7 +750,7 @@
                 ></b-switch>
               </b-flex>
             </template>
-            <template v-slot:4>
+            <template v-slot:5>
               <h4 class="my-0">Bugs</h4>
               <p>
                 Found a bug? Great!, please report it at our
@@ -729,7 +775,7 @@
               </p>
             </template>
           </b-tab-content>
-          <template #footer>
+          <template v-slot:footer>
             <b-flex
               style="height: max-content"
               v-if="settingsHeading[settings.index] != 'About'"
@@ -959,7 +1005,7 @@
             </b-flex>
           </template>
           <div>
-            <b-avatar class="center" :username="chat.name || ''"></b-avatar>
+            <b-avatar :src="chat.src" class="center" :username="chat.name || ''"></b-avatar>
             <h4 class="text-center">{{ chat.name }}</h4>
             <div class="center" v-if="chat.type == 'group'">
               <b-flex class="center w-max">

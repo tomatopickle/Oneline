@@ -62,7 +62,7 @@
           </div>
           <div>
             <b-flex
-              style="align-items: baseline"
+              style="align-items: center"
               v-if="
                 !(
                   checkMsgFromSameUser(message, i) &&
@@ -76,6 +76,7 @@
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
                   "
+                  :src="users[message.sender]?.avatar"
                 >
                 </b-avatar>
               </div>
@@ -507,7 +508,6 @@ export default {
       const msgIndex = Object.keys(messages).indexOf(i);
       const d1 = new Date(message?.time);
       const d2 = new Date(this.getByIndex(this.messages, msgIndex - 1)?.time);
-      console.log(d1.getMonth(), d2.getMonth());
       return !(
         d1.getFullYear() === d2.getFullYear() &&
         d1.getMonth() === d2.getMonth() &&
