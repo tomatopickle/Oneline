@@ -25,7 +25,7 @@ const routes = [
     path: "/meeting",
     name: "Meeting",
     component: Meeting,
-  },
+  }
 ];
 
 const router = createRouter({

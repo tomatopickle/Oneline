@@ -33,9 +33,12 @@
     "stylus-loader": "3.0.2",
     "v-lazy-image": "^2.0.1",
     "vue": "^3.0.0",
+    "vue-horizontal": "^1.0.2",
+    "vue-insta-stories": "^0.9.3",
     "vue-plyr": "^7.0.0",
     "vue-router": "^4.0.12",
-    "vue3-popper": "^1.4.0"
+    "vue3-popper": "^1.4.0",
+    "zuck.js": "^1.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss7-compat": "^2.2.17",

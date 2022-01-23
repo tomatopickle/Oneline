@@ -1,9 +1,11 @@
 /* eslint-disable */
 import axios from "axios";
+import filters from "./scripts/filters.js";
 import db from "../../fire.js";
 import { storage } from "../../fire.js";
 import PubNub from "pubnub";
-import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp } from "firebase/database";
+import VueHorizontal from "vue-horizontal";
+import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
 import stringify from "json-stable-stringify";
@@ -30,13 +32,37 @@ let searchTimeout;
 let audioRecordingTimer;
 let audioRecorder;
 let pubnub;
+console.log(filters)
 export default {
     name: "Chat",
     components: {
-        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player
+        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal
     },
     data: () => {
         return {
+            shortsAvatars: {},
+            shorts: {
+                show: false,
+                user: {},
+                index: 0,
+                short: {},
+                shorts: {}
+            },
+            short: {
+                show: false,
+                photo: {
+                    show: false,
+                    uploaded: false,
+                    blobUrl: "",
+                    filters,
+                    filterSelected: false,
+                    data: {
+                        filter: "",
+                        caption: "",
+                        src: "",
+                    }
+                }
+            },
             meetingInvite: {
                 show: false,
                 data: {}
@@ -227,6 +253,20 @@ export default {
         log(e) {
             console.log(e)
         },
+        viewedShort() {
+            this.shorts.short = this.getByIndex(this.shorts.shorts, this.shorts.index);
+            console.log(this.getByIndex(this.shorts.shorts, this.shorts.index));
+            if (this.shorts.short) {
+                set(ref(db, `users/${this.user.id}/lastSeenShort/${this.shorts.user.id}`), this.shorts.short.time);
+            }
+            if (Object.keys(this.shorts.shorts)[Object.keys(this.shorts.shorts).length - 1] == this.shorts.short.time) {
+                delete this.shortsAvatars[this.shorts.user.id]
+            }
+            console.log(Object.keys(this.shorts.shorts)[Object.keys(this.shorts.shorts).length - 1])
+        },
+        getByIndex(json, index) {
+            return json[Object.keys(json)[index]];
+        },
         uploadAvatar() {
             var input = document.createElement('input');
             input.type = 'file';
@@ -248,6 +288,51 @@ export default {
                 });
             }
             input.click();
+        },
+        uploadShortImage() {
+            var input = document.createElement('input');
+            input.type = 'file';
+
+            input.onchange = e => {
+                this.short.photo.uploadBtnLoading = true;
+                var file = e.target.files[0];
+                input.remove();
+                console.log(file);
+                uploadBytes(storageRef(storage, `stories/${this.user.id}/${Date.now()}`), file).then((snapshot) => {
+                    console.log('Uploaded a blob or file!');
+                    console.log(snapshot);
+                    getDownloadURL(snapshot.metadata.ref).then((url) => {
+                        this.short.photo.data.src = url;
+                        this.short.photo.uploadBtnLoading = false;
+                    });
+                });
+            }
+            input.click();
+        },
+        uploadShortPhoto() {
+            const time = Date.now();
+            set(ref(db, `shorts/${this.user.id}/${time}`), {
+                time,
+                type: "photo",
+                src: this.short.photo.data.src,
+                filter: this.short.photo.data.filter
+            });
+            this.openShort({ user: this.user, badge: 1 });
+            this.short = {
+                show: false,
+                photo: {
+                    show: false,
+                    uploaded: false,
+                    blobUrl: "",
+                    filters,
+                    filterSelected: false,
+                    data: {
+                        filter: "",
+                        caption: "",
+                        src: "",
+                    }
+                }
+            }
         },
         startMeeting() {
             axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
@@ -482,6 +567,7 @@ export default {
                 }
                 let chatData = snapshot.val();
                 this.chat = chatData;
+                this.chat.src = chat.src;
                 this.chat.lastOnline = chat?.lastOnline;
                 onValue(query(ref(db, `seen/${chat.id}`)), (snapshot) => {
                     if (this.chat.id != chat.id) return
@@ -650,6 +736,7 @@ export default {
                         onValue((child(ref(db), `users/${usr}`)), (snapshot) => {
                             if (snapshot.exists()) {
                                 var data = snapshot.val();
+                                this.getShorts(data);
                                 let lastOnline = 0;
                                 onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
                                     var status = snapshot.exists() ? snapshot.val().status : "offline";
@@ -690,6 +777,39 @@ export default {
                         });
                     }
                 });
+            });
+        },
+        getShorts(user) {
+            var date = new Date();
+            date.setDate(date.getDate() - 1);
+            let time = date.getTime();
+            try {
+                time = this.user.lastSeenShort[user.id] != undefined ? this.user.lastSeenShort[user.id] : time;
+            }
+            catch (err) {
+
+            }
+            console.log(user, time);
+            onValue(query(ref(db, `shorts/${user.id}`), orderByKey(), startAfter(time.toString())), (snapshot) => {
+                if (!snapshot.exists()) return
+                console.log(Object.keys(snapshot.val()).length);
+                this.shortsAvatars[user.id] = { user, badge: Object.keys(snapshot.val()).length };
+            });
+        },
+        openShort(short) {
+            console.log(short)
+            this.shorts.show = true;
+            onValue(query(ref(db, `shorts/${short.user.id}`), limitToLast(short.badge)), (snapshot) => {
+                console.log(snapshot.val());
+                this.shorts.user = short.user;
+                this.shorts.shorts = JSON.parse(stringify(snapshot.val(), function (a, b) {
+                    return a.key > b.key ? 1 : -1;
+                }));
+                this.shorts.short = this.getByIndex(this.shorts.shorts, 0);
+                set(ref(db, `users/${this.user.id}/lastSeenShort/${this.shorts.user.id}`), this.shorts.short.time);
+                if (Object.keys(this.shorts.shorts).length == 1) {
+                    delete this.shortsAvatars[short.user.id]
+                }
             });
         },
         getMessagePreview(chat) {

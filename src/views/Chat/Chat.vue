@@ -19,6 +19,32 @@
             style="margin: -19px; background: transparent"
           >
             <template v-slot:header>
+              <b-flex>
+                <b-avatar
+                  id="uploadShort"
+                  :username="user.username ? user?.username : 'loading'"
+                  :src="user.avatar"
+                  :size="35"
+                  @click="short.show = true"
+                ></b-avatar>
+                <template
+                  v-for="shortAvatar in shortsAvatars"
+                  :key="shortAvatar.user.id"
+                >
+                  <b-avatar
+                    class="shortThumbnail"
+                    :username="
+                      shortAvatar.user.username
+                        ? shortAvatar.user?.username
+                        : 'loading'
+                    "
+                    :src="shortAvatar.user.avatar"
+                    :size="35"
+                    :data-badge="shortAvatar.badge"
+                    v-on:click="openShort(shortAvatar)"
+                  ></b-avatar>
+                </template>
+              </b-flex>
               <b-flex class="pl-4 pr-1">
                 <h4 class="m-0">Chats</h4>
                 <b-spacer></b-spacer>
@@ -190,7 +216,7 @@
             <b-flex class="m-0 p-0 w-full">
               <b-avatar
                 :username="chat?.name || ''"
-                :src="chat.src"
+                :src="chat?.src"
                 :size="35"
               ></b-avatar>
               <h3 class="mt-0 mb-1">{{ chat?.name }}</h3>
@@ -570,10 +596,12 @@
         v-show="meetingInvite.show"
       >
         <h4>Meeting Invite</h4>
-        <b-avatar  :username="meetingInvite.data?.from?.username || ''"   :src="meetingInvite.data?.from?.avatar"
+        <b-avatar
+          :username="meetingInvite.data?.from?.username || ''"
+          :src="meetingInvite.data?.from?.avatar"
           class="center"
         ></b-avatar>
-        <h3>{{ meetingInvite.data?.from?.username}}</h3>
+        <h3>{{ meetingInvite.data?.from?.username }}</h3>
         <b-btn
           @click="
             joinMeeting(meetingInvite.data.room);
@@ -594,6 +622,151 @@
         <br />
       </b-card>
     </transition>
+    <b-modal v-model="short.show" width="75vw">
+      <b-card height="100%" glass>
+        <template #header>
+          <b-flex>
+            <h4 class="mt-0 mb-0">What are you gonna post?</h4>
+            <b-spacer></b-spacer>
+            <b-btn @click="short.show = false" icon ghost
+              ><b-icon name="mdi mdi-close"></b-icon
+            ></b-btn>
+          </b-flex>
+        </template>
+        <div>
+          <transition-group name="fadeUp" tag="div">
+            <b-flex>
+              <b-btn
+                glass
+                class="storyModeBtn"
+                color="primary"
+                @click="
+                  short.show = false;
+                  short.photo.show = true;
+                "
+              >
+                <br />
+                <b-icon size="50px" name="mdi mdi-camera"></b-icon>
+                <h4>Photo</h4>
+              </b-btn>
+              <b-btn glass class="storyModeBtn" color="primary">
+                <br />
+                <b-icon size="50px" name="mdi mdi-video"></b-icon>
+                <h4>Video</h4>
+              </b-btn>
+              <b-btn glass class="storyModeBtn" color="primary">
+                <br />
+                <b-icon size="50px" name="mdi mdi-poll"></b-icon>
+                <h4>Poll</h4>
+              </b-btn>
+              <b-btn glass class="storyModeBtn text-left" color="primary">
+                <h1>&nbsp;More</h1>
+                <h1>Coming</h1>
+                <h1>Soon...</h1>
+              </b-btn>
+            </b-flex>
+          </transition-group>
+        </div>
+        <template #footer> </template>
+      </b-card>
+    </b-modal>
+    <b-modal v-model="short.photo.show" width="50vw">
+      <b-card height="500px" glass>
+        <template #header>
+          <b-flex>
+            <h4 class="mt-0 mb-0">Upload Short</h4>
+            <b-spacer></b-spacer>
+            <b-btn @click="short.photo.show = false" icon ghost
+              ><b-icon name="mdi mdi-close"></b-icon
+            ></b-btn>
+          </b-flex>
+        </template>
+        <div>
+          <transition name="fadeUp" mode="out-in">
+            <div v-if="!short.photo.data.src">
+              <b-btn
+                @click="uploadShortImage()"
+                :loading="short.photo.uploadBtnLoading"
+                color="primary"
+                class="center mt-36"
+              >
+                <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
+                Upload Image
+              </b-btn>
+            </div>
+            <div v-else>
+              <figure
+                id="shortPhotoUploadParent"
+                :class="short.photo.data.filter"
+              >
+                <img
+                  id="shortPhotoUpload"
+                  :src="short.photo.data.src"
+                  alt="Loading Image"
+                />
+              </figure>
+            </div>
+          </transition>
+          <transition name="fadeUp">
+            <div v-if="short.photo.data.src">
+              <h4>Filters</h4>
+              <vue-horizontal ref="shortsPhotoFilters" style="width: 42vw">
+                <template v-slot:btn-prev>
+                  <b-btn size="small" bounce circle  icon>
+                    <b-icon size="24px" name="mdi mdi-chevron-left"></b-icon>
+                  </b-btn>
+                </template>
+
+                <template v-slot:btn-next>
+                  <b-btn size="small" bounce circle icon>
+                    <b-icon size="24px" name="mdi mdi-chevron-right"></b-icon>
+                  </b-btn>
+                </template>
+                <template
+                  v-for="filter in short.photo.filters"
+                  :key="filter.usage"
+                >
+                  <figure
+                    v-if="filter.is_done"
+                    :class="'filterPreview ' + filter.usage"
+                    v-on:mouseover="
+                      if (!short.photo.data.filterSelected) {
+                        short.photo.data.filter = filter.usage;
+                      }
+                    "
+                    v-on:mouseleave="
+                      if (!short.photo.data.filterSelected) {
+                        short.photo.data.filter = '';
+                      }
+                    "
+                    v-on:click="
+                      short.photo.data.filterSelected = true;
+                      short.photo.data.filter = filter.usage;
+                    "
+                  >
+                    <img
+                      @load="$refs.shortsPhotoFilters.refresh()"
+                      :src="short.photo.data.src"
+                    />
+                  </figure>
+                </template>
+              </vue-horizontal>
+              <br />
+              <b-btn
+                block
+                color="primary"
+                class="mt-1"
+                @click="uploadShortPhoto()"
+              >
+                <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
+                Upload Short
+              </b-btn>
+            </div>
+          </transition>
+        </div>
+        <template #footer> </template>
+      </b-card>
+    </b-modal>
     <b-modal v-model="settings.modal" width="750px">
       <b-card
         height="400px"
@@ -873,6 +1046,62 @@
         </template>
       </b-card>
     </b-modal>
+    <b-modal width="500px" v-model="shorts.show" id="shorts">
+      <div>
+        <b-flex>
+          <b-avatar
+            :username="shorts.user.username || ''"
+            :src="shorts.user.avatar"
+          ></b-avatar>
+          <div>
+            <h3 class="m-0">{{ shorts.user.username }}</h3>
+
+            <small style="margin-left: 0" v-if="timeSince(shorts.short.time) != '0 seconds'"
+              >{{ timeSince(shorts.short.time) }} ago</small
+            >
+            <small style="margin-left: 0" v-else>Just now</small>
+          </div>
+        </b-flex>
+      </div>
+      <br />
+      <vue-horizontal
+        snap="center"
+        @prev="
+          shorts.index--;
+          viewedShort();
+        "
+        @next="
+          shorts.index++;
+          viewedShort();
+        "
+        ref="shortsSlider"
+      >
+        <template v-slot:btn-prev>
+          <b-btn bounce circle glass icon color="primary">
+            <b-icon size="24px" name="mdi mdi-chevron-left"></b-icon>
+          </b-btn>
+        </template>
+
+        <template v-slot:btn-next>
+          <b-btn bounce circle glass icon color="primary">
+            <b-icon size="24px" name="mdi mdi-chevron-right"></b-icon>
+          </b-btn>
+        </template>
+        <div class="short" v-for="short in shorts.shorts" :key="short.time">
+          <figure :class="short.filter">
+            <img
+              @load="
+                $refs.shortsSlider.refresh();
+                $refs.shortsSlider.scrollToIndex(0);
+              "
+              class="shortImage"
+              :src="short.src"
+              alt=""
+            />
+          </figure>
+        </div>
+      </vue-horizontal>
+    </b-modal>
     <b-modal width="500px" v-model="leaveGroup">
       <b-card glass>
         <template v-slot:header>
@@ -1005,7 +1234,11 @@
             </b-flex>
           </template>
           <div>
-            <b-avatar :src="chat.src" class="center" :username="chat.name || ''"></b-avatar>
+            <b-avatar
+              :src="chat.src"
+              class="center"
+              :username="chat.name || ''"
+            ></b-avatar>
             <h4 class="text-center">{{ chat.name }}</h4>
             <div class="center" v-if="chat.type == 'group'">
               <b-flex class="center w-max">
@@ -1048,7 +1281,7 @@
                   <b-avatar
                     :size="35"
                     :username="user.username"
-                    :src="user?.src"
+                    :src="user?.avatar"
                   ></b-avatar>
                   <span>{{ user.username }}</span>
                 </b-flex>
