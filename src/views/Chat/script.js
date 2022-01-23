@@ -195,7 +195,11 @@ export default {
         };
     },
     mounted() {
-        this.settings.notificationGranted = Notification.permission == "granted";
+        if (Notification) {
+            this.settings.notificationGranted = Notification.permission == "granted";
+        } else {
+            this.settings.notificationGranted = false;
+        }
         onValue(child(ref(db), `users/${localStorage.getItem("id")}`), (snapshot) => {
             const data = snapshot.val();
             localStorage.setItem("user", JSON.stringify(data));
