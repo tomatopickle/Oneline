@@ -41,6 +41,7 @@ export default {
     data: () => {
         return {
             shortsAvatars: {},
+            newMeetingBtnDisabled: false,
             shorts: {
                 show: false,
                 user: {},
@@ -335,22 +336,31 @@ export default {
             }
         },
         startMeeting() {
+            console.log(this.chat)
+            this.newMeetingBtnDisabled = true;
+            let chat = this.chat;
+            Object.keys(chat).forEach((key) => {
+                if (!chat[key]) {
+                    delete chat[key]
+                }
+            });
             axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
                 .then((response) => {
                     const room = response.data.room;
                     const token = response.data.token;
                     console.log(response.data);
-                    set(ref(db, "meetingInvite/" + this.chat.id), { from: this.user, room, chat: this.chat });
+                    set(ref(db, "meetingInvite/" + chat.id), { from: this.user, room, chat: chat });
                     const data = router.resolve({ path: '/meeting', query: { meetingId: room.url, token } });
                     window.open(data.href, '_blank');
-                    setTimeout(() => { remove(ref(db, "meetingInvite/" + this.chat.id)) }, 3000);
+                    setTimeout(() => { remove(ref(db, "meetingInvite/" + chat.id)) }, 3000);
+                    this.newMeetingBtnDisabled = false;
                     if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.meetingNotifcations) {
-                        if (this.chat.type == "personal") {
-                            new Notification(`${this.chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
+                        if (chat.type == "personal") {
+                            new Notification(`${chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
                         } else {
-                            new Notification(`Everyone in ${this.chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
+                            new Notification(`Everyone in ${chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
                         }
-                        pubnub.subscribe({ channels: [`declineMeeting.${this.chat.id}`] });
+                        pubnub.subscribe({ channels: [`declineMeeting.${chat.id}`] });
                         pubnub.addListener({
                             message: (m) => {
                                 console.log(m);
@@ -449,7 +459,7 @@ export default {
                 if (!emoji[key]) {
                     delete emoji[key]
                 }
-            })
+            });
             this.settings.data.likeEmoji = emoji;
             this.settings.likeEmojiModal = false;
         },
@@ -567,7 +577,7 @@ export default {
                 }
                 let chatData = snapshot.val();
                 this.chat = chatData;
-                this.chat.src = chat.src;
+                this.chat.src = chat?.src;
                 this.chat.lastOnline = chat?.lastOnline;
                 onValue(query(ref(db, `seen/${chat.id}`)), (snapshot) => {
                     if (this.chat.id != chat.id) return

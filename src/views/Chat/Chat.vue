@@ -233,7 +233,7 @@
           </template>
           <template v-slot:actions>
             <b-flex bare>
-              <b-btn icon @click="startMeeting()" :loading="newMeetingLoading">
+              <b-btn icon @click="startMeeting()" :disabled="newMeetingBtnDisabled">
                 <b-icon name="mdi mdi-video"></b-icon>
               </b-btn>
               <b-btn color="secondary" icon @click="chatInfo = !chatInfo"
