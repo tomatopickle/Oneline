@@ -798,7 +798,7 @@ export default {
             date.setDate(date.getDate() - 1);
             let time = date.getTime();
             try {
-                // time = this.user.lastSeenShort[user.id] != undefined ? this.user.lastSeenShort[user.id] : time;
+                time = this.user.lastSeenShort[user.id] != undefined ? this.user.lastSeenShort[user.id] : time;
             }
             catch (err) {
 
@@ -813,15 +813,13 @@ export default {
         openShort(short) {
             console.log(short)
             this.shorts.show = true;
-            // short.badge
-            onValue(query(ref(db, `shorts/${short.user.id}`), limitToLast(2)), (snapshot) => {
+            onValue(query(ref(db, `shorts/${short.user.id}`), limitToLast(short.badge)), (snapshot) => {
                 console.log(snapshot.val());
                 this.shorts.user = short.user;
                 this.shorts.shorts = JSON.parse(stringify(snapshot.val(), function (a, b) {
                     return a.key > b.key ? 1 : -1;
                 }));
                 this.shorts.short = this.getByIndex(this.shorts.shorts, 0);
-                if (!this.shorts.short.time) return
                 set(ref(db, `users/${this.user.id}/lastSeenShort/${this.shorts.user.id}`), this.shorts.short.time);
                 if (Object.keys(this.shorts.shorts).length == 1) {
                     delete this.shortsAvatars[short.user.id]

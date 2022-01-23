@@ -124,7 +124,6 @@ html {
   width: 100%;
   height: max-content;
   margin: auto;
-  min-width: 490px;
 }
 #shorts .modal {
   overflow: hidden;
