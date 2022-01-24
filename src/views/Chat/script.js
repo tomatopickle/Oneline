@@ -32,7 +32,6 @@ let searchTimeout;
 let audioRecordingTimer;
 let audioRecorder;
 let pubnub;
-console.log(filters)
 export default {
     name: "Chat",
     components: {
@@ -46,6 +45,7 @@ export default {
                 show: false,
                 user: {},
                 index: 0,
+                commentText: "",
                 short: {},
                 shorts: {}
             },
@@ -200,20 +200,24 @@ export default {
         } else {
             this.settings.notificationGranted = false;
         }
+        console.log(this.$route.query)
+        if (this.$route.query?.story && this.$route.query?.user) {
+            this.openShortWithId(this.$route.query.story, this.$route.query.user, true);
+        }
         onValue(child(ref(db), `users/${localStorage.getItem("id")}`), (snapshot) => {
             const data = snapshot.val();
             localStorage.setItem("user", JSON.stringify(data));
-            if (!data) {
+            if (!data.id) {
                 router.push("login");
             }
             this.user = data;
             this.userInfo.data = data;
+            console.log(data)
             pubnub = new PubNub({
                 publishKey: "pub-c-c7a63789-7f5f-4050-826c-e75505e9631e",
                 subscribeKey: "sub-c-2a2cb9c6-7935-11ec-add2-a260b15b99c5",
                 uuid: data.id
             });
-            console.log(data);
             update(child(ref(db), `status/${this.user.id}`), { status: "online" });
             onDisconnect(ref(db, `users/${this.user.id}/lastOnline`)).set(serverTimestamp());
             onDisconnect(child(ref(db), `status/${this.user.id}`)).update({ status: "offline" });
@@ -258,6 +262,29 @@ export default {
         log(e) {
             console.log(e)
         },
+        likeShort() {
+            for (var chatId in this.chats) {
+                const chat = this.chats[chatId];
+                if (chat.type == "personal" && chat.data.id == this.shorts.user.id) {
+                    console.log(this.chats[chatId]);
+                    this.openChat(chat);
+                    this.shorts.show = false;
+                    update(child(ref(db), `messages/${chat.id}/${Date.now()}`), { type: "likeShort", short: this.shorts.short, username: this.user.username, sender: this.user.id, time: Date.now() });
+                }
+            }
+        },
+        commentShort() {
+            for (var chatId in this.chats) {
+                const chat = this.chats[chatId];
+                if (chat.type == "personal" && chat.data.id == this.shorts.user.id) {
+                    console.log(this.chats[chatId]);
+                    this.openChat(chat);
+                    this.shorts.show = false;
+                    update(child(ref(db), `messages/${chat.id}/${Date.now()}`), { type: "commentShort", short: this.shorts.short, text: this.shorts.commentText, sender: this.user.id, time: Date.now() });
+                    this.shorts.commentText = false;
+                }
+            }
+        },
         viewedShort() {
             this.shorts.short = this.getByIndex(this.shorts.shorts, this.shorts.index);
             console.log(this.getByIndex(this.shorts.shorts, this.shorts.index));
@@ -267,7 +294,6 @@ export default {
             if (Object.keys(this.shorts.shorts)[Object.keys(this.shorts.shorts).length - 1] == this.shorts.short.time) {
                 delete this.shortsAvatars[this.shorts.user.id]
             }
-            console.log(Object.keys(this.shorts.shorts)[Object.keys(this.shorts.shorts).length - 1])
         },
         getByIndex(json, index) {
             return json[Object.keys(json)[index]];
@@ -660,10 +686,12 @@ export default {
             }
         },
         newMessage(lastMessage) {
-            const congratsWords = ["congrats", "congratulations", "🎉", ":tada:", "happy birthday"]
-            if (congratsWords.some(el => lastMessage.text.includes(el))) {
-                startConfetti();
-                setTimeout(stopConfetti, 3000);
+            if (lastMessage.text) {
+                const congratsWords = ["congrats", "congratulations", "🎉", ":tada:", "happy birthday"]
+                if (congratsWords.some(el => lastMessage.text.includes(el))) {
+                    startConfetti();
+                    setTimeout(stopConfetti, 3000);
+                }
             }
         },
         getGroupChat(chatId, chat) {
@@ -803,13 +831,12 @@ export default {
             catch (err) {
 
             }
-            console.log(user, time);
             onValue(query(ref(db, `shorts/${user.id}`), orderByKey(), startAfter(time.toString())), (snapshot) => {
                 if (!snapshot.exists()) return
-                console.log(Object.keys(snapshot.val()).length);
                 this.shortsAvatars[user.id] = { user, badge: Object.keys(snapshot.val()).length };
             });
         },
+
         openShort(short) {
             console.log(short)
             this.shorts.show = true;
@@ -826,10 +853,29 @@ export default {
                 }
             });
         },
+        openShortWithId(id, userId, controlled) {
+            this.shorts.show = true;
+            get(child(ref(db), `users/${userId}`))
+                .then((snapshot) => {
+                    const user = snapshot.val();
+                    this.shorts.user = user;
+                    get(child(ref(db), `shorts/${userId}/${id}`))
+                        .then((snapshot) => {
+                            console.log(snapshot.val());
+                            this.shorts.shorts = { [id]: snapshot.val() }
+                            this.shorts.short = snapshot.val();
+                            if (controlled) {
+                                router.replace({ path: '/' });
+                            }
+                        });
+                });
+        },
         getMessagePreview(chat) {
             if (!chat.lastMessage.senderInfo) { return `New Chat` }
             if (chat.lastMessage.type == "file") {
                 return `${chat.lastMessage.senderInfo.username}: (File) ${chat.lastMessage.file.name}`
+            } else if (chat.lastMessage.type == "likeShort") {
+                return `${chat.lastMessage.senderInfo.username}: Liked your Short`
             } else if (chat.lastMessage.type == "image") {
                 return `${chat.lastMessage.senderInfo.username}: (Image) ${chat.lastMessage.file.name}`
             } else if (chat.lastMessage.type == "audio") {
