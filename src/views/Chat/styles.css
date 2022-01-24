@@ -18,7 +18,7 @@ html {
 }
 #shorts .shortImage {
   border-radius: var(--ui-radius);
-  max-height: 60vh;
+  max-height: 55vh;
   margin: auto;
   width: 100%;
   object-fit: contain;
@@ -45,6 +45,15 @@ html {
   transition: transform 0.2s;
   user-select: none;
   line-height: 2;
+}
+#shortsControl {
+  position: fixed;
+  top: 9vh;
+  z-index: 50;
+  left: 50px;
+}
+.vue-avatar--wrapper.shortThumbnail.selected {
+  transform: scale(1.35);
 }
 #uploadShort::after {
   content: "+";

@@ -165,6 +165,20 @@
                 :alt="message.file.name"
               />
             </div>
+            <div v-else-if="message.type == 'likeShort'" class="msg-short-like">
+              <div style="width:35%">
+                <short-preview :short="message.short"></short-preview>
+              </div>
+              <span class="msg-text">{{
+                (message.username || "ERROR") + " liked your Short"
+              }}</span>
+            </div>
+            <div v-else-if="message.type == 'commentShort'" class="msg-short-comment">
+              <div style="width:35%">
+                <short-preview :short="message.short"></short-preview>
+              </div>
+              <span class="msg-text">{{message.text}}</span>
+            </div>
             <div v-else-if="message.type == 'reply'" :class="`msg-reply`">
               <b-flex bare class="msg-text opacity-70">
                 <span class="font-semibold">{{
@@ -268,9 +282,10 @@ twemoji.base =
   "https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-160";
 import { find } from "linkifyjs";
 import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
+import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 export default {
   name: "ChatWindow",
-  components: { Picker, Emoji, LinkPreview },
+  components: { Picker, Emoji, LinkPreview, ShortPreview },
   emits: ["playAudio", "reply"],
   props: {
     user: Object,

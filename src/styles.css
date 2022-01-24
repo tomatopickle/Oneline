@@ -60,6 +60,7 @@ html.dark, html.dark body {
   transform-origin: top;
   transition: 0.14s;
   box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  z-index: 5555555555;
 }
 
 [data-tooltip]:hover:after {

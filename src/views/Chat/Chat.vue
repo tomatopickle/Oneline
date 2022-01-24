@@ -1,5 +1,27 @@
 <template>
   <b-app :loading="loading">
+    <teleport to="body">
+      <b-flex v-if="shorts.show" id="shortsControl">
+        <template
+          v-for="shortAvatar in shortsAvatars"
+          :key="shortAvatar.user.id"
+        >
+          <b-avatar
+            :class="
+              'shortThumbnail ' +
+              (shorts.user.id == shortAvatar.user.id ? 'selected' : '')
+            "
+            :username="
+              shortAvatar.user.username ? shortAvatar.user?.username : 'loading'
+            "
+            :src="shortAvatar.user.avatar"
+            :size="35"
+            :data-badge="shortAvatar.badge"
+            v-on:click="openShort(shortAvatar)"
+          ></b-avatar>
+        </template>
+      </b-flex>
+    </teleport>
     <template v-slot:prepend>
       <b-sidebar id="contacts" width="250px">
         <template v-slot:header>
@@ -233,7 +255,11 @@
           </template>
           <template v-slot:actions>
             <b-flex bare>
-              <b-btn icon @click="startMeeting()" :disabled="newMeetingBtnDisabled">
+              <b-btn
+                icon
+                @click="startMeeting()"
+                :disabled="newMeetingBtnDisabled"
+              >
                 <b-icon name="mdi mdi-video"></b-icon>
               </b-btn>
               <b-btn color="secondary" icon @click="chatInfo = !chatInfo"
@@ -712,7 +738,7 @@
               <h4>Filters</h4>
               <vue-horizontal ref="shortsPhotoFilters" style="width: 42vw">
                 <template v-slot:btn-prev>
-                  <b-btn size="small" bounce circle  icon>
+                  <b-btn size="small" bounce circle icon>
                     <b-icon size="24px" name="mdi mdi-chevron-left"></b-icon>
                   </b-btn>
                 </template>
@@ -1055,12 +1081,36 @@
           ></b-avatar>
           <div>
             <h3 class="m-0">{{ shorts.user.username }}</h3>
-
-            <small style="margin-left: 0" v-if="timeSince(shorts.short.time) != '0 seconds'"
+            <small
+              style="margin-left: 0"
+              v-if="timeSince(shorts.short.time) != '0 seconds'"
               >{{ timeSince(shorts.short.time) }} ago</small
             >
             <small style="margin-left: 0" v-else>Just now</small>
           </div>
+          <b-spacer></b-spacer>
+          <b-btn
+            bounce
+            icon
+            data-tooltip="Copy Short Link"
+            @click="
+              copy(
+                `${baseUrl}?story=${shorts.short.time}&user=${shorts.user.id}`
+              )
+            "
+          >
+            <b-icon name="mdi mdi-content-copy"></b-icon>
+          </b-btn>
+          <b-btn
+            bounce
+            icon
+            color="primary"
+            outline
+            data-tooltip="Send Like Message"
+            @click="likeShort()"
+          >
+            <b-icon name="mdi mdi-heart"></b-icon>
+          </b-btn>
         </b-flex>
       </div>
       <br />
@@ -1093,6 +1143,7 @@
               @load="
                 $refs.shortsSlider.refresh();
                 $refs.shortsSlider.scrollToIndex(0);
+                this.shorts.index = 0;
               "
               class="shortImage"
               :src="short.src"
@@ -1101,6 +1152,16 @@
           </figure>
         </div>
       </vue-horizontal>
+      <b-flex>
+        <b-input
+          ghost
+          v-model="shorts.commentText"
+          :placeholder="'Message ' + shorts.user.username"
+        ></b-input>
+        <b-btn @click="commentShort()" circle icon glass color="secondary">
+          <b-icon size="26px" name="mdi mdi-send"></b-icon>
+        </b-btn>
+      </b-flex>
     </b-modal>
     <b-modal width="500px" v-model="leaveGroup">
       <b-card glass>

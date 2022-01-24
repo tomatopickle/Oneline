@@ -11,7 +11,7 @@
               !checkTimeDifference(message, i),
             last:
               checkLastMsgFromSameUser(message, i) ||
-              checkLastTimeForSameUser(message, i),
+              checfkLastTimeForSameUser(message, i),
           }"
           v-if="message.type != 'info'"
           v-on:dblclick="
@@ -25,9 +25,8 @@
               v-if="checkDayDifference(message, i)"
               v-html="formatToDay(message.time)"
             ></div>
-            <br />
           </div>
-          <div>
+          <div class="relative">
             <div
               class="time"
               v-if="checkTimeDifference(message, i)"
@@ -176,6 +175,38 @@
                   :alt="message.file.name"
                 />
               </div>
+              <div
+                v-else-if="message.type == 'likeShort'"
+                class="msg-short-like"
+              >
+                <b-flex bare>
+                  <b-spacer v-if="message.sender == user.id"></b-spacer>
+                  <div style="width: 35%">
+                    <short-preview :short="message.short"></short-preview>
+                  </div>
+                </b-flex>
+                <b-flex bare>
+                  <b-spacer v-if="message.sender == user.id"></b-spacer>
+                  <span class="msg-text">{{
+                    (message.username || "ERROR") + " liked your Short"
+                  }}</span>
+                </b-flex>
+              </div>
+              <div
+                v-else-if="message.type == 'commentShort'"
+                class="msg-short-comment"
+              >
+                <b-flex bare>
+                  <b-spacer v-if="message.sender == user.id"></b-spacer>
+                  <div style="width: 35%">
+                    <short-preview :short="message.short"></short-preview>
+                  </div>
+                </b-flex>
+                <b-flex bare>
+                  <b-spacer v-if="message.sender == user.id"></b-spacer>
+                  <span class="msg-text">{{ message.text }}</span>
+                </b-flex>
+              </div>
               <div v-else-if="message.type == 'reply'" class="msg-reply-parent">
                 <div class="flex">
                   <b-spacer v-if="message.sender == user.id"></b-spacer>
@@ -298,10 +329,11 @@ twemoji.size = "";
 twemoji.base =
   "https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-160";
 import { find } from "linkifyjs";
+import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 export default {
   name: "ChatWindow",
-  components: { Picker, Emoji, LinkPreview },
+  components: { Picker, Emoji, LinkPreview, ShortPreview },
   emits: ["playAudio", "reply"],
   props: {
     user: Object,
