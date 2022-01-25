@@ -21,6 +21,7 @@ import recordAudio from "./scripts/recordAudio.js";
 import Player from '../../components/Player/Player.vue';
 // Variables for emoji search and display
 let meetingRingtone = new Audio(require("./assets/ringtone.mp3"));
+meetingRingtone.loop = true;
 let emojiConvertor = new EmojiConvertor();
 emojiConvertor.allow_native = true;
 emojiConvertor.replace_mode = 'unified';
@@ -261,6 +262,51 @@ export default {
     methods: {
         log(e) {
             console.log(e)
+        },
+        startMeetingWithUser(user) {
+            for (var chatId in this.chats) {
+                const chat = this.chats[chatId];
+                if (chat.type == "personal" && chat.data.id == user.id) {
+                    this.newMeetingBtnDisabled = true;
+                    Object.keys(chat).forEach((key) => {
+                        if (!chat[key]) {
+                            delete chat[key]
+                        }
+                    });
+                    axios.post('https://Oneline-Functions.abaanshanid.repl.co/meetings/rooms')
+                        .then((response) => {
+                            const room = response.data.room;
+                            const token = response.data.token;
+                            console.log(response.data);
+                            set(ref(db, "meetingInvite/" + chat.id), { from: this.user, room, chat: chat });
+                            const data = router.resolve({ path: '/meeting', query: { meetingId: room.url, token } });
+                            window.open(data.href, '_blank');
+                            setTimeout(() => { remove(ref(db, "meetingInvite/" + chat.id)) }, 3000);
+                            this.newMeetingBtnDisabled = false;
+                            if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.meetingNotifcations) {
+                                if (chat.type == "personal") {
+                                    new Notification(`${chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
+                                } else {
+                                    new Notification(`Everyone in ${chat.name} has been invited`, { badge: "https://res.cloudinary.com/abaan/image/upload/v1642608838/pngaaa.com-463061_lry8is.png" });
+                                }
+                                pubnub.subscribe({ channels: [`declineMeeting.${chat.id}`] });
+                                pubnub.addListener({
+                                    message: (m) => {
+                                        console.log(m);
+                                        new Notification(`${m.message} declined your invitation`);
+                                    },
+                                });
+                            };
+                        })
+                        .catch(function (error) {
+                            // handle error
+                            console.log(error);
+                        })
+                }
+            }
+            console.log(this.chat)
+
+
         },
         likeShort() {
             for (var chatId in this.chats) {

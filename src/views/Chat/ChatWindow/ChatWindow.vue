@@ -71,14 +71,80 @@
               "
             >
               <div class="senderAvatar">
-                <b-avatar
-                  :size="30"
-                  :username="
-                    users[message.sender] ? users[message.sender].username : ''
-                  "
-                  :src="users[message.sender]?.avatar"
-                >
-                </b-avatar>
+                <Popper arrow :interactive="true" placement="right">
+                  <b-avatar
+                    :size="30"
+                    class="senderAvatarEl"
+                    :username="
+                      users[message.sender]
+                        ? users[message.sender].username
+                        : ''
+                    "
+                    :src="users[message.sender]?.avatar"
+                  >
+                  </b-avatar>
+                  <template #content>
+                    <b-card
+                      glass
+                      class="p-0"
+                      style="
+                        max-width: 310px;
+                        padding-right: 35px;
+                        padding-bottom: 5px;
+                      "
+                    >
+                      <b-flex>
+                        <div>
+                          <b-avatar
+                            :size="45"
+                            :username="
+                              users[message.sender]
+                                ? users[message.sender].username
+                                : ''
+                            "
+                            :src="users[message.sender]?.avatar"
+                          ></b-avatar>
+                        </div>
+                        <div>
+                          <h4 class="m-0 mt-3 ml-2">
+                            {{ users[message.sender]?.username }}
+                          </h4>
+                          <p class="userInfoPara">
+                            {{ users[message.sender]?.description }}
+                          </p>
+                        </div>
+                      </b-flex>
+                      <b-flex style="width: 107%; padding-block: 5px">
+                        <b-spacer></b-spacer>
+                        <b-btn
+                          style="margin-right: -15px"
+                          size="small"
+                          color="primary"
+                          v-on:click="
+                            $emit('startMeetingWithUser', users[message.sender])
+                          "
+                        >
+                          <b-icon
+                            name="mdi mdi-video"
+                            left
+                            class="pr-1"
+                          ></b-icon>
+                          Meet
+                        </b-btn>
+                        <router-link :to="`/user/${message.sender}`">
+                          <b-btn size="small">
+                            <b-icon
+                              name="mdi mdi-account"
+                              left
+                              class="pr-1"
+                            ></b-icon>
+                            View Profile
+                          </b-btn></router-link
+                        >
+                      </b-flex>
+                    </b-card>
+                  </template>
+                </Popper>
               </div>
               <small class="username">{{
                 users[message.sender]?.username
@@ -166,18 +232,21 @@
               />
             </div>
             <div v-else-if="message.type == 'likeShort'" class="msg-short-like">
-              <div style="width:35%">
+              <div style="width: 35%">
                 <short-preview :short="message.short"></short-preview>
               </div>
               <span class="msg-text">{{
                 (message.username || "ERROR") + " liked your Short"
               }}</span>
             </div>
-            <div v-else-if="message.type == 'commentShort'" class="msg-short-comment">
-              <div style="width:35%">
+            <div
+              v-else-if="message.type == 'commentShort'"
+              class="msg-short-comment"
+            >
+              <div style="width: 35%">
                 <short-preview :short="message.short"></short-preview>
               </div>
-              <span class="msg-text">{{message.text}}</span>
+              <span class="msg-text">{{ message.text }}</span>
             </div>
             <div v-else-if="message.type == 'reply'" :class="`msg-reply`">
               <b-flex bare class="msg-text opacity-70">
@@ -286,7 +355,7 @@ import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 export default {
   name: "ChatWindow",
   components: { Picker, Emoji, LinkPreview, ShortPreview },
-  emits: ["playAudio", "reply"],
+  emits: ["playAudio", "reply", "startMeetingWithUser"],
   props: {
     user: Object,
     chat: Object,

@@ -11,7 +11,7 @@
               !checkTimeDifference(message, i),
             last:
               checkLastMsgFromSameUser(message, i) ||
-              checfkLastTimeForSameUser(message, i),
+              checkLastTimeForSameUser(message, i),
           }"
           v-if="message.type != 'info'"
           v-on:dblclick="
