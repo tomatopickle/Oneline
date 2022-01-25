@@ -289,7 +289,7 @@
           <b-avatar
             class="center"
             :username="chat.name || ''"
-            :src="chat.src"
+            :src="chat?.src"
             size="65"
           ></b-avatar>
           <h2 class="text-center">{{ chat.name }}</h2>
