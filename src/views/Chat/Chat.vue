@@ -330,6 +330,7 @@
             audio.show = true;
             audio.src = $event.src;
           "
+          @startMeetingWithUser="startMeetingWithUser($event)"
           v-else
           :limit="limit"
           :messages="messages"
@@ -882,7 +883,7 @@
               </b-flex>
               <b-flex>
                 <div class="flex flex-col">
-                  <span>Like Emoji</span>
+                  <span>Double click reaction</span>
                   <small style="margin-left: 0">{{
                     "Current emoji: " + settings.data.likeEmoji.native
                   }}</small>

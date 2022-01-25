@@ -1,7 +1,18 @@
 #contacts .card-text header .flex-box {
   padding: 0;
 }
-
+.userInfoPara {
+  opacity: 0.9;
+  font-size: 12px;
+  margin: 0 !important;
+}
+.senderAvatarEl {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.senderAvatarEl:active {
+  transform: scale(0.9);
+}
 body,
 html {
   font-family: Inter, sans-serif;
