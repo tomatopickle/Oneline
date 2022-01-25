@@ -236,7 +236,7 @@
                 <short-preview :short="message.short"></short-preview>
               </div>
               <span class="msg-text">{{
-                (message.username || "ERROR") + " liked your Short"
+                message?.username + " liked your Short"
               }}</span>
             </div>
             <div
