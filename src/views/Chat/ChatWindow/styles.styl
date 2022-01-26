@@ -172,8 +172,8 @@
 
     .msg:hover .msg-text {
         background-color: #ffffff0d;
-        transition: all 0.2s;
-        transition-delay: 0.5s;
+        transition: all 0.05s;
+        transition-delay: 0s;
         border-radius: 5px;
     }
 
@@ -302,10 +302,12 @@
         margin-left: 35px;
         width: max-content;
         display: block;
-        position: relative;
-
+        position: relative;   
+        max-width: 85%;
         img {
             border-radius: var(--ui-radius);
+            max-width: 99%;
+            object-fit: contain;
         }
 
         .controls {

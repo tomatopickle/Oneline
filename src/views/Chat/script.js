@@ -116,6 +116,7 @@ export default {
             },
             groupInfo: {
                 modal: false,
+                modalLoading: false,
                 loading: false,
                 data: {
                     name: "",
@@ -343,6 +344,34 @@ export default {
         },
         getByIndex(json, index) {
             return json[Object.keys(json)[index]];
+        },
+        uploadGroupAvatar() {
+            var input = document.createElement('input');
+            input.type = 'file';
+
+            input.onchange = e => {
+                this.groupInfo.modalLoading = true;
+                var file = e.target.files[0];
+                input.remove();
+                console.log(file);
+                uploadBytes(storageRef(storage, `groupAvatar/${this.chat.id}`), file).then((snapshot) => {
+                    console.log('Uploaded a blob or file!');
+                    console.log(snapshot);
+                    getDownloadURL(snapshot.metadata.ref).then((url) => {
+                        axios.post('https://oneline-functions.abaanshanid.repl.co/group/update/avatar', { id: this.chat.id, avatar: url })
+                            .then((response) => {
+                                // handle success
+                                this.chats[this.chat.id].src = url;
+                                this.chat.src = url;
+                                this.openChat(this.chat);
+                                update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} changed the group image`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" });
+                                this.groupInfo.modalLoading = false;
+                            });
+
+                    });
+                });
+            }
+            input.click();
         },
         uploadAvatar() {
             var input = document.createElement('input');
@@ -616,7 +645,7 @@ export default {
             axios.post('https://oneline-functions.abaanshanid.repl.co/group/update', { id: this.chat.id, name: this.groupInfo.data.name, description: this.groupInfo.data.description })
                 .then((response) => {
                     // handle success
-                    update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" }); information - outlin
+                    update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `${this.user.username} changed the group's information`, type: "info", time: Date.now(), sender: this.user.id, action: "groupInfoChanged" });
                 })
                 .catch(function (error) {
                     // handle error
@@ -779,7 +808,7 @@ export default {
                             var sender = snapshot.val();
                             lastMessage.senderInfo = sender;
                         }
-                        this.chats[chatId] = { name: chat.name, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, unreadMessages, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
+                        this.chats[chatId] = { name: chat.name, src: chat.avatar, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, unreadMessages, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
                         var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
                             return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                         });

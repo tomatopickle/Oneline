@@ -546,16 +546,15 @@ section.emoji-mart.emoji-mart-static * {
 #messageInp {
   display: flex;
   align-items: center;
-  left: -6px;
+  left: 0;
   font-size: 15px;
   background-color: hsl(var(--bg-dark), 15%);
   border-radius: var(--ui-radius);
-  width: 95%;
+  width: 98%;
   margin: auto;
+  margin-top: 2px;
   margin-bottom: 5px;
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  position: relative;
   max-height: 80vh;
 }
 

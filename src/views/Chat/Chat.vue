@@ -227,7 +227,10 @@
         </template>
       </b-sidebar>
     </template>
-    <div class="flex flex-col h-full" style="position: relative">
+    <div
+      class="flex flex-col h-full"
+      style="position: relative; overflow: hidden"
+    >
       <div
         v-on:scroll="checkIfScrolledToTop($event)"
         class="flex-grow overflow-y-scroll overflow-x-hidden"
@@ -351,7 +354,6 @@
           </b-btn>
         </transition>
       </div>
-      <br /><br /><br />
       <template v-if="audio.show || reply.show"><br /><br /></template>
       <div id="messageInp" v-if="chat?.id">
         <div v-show="reply.show">
@@ -359,7 +361,7 @@
             <span class="text-blue-600">{{
               members[reply.message.sender]?.username
             }}</span
-            >:&nbsp;<span>{{ getReplyPreview(reply.message) }}</span>
+            >:&nbsp;<span v-html="getReplyPreview(reply.message)"></span>
             <b-spacer></b-spacer>
             <b-btn
               icon
@@ -1027,7 +1029,7 @@
       ></file-upload>
     </b-modal>
     <b-modal v-model="groupInfo.modal" width="400px">
-      <b-card height="100%">
+      <b-card height="100%" :loading="groupInfo.modalLoading">
         <template #header>
           <b-flex>
             <h4 class="mt-0 mb-0">Group Info</h4>
@@ -1041,9 +1043,14 @@
           <b-avatar
             class="center"
             :username="chat.name || ''"
+            :src="chat?.src"
             size="75"
           ></b-avatar>
-          <b-btn icon class="center mt-2 mb-2" size="small"
+          <b-btn
+            @click="uploadGroupAvatar()"
+            icon
+            class="center mt-2 mb-2"
+            size="small"
             ><b-icon name="mdi mdi-camera" left></b-icon> Change</b-btn
           >
           <b-input
@@ -1297,7 +1304,7 @@
           </template>
           <div>
             <b-avatar
-              :src="chat.src"
+              :src="chat?.src"
               class="center"
               :username="chat.name || ''"
             ></b-avatar>
