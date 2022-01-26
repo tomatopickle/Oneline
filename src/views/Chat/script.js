@@ -1107,9 +1107,10 @@ export default {
             return new Date(time).toLocaleString();
         },
         checkEnterKey(e) {
+            console.log(e)
             if (e.key == 'Enter') {
-                e.preventDefault();
                 if (userTypedColon) {
+                    e.preventDefault();
                     const text = this.emojiComplete.emojis[this.emojiComplete.selectedIndex]?.short_name.replace(emojiQuery, "") + ": ";
                     let selection = window.getSelection();
                     let range = selection.getRangeAt(0);
@@ -1123,10 +1124,13 @@ export default {
                     this.clearEmojiSearch();
                     return
                 }
-                if (!this.reply.show) {
-                    this.sendMessage();
-                } else {
-                    this.sendReplyMessage();
+                if (!e.shiftKey) {
+                    e.preventDefault();
+                    if (!this.reply.show) {
+                        this.sendMessage();
+                    } else {
+                        this.sendReplyMessage();
+                    }
                 }
                 userTypedColon = false;
             }
