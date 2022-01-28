@@ -1107,7 +1107,6 @@ export default {
             return new Date(time).toLocaleString();
         },
         checkEnterKey(e) {
-            console.log(e)
             if (e.key == 'Enter') {
                 if (userTypedColon) {
                     e.preventDefault();
