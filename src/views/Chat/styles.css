@@ -557,7 +557,42 @@ section.emoji-mart.emoji-mart-static * {
   position: relative;
   max-height: 80vh;
 }
+html:not(.dark) #messageInp {
+  display: flex;
+  align-items: center;
+  left: 0;
+  font-size: 15px;
+  background-color: hsl(var(--bg), 100%);
+  border-radius: var(--ui-radius);
+  width: 98%;
+  margin: auto;
+  margin-top: 2px;
+  margin-bottom: 5px;
+  position: relative;
+  max-height: 80vh;
+  border: solid hsl(var(--bg), 93%) 1px;
+}
+html:not(.dark) .messageBtn {
+  color: hsl(var(--bg), 40%);
+}
+html:not(.dark) .messageBtn.mdi-plus {
+  color: var(--primary);
+  opacity: 1 !important;
+}
+html:not(.dark) .emoji-mart-search input {
+  border: 1px solid #d9d9d9;
+}
+html:not(.dark) #emojiComplete {
+  background-color: hsl(var(--bg), 100%); 
+}
+html:not(.dark) #emojiComplete .selected {
+  color: white;
+}
+html:not(.dark) #replyMessage{
+  background-color: hsl(var(--bg),100%);
+  border: solid hsl(var(--bg), 93%) 1px;
 
+}
 #messageInp .editable {
   width: 80%;
   flex-grow: 1;

@@ -17,8 +17,7 @@ app.component("FileUpload", FileUpload);
 app.use(Notifications);
 app.use(VuePlyr, {
     plyr: {}
-})
+});
 app.component("Popper", Popper);
 app.mount('#app');
-app.config.globalProperties.$toggleTheme();
 // node_modules\bounce-ui-vue\dist\bounce_ui.css

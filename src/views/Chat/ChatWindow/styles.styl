@@ -1,5 +1,46 @@
 @import '../../../variables.styl';
 
+html:not(.dark) .chatWindowDefault {
+    .msg {
+        .fileMsg {
+            background-color: lighten($bg, 5);
+            color: $bg-dark;
+        }
+
+        .msg-text {
+            color: $bg-dark;
+        }
+
+        .username {
+            color: $bg-dark;
+        }
+
+        .sameDay {
+            background-color: lighten($bg, 5);
+            border: 1px solid darken($bg, 5);
+        }
+    }
+
+    .info-message {
+        background-color: lighten($bg, 5);
+        color: $bg-dark;
+    }
+
+    .messageActions {
+        background-color: lighten($bg, 5);
+        border: 1px solid darken($bg, 5);
+    }
+
+    .reactions {
+        border: 1px solid #d9d9d9;
+        background-color: lighten($bg, 5);
+
+        .reaction:hover {
+            background-color: darken($bg, 1);
+        }
+    }
+}
+
 .chatWindowDefault {
     .msg .msg-text {
         padding: 8px;
@@ -20,22 +61,27 @@
         color: #dcddde;
         font-weight: 400;
     }
-    .sub.last{
-        .msg-reply{
-            margin-top:5px;
+
+    .sub.last {
+        .msg-reply {
+            margin-top: 5px;
         }
     }
-    .msg-reply{
+
+    .msg-reply {
         margin-left: 38px;
-        .flex-box.bare.msg-text{
-            border-left: 3px solid lighten($bg-dark,25);
+
+        .flex-box.bare.msg-text {
+            border-left: 3px solid lighten($bg-dark, 25);
             padding-left: 5px;
         }
-        .msg-text{
+
+        .msg-text {
             margin-left: 0;
             padding-left: 0;
         }
     }
+
     .msg.last {
         margin-bottom: 12px;
     }
@@ -57,9 +103,11 @@
     .reactions .flex-box span {
         margin: 0;
     }
-    .link-preview-wrapper{
-       margin-left: 40px;
+
+    .link-preview-wrapper {
+        margin-left: 40px;
     }
+
     .reactions .reactionNumber {
         padding-right: 5px;
         font-size: 14px;
@@ -302,8 +350,9 @@
         margin-left: 35px;
         width: max-content;
         display: block;
-        position: relative;   
+        position: relative;
         max-width: 85%;
+
         img {
             border-radius: var(--ui-radius);
             max-width: 99%;
