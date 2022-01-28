@@ -1237,6 +1237,7 @@ export default {
         },
         applySettings() {
             const settingsData = this.settings.data;
+            console.log(settingsData);
             if (settingsData?.lightMode) {
                 this.$toggleTheme();
                 document.querySelector("meta[name='theme-color']").setAttribute("content", "#fff");

@@ -140,6 +140,12 @@ export default {
 .link-preview-wrapper:hover {
   background-color: hsla(var(--bg-dark), 17%);
 }
+html:not(.dark) .link-preview-wrapper{
+  background-color: hsla(var(--bg), 100%);
+}
+html:not(.dark) .link-preview-wrapper:hover{
+  background-color: hsla(var(--bg), 95%);
+}
 .link-preview-wrapper a {
   /* The entire element is wrapped in a link, so we don't want browser styling */
   all: inherit;
