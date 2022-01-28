@@ -148,6 +148,7 @@ html {
 }
 #shorts .modal {
   overflow: hidden;
+  background-color: #ffffff4a;
 }
 #shortPhotoFilters {
   width: 42vw;

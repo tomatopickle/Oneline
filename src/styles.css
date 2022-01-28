@@ -8,14 +8,15 @@
     --popper-theme-padding: 32px;
     --popper-theme-box-shadow: 0 6px 30px -6px rgba(0, 0, 0, 0.25);
 } */
-:root{
+:root {
   --bg: 0, 0%;
   --bg-dark: 240, 5%;
 }
-html.dark, html.dark body {
+html.dark,
+html.dark body {
   background-color: hsl(240deg 5% 9%);
 }
-#confetti-canvas{
+#confetti-canvas {
   position: absolute;
   top: 0;
 }
@@ -71,7 +72,10 @@ a {
   color: #6fa1ff;
   text-decoration: none;
 }
-#splashScreen{
+html:not(.dark) a{
+  color: var(--primary);
+}
+#splashScreen {
   background-image: url(./assets/logos/logo.png);
   background-position: center center;
   background-repeat: no-repeat;
@@ -82,9 +86,9 @@ a {
   background-color: #0c0b0b;
   background-size: 30%;
   background-position-y: 15vh;
-  display: none; 
+  display: none;
 }
-#splashScreen:after{
+#splashScreen:after {
   content: "Oneline";
   position: fixed;
   color: white;
@@ -93,6 +97,6 @@ a {
   transform: translateX(-50%);
   font-size: 35px;
 }
-#app[v-cloak] + #splashScreen{
-  display: block; 
+#app[v-cloak] + #splashScreen {
+  display: block;
 }
