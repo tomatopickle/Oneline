@@ -5,7 +5,7 @@ import db from "../../fire.js";
 import { storage } from "../../fire.js";
 import PubNub from "pubnub";
 import VueHorizontal from "vue-horizontal";
-import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt } from "firebase/database";
+import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
 import stringify from "json-stable-stringify";
@@ -697,6 +697,24 @@ export default {
                 if (!chatData.name) {
                     this.chat.name = chat.name;
                 }
+                chatData.members.forEach((userId) => {
+                    get(ref(db, `users/${userId}`)).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            var member = snapshot.val();
+                            this.members[userId] = member;
+                        }
+                    });
+                    onValue((child(ref(db), `typing/${userId}`)), (snapshot) => {
+                        if (snapshot.exists()) {
+                            var user = snapshot.val();
+                            if ((user?.typing) && this.chat.id == user?.chat) {
+                                this.typing[userId] = user.user.username;
+                            } else if ((!user?.typing) && this.chat.id == user?.chat) {
+                                delete this.typing[userId];
+                            }
+                        }
+                    });
+                });
                 onValue(query(ref(db, `messages/${chat.id}`), limitToLast(this.limit)), (snapshot) => {
                     var data = snapshot.val();
                     if (this.chat.id != chat.id) return
@@ -704,25 +722,6 @@ export default {
                     this.groupInfo.data.description = chatData?.description;
                     this.typing = {};
                     this.messages = data || {};
-                    chatData.members.forEach((userId) => {
-                        get(ref(db, `users/${userId}`)).then((snapshot) => {
-                            if (snapshot.exists()) {
-                                var member = snapshot.val();
-                                this.members[userId] = member;
-                            }
-                        });
-                        onValue((child(ref(db), `typing/${userId}`)), (snapshot) => {
-                            if (snapshot.exists()) {
-                                var user = snapshot.val();
-                                if ((user?.typing) && this.chat.id == user?.chat) {
-                                    this.typing[userId] = user.user.username;
-                                } else if ((!user?.typing) && this.chat.id == user?.chat) {
-                                    delete this.typing[userId];
-                                }
-                            }
-                        });
-                    });
-
                 });
             });
         },
@@ -771,14 +770,15 @@ export default {
         },
         getGroupChat(chatId, chat) {
             let unreadMessages = 0;
-            onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline.toString()), limitToLast(100)), (snapshot) => {
+            onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)), (snapshot) => {
                 if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
                     console.log("chat aint there")
                     unreadMessages = Object.keys(snapshot.val()).length;
                 } else {
                     unreadMessages = 0;
                 }
-                onChildAdded(ref(db, 'messages/' + chatId), (data) => {
+                off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)));
+                onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
                     var lastMessage = data.val();
                     if (this.chat.id == chatId) {
                         this.newMessage(lastMessage);
@@ -826,6 +826,8 @@ export default {
                 } else {
                     unreadMessages = 0;
                 }
+                // We only need this query once
+                off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)));
                 onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
                     var lastMessage = data.val();
                     if (this.chat.id == chatId) {
@@ -850,7 +852,7 @@ export default {
                 });
                 this.user.chats[chatId].members.forEach((usr) => {
                     if (usr != this.user.id) {
-                        onValue((child(ref(db), `users/${usr}`)), (snapshot) => {
+                        get(ref(db, `users/${usr}`)).then(snapshot => {
                             if (snapshot.exists()) {
                                 var data = snapshot.val();
                                 this.getShorts(data);
@@ -865,6 +867,7 @@ export default {
                                     if (this.chat.id == chatId) {
                                         this.chat.lastOnline = lastOnline;
                                     }
+                                    // Used to get the latest message preview
                                     onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
                                         if (snapshot.exists()) {
                                             var lastMessage = snapshot.val();
@@ -886,10 +889,6 @@ export default {
 
 
                                 });
-                            } else {
-                                alert(
-                                    "Error: User not found while loading contacts, this is a Oneline problem, please contact Abaan"
-                                );
                             }
                         });
                     }
