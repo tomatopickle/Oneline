@@ -14,11 +14,13 @@
         align-items: center;
         white-space: break-spaces;
     }
+
     .link-preview-parent {
         width: 60% !important;
         margin-right: 7px;
         margin-top: 7px;
-    }   
+    }
+
     .msg {
         position: relative;
     }
@@ -52,11 +54,11 @@
     }
 
     .sub .msg-text {
-        border-radius: .25rem 1.125rem 1.125rem .25rem;
+        border-radius: 0.25rem 1.125rem 1.125rem 0.25rem;
     }
 
     .me.sub .msg-text {
-        border-radius: 1.125rem .25rem .25rem 1.125rem;
+        border-radius: 1.125rem 0.25rem 0.25rem 1.125rem;
     }
 
     .last .msg-text {
@@ -66,9 +68,11 @@
     .me.last .msg-text {
         border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
     }
-    :not(.me) .link-preview-wrapper{
+
+    :not(.me) .link-preview-wrapper {
         margin-left: 50px;
     }
+
     .fileMsg {
         background-color: lighten($bg-dark, 5);
         position: relative;
@@ -194,54 +198,64 @@
     .messageAnimation-leave-active, .messageAnimationOut {
         animation-name: messageAnimation;
     }
+
     .msg .flex-box {
         padding-block: 1px;
     }
+
     .msg-text .emojiImg {
         width: 17px;
         height: 17px;
         margin-left: 5px;
         margin-right: 5px;
     }
+
     .msg-reply .emojiImg {
         width: 17px;
         height: 17px;
         margin-left: 5px;
         margin-right: 5px;
     }
-    .msg:not(.me):not(.sub):not(.sub.last) div.msg-text { 
+
+    .msg:not(.me):not(.sub):not(.sub.last) div.msg-text {
         margin-top: 10px;
     }
-    .msg:not(.me):not(.sub):not(.last) .msg-reply-parent{
-        .msg-text{
+
+    .msg:not(.me):not(.sub):not(.last) .msg-reply-parent {
+        .msg-text {
             margin-top: 0;
-        } 
-        .msg-reply { 
+        }
+
+        .msg-reply {
             margin-top: 10px;
         }
-    } 
-    .msg:not(.me):not(.sub):not(.sub.last) .msg-reply-parent
-    :not(.me) .sub{
-        .msg-reply-parent .msg-reply{
+    }
+
+    .msg:not(.me):not(.sub):not(.sub.last) .msg-reply-parent, :not(.me) .sub {
+        .msg-reply-parent .msg-reply {
             margin-left: 30px;
         }
     }
-    .me{
-        .msg-reply-parent{
-            .msg-text{   
+
+    .me {
+        .msg-reply-parent {
+            .msg-text {
                 float: right;
             }
-            .msg-reply{
+
+            .msg-reply {
                 margin-right: -5px;
             }
         }
     }
-    .msg-reply-parent{
-        .msg-text{
+
+    .msg-reply-parent {
+        .msg-text {
             width: max-content;
             margin: 0;
         }
-        .msg-reply{
+
+        .msg-reply {
             background-color: lighten($bg-dark, 5);
             border-radius: 30px;
             padding-inline: 5px;
@@ -252,6 +266,7 @@
             align-items: center;
         }
     }
+
     .oneEmoji .emojiImg {
         width: 50px;
         height: 50px;

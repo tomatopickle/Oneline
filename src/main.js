@@ -1,4 +1,6 @@
 import { createApp } from 'vue';
+import { VueMasonryPlugin } from "vue-masonry/src/masonry.plugin.js";
+
 import bounce_ui from "bounce-ui-vue";
 import Popper from "vue3-popper";
 import Notifications from '@kyvg/vue3-notification';
@@ -12,6 +14,7 @@ import './registerServiceWorker'
 const app = createApp(App);
 app.use(bounce_ui);
 app.use(router);
+app.use(VueMasonryPlugin);
 app.component("VLazyImage", VLazyImage);
 app.component("FileUpload", FileUpload);
 app.use(Notifications);

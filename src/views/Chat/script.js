@@ -100,7 +100,7 @@ export default {
             user: {},
             settingsHeading: ["Appearance", "Account", "Chat", "Notifications", "Sounds", "About"],
             chats: {},
-            baseUrl: location.href,
+            baseUrl: "https://" + location.host,
             chatInfo: false,
             chat: {},
             windowHidden: false,

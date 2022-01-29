@@ -14,7 +14,8 @@ export default {
 };
 </script>
 <style>
-.shortPreview {
+.chatWindowSimple .shortPreview,
+.chatWindowDefault .shortPreview {
   /* width: 35%; */
   margin-left: 35px;
   margin-top: 5px;
