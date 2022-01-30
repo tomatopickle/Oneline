@@ -49,7 +49,7 @@ router.beforeResolve((to, from, next) => {
 
 router.afterEach((to) => {
   console.log(to);
-  document.title = to.name ? `${to.name} | Oneline` : defaultTitle;
+  // document.title = to.name ? `${to.name} | Oneline` : defaultTitle;
   NProgress.done();
 });
 export default router;

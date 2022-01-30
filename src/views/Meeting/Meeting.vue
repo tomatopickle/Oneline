@@ -1,4 +1,11 @@
 <template>
+  <Head>
+    <title>Meeting | Oneline</title>
+     <meta
+      property="og:description"
+      content="Join a meeting in Oneline"
+    />
+  </Head>
   <transition name="fadeUp">
     <div id="leftMeeting" v-show="leftMeeting">
       <h1>You left the Meeting</h1>

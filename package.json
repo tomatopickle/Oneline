@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port 4000",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy": "surge --domain oneline.surge.sh --project C:/Users/mohammed/Abaan/oneline/dist",
@@ -13,6 +13,7 @@
     "@daily-co/daily-js": "^0.22.0",
     "@kyvg/vue3-notification": "^2.3.4",
     "@vime/vue-next": "^5.3.1",
+    "@vueuse/head": "^0.7.5",
     "axios": "^0.24.0",
     "bootbox": "^5.5.2",
     "bounce-ui-vue": "^0.1.12",

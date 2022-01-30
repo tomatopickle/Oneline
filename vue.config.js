@@ -7,7 +7,7 @@ module.exports = {
       entry: 'src/main.js',
       template: 'public/index.html',
       filename: 'index.html',
-      title: 'Oneline Loading...',
+      title: 'Oneline',
     }
   },
   pwa: {

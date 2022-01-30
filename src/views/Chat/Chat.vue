@@ -1,4 +1,12 @@
 <template>
+  <Head>
+      <title>Oneline</title>
+      <meta
+      property="og:description"
+      content="The free, fast and reliable chat app."
+    />
+    <meta property="og:image" content="./favicon.ico" />
+  </Head>
   <b-app :loading="loading">
     <teleport to="body">
       <b-flex v-if="shorts.show" id="shortsControl">

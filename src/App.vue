@@ -1,10 +1,5 @@
 <template>
   <router-view/>
-  <!-- <router-view v-slot="{ Component }">
-  <transition name="fadeUpBig">
-    <component :is="Component" />
-  </transition>
-</router-view> -->
   <notifications position="bottom right" />
 </template>
 <script>

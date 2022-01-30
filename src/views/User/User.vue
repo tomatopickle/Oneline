@@ -1,4 +1,16 @@
 <template>
+  <Head>
+    <title>{{ `${user.username || "User"} | Oneline` }}</title>
+    <meta
+      property="og:title"
+      :content="`${user.username || 'User'} | Oneline`"
+    />
+    <meta
+      property="og:description"
+      :content="user.description || 'Know about this person in Oneline'"
+    />
+    <meta property="og:image" :content="user.avatar || './assets/logo.png'" />
+  </Head>
   <b-app :loading="loading" loading-text="Loading User Info">
     <b-card
       width="500px"
@@ -134,7 +146,7 @@ export default {
         if (snapshot.exists()) {
           var data = snapshot.val();
           this.user = data;
-          document.title = `${data.username} | Oneline`;
+          // document.title = `${data.username} | Oneline`;
           this.loading = false;
           onValue(
             query(

@@ -1,4 +1,7 @@
 <template>
+  <Head>
+      <title>Group Invite | Oneline</title>
+  </Head>
   <b-app :loading="loading" loading-text="Loading Invite Info">
     <b-card width="350px">
       <template v-slot:header>
