@@ -146,9 +146,11 @@ html {
   margin: auto;
   min-width: 490px;
 }
+html:not(.dark) #shorts .modal {
+  background-color: #ffffff4a;
+}
 #shorts .modal {
   overflow: hidden;
-  background-color: #ffffff4a;
 }
 #shortPhotoFilters {
   width: 42vw;
@@ -584,15 +586,14 @@ html:not(.dark) .emoji-mart-search input {
   border: 1px solid #d9d9d9;
 }
 html:not(.dark) #emojiComplete {
-  background-color: hsl(var(--bg), 100%); 
+  background-color: hsl(var(--bg), 100%);
 }
 html:not(.dark) #emojiComplete .selected {
   color: white;
 }
-html:not(.dark) #replyMessage{
-  background-color: hsl(var(--bg),100%);
+html:not(.dark) #replyMessage {
+  background-color: hsl(var(--bg), 100%);
   border: solid hsl(var(--bg), 93%) 1px;
-
 }
 #messageInp .editable {
   width: 80%;

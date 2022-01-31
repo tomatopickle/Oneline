@@ -1,7 +1,7 @@
 <template>
   <Head>
-      <title>Oneline</title>
-      <meta
+    <title>Oneline</title>
+    <meta
       property="og:description"
       content="The free, fast and reliable chat app."
     />
@@ -340,6 +340,10 @@
           @playAudio="
             audio.show = true;
             audio.src = $event.src;
+          "
+          @openShort="
+            log($event.short);
+            openShortWithId($event.short.time, $event.sender);
           "
           @startMeetingWithUser="startMeetingWithUser($event)"
           v-else

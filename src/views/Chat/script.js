@@ -928,10 +928,12 @@ export default {
             });
         },
         openShortWithId(id, userId, controlled) {
+            console.log(id, userId)
             this.shorts.show = true;
             get(child(ref(db), `users/${userId}`))
                 .then((snapshot) => {
                     const user = snapshot.val();
+                    console.log(user);
                     this.shorts.user = user;
                     get(child(ref(db), `shorts/${userId}/${id}`))
                         .then((snapshot) => {

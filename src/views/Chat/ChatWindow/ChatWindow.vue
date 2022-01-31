@@ -233,7 +233,19 @@
             </div>
             <div v-else-if="message.type == 'likeShort'" class="msg-short-like">
               <div style="width: 35%">
-                <short-preview :short="message.short"></short-preview>
+                <short-preview
+                  v-on:click="
+                    Object.keys(this.users).forEach((usr) => {
+                      if (usr != user.id) {
+                        $emit('openShort', {
+                          short: message.short,
+                          sender: usr,
+                        });
+                      }
+                    })
+                  "
+                  :short="message.short"
+                ></short-preview>
               </div>
               <span class="msg-text">{{
                 message?.username + " liked your Short"
@@ -244,7 +256,19 @@
               class="msg-short-comment"
             >
               <div style="width: 35%">
-                <short-preview :short="message.short"></short-preview>
+                <short-preview
+                  v-on:click="
+                    Object.keys(this.users).forEach((usr) => {
+                      if (usr != user.id) {
+                        $emit('openShort', {
+                          short: message.short,
+                          sender: usr,
+                        });
+                      }
+                    })
+                  "
+                  :short="message.short"
+                ></short-preview>
               </div>
               <span class="msg-text">{{ message.text }}</span>
             </div>
@@ -355,7 +379,7 @@ import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 export default {
   name: "ChatWindow",
   components: { Picker, Emoji, LinkPreview, ShortPreview },
-  emits: ["playAudio", "reply", "startMeetingWithUser"],
+  emits: ["playAudio", "reply", "startMeetingWithUser", "openShort"],
   props: {
     user: Object,
     chat: Object,
@@ -368,6 +392,8 @@ export default {
     return {
       users: {},
       emojiIndex: emojiIndex,
+      baseUrl: "https://" + location.host,
+
       download: {
         loading: false,
         time: "",
