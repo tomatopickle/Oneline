@@ -385,6 +385,29 @@
             </b-btn>
           </div>
         </div>
+        <div v-show="instantUpload.show">
+          <div id="instantUpload" >
+            <span>{{
+              instantUpload.loading ? "Uploading..." : instantUpload.fileName
+            }}</span>
+            <b-spacer></b-spacer>
+            <transition name="zoom" mode="out-in">
+              <b-spinner
+                class="primary"
+                v-if="instantUpload.loading"
+                style="transform: scale(0.5); margin: -15px"
+              ></b-spinner>
+              <div v-else class="flex">
+                <b-btn @click="deleteInstantUpload()" size="small" icon class="mr-1">
+                  <b-icon name="mdi mdi-delete"></b-icon>
+                </b-btn>
+                <b-btn @click="sendInstantUpload()" size="small" icon color="primary">
+                  <b-icon name="mdi mdi-send"></b-icon>
+                </b-btn>
+              </div>
+            </transition>
+          </div>
+        </div>
         <div id="emojiComplete">
           <div
             v-for="(emoji, i) in emojiComplete.emojis"
@@ -453,6 +476,7 @@
             @click="fileUpload.show = true"
           ></b-icon>
           <content-editable-div
+            @filePasted="filePastedInMsgBar($event)"
             @keypress="checkIfUserTyping($event)"
             @keydown="checkEnterKey($event)"
             @blur="userLeftMessageBox()"

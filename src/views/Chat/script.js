@@ -16,7 +16,7 @@ import data from "emoji-mart-vue-fast/data/all.json";
 import "emoji-mart-vue-fast/css/emoji-mart.css";
 import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
 import EmojiConvertor from "emoji-js";
-import { ref as storageRef, getDownloadURL, uploadBytes } from "firebase/storage";
+import { ref as storageRef, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import recordAudio from "./scripts/recordAudio.js";
 import Player from '../../components/Player/Player.vue';
 // Variables for emoji search and display
@@ -42,6 +42,12 @@ export default {
         return {
             shortsAvatars: {},
             newMeetingBtnDisabled: false,
+            instantUpload: {
+                show: false,
+                loading: true,
+                file: {},
+                fileName: "Loading..."
+            },
             shorts: {
                 show: false,
                 user: {},
@@ -263,6 +269,31 @@ export default {
     methods: {
         log(e) {
             console.log(e)
+        },
+        filePastedInMsgBar(fileObj) {
+            console.log(fileObj);
+            this.instantUpload.loading = true;
+            this.instantUpload.fileName = fileObj.name;
+            this.instantUpload.show = true;
+            const id = nanoid();
+            let file = {
+                name: fileObj.name,
+                url: "",
+                id,
+                path: `messages/${id}_${fileObj.name}`,
+                time: Date.now(),
+                type: fileObj.type,
+            }
+            uploadBytes(storageRef(storage, `messages/${id}_${fileObj.name}`), fileObj).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                console.log(snapshot);
+                getDownloadURL(snapshot.metadata.ref).then((url) => {
+                    file.url = url;
+                    this.instantUpload.file = file;
+                    this.instantUpload.loading = false;
+                    console.log(file);
+                });
+            });
         },
         startMeetingWithUser(user) {
             for (var chatId in this.chats) {
@@ -1099,10 +1130,32 @@ export default {
         },
         sendMessage() {
             if (this.message.text.trim().length < 1) return
+            if (!this.instantUpload.loading && this.instantUpload.file) {
+                this.sendInstantUpload();
+            }
             update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
             this.message.text = "";
             document.querySelector("#messageInp .editable").innerHTML = "";
             remove(ref(db, `seen/${this.chat.id}`));
+        },
+        deleteInstantUpload() {
+            deleteObject(storageRef(storage, this.instantUpload.file.path)).then(() => {
+                this.instantUpload.loading = true;
+                this.instantUpload.file = {};
+                this.instantUpload.show = false;
+            });
+        },
+        sendInstantUpload() {
+            const file = this.instantUpload.file;
+            update(child(ref(db), `messages/${this.chat.id}/${file.time}`), {
+                sender: this.user.id,
+                file,
+                time: file.time,
+                type: file.type.split("/")[0] === "image" ? "image" : "file",
+            });
+            this.instantUpload.loading = true;
+            this.instantUpload.file = {};
+            this.instantUpload.show = false;
         },
         getTime(time) {
             return new Date(time).toLocaleString();
