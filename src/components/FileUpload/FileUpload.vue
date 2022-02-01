@@ -203,6 +203,13 @@ export default {
           time: file.time,
           type: file.type.split("/")[0] === "image" ? "image" : "file",
         });
+        if (file.type.split("/")[0] === "image") {
+          update(child(ref(db), `chatImages/${this.chat.id}/${file.time}`), {
+            sender: this.user.id,
+            file,
+            time: file.time,
+          });
+        }
         if (Object.keys(this.files).length == i) {
           if (this.message) {
             update(child(dbRef(db), `messages/${this.chat.id}/${Date.now()}`), {

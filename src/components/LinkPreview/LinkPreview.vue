@@ -1,5 +1,8 @@
 <template>
-  <div class="link-preview-parent">
+  <div
+    class="link-preview-parent"
+    :style="validUrl && !loaded && !response?.title ? 'height:150px' : ''"
+  >
     <div v-if="response?.title">
       <slot
         :img="response.image"
@@ -13,10 +16,7 @@
           style="text-decoration: none; color: inherit"
           class="link-preview-a-element"
         >
-          <div
-            class="link-preview-wrapper"
-            :style="{ width: link - previewWidth }"
-          >
+          <div class="link-preview-wrapper">
             <div class="link-preview-img">
               <img :src="response.image" />
             </div>
@@ -74,6 +74,7 @@ export default {
     return {
       response: null,
       validUrl: false,
+      loaded: false,
     };
   },
   methods: {
@@ -91,7 +92,8 @@ export default {
       this.validUrl = regex.test(url);
       return this.validUrl;
     },
-    getLinkPreview: async function () {
+    async getLinkPreview() {
+      this.loaded = true;
       if (this.isValidUrl(this.url)) {
         axios.get(this.apiUrl + this.url, {}).then((response) => {
           this.response = response.data;
@@ -140,11 +142,11 @@ export default {
 .link-preview-wrapper:hover {
   background-color: hsla(var(--bg-dark), 17%);
 }
-html:not(.dark) .link-preview-wrapper{
+html:not(.dark) .link-preview-wrapper {
   background-color: hsla(var(--bg), 100%);
   box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px;
 }
-html:not(.dark) .link-preview-wrapper:hover{
+html:not(.dark) .link-preview-wrapper:hover {
   background-color: hsla(var(--bg), 95%);
 }
 .link-preview-wrapper a {

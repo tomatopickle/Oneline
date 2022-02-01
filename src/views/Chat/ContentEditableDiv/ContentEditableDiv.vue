@@ -20,7 +20,7 @@ function getFileFromPasteEvent(event) {
 }
 export default {
   props: ["modelValue"],
-  emits: ["filePasted"],
+  emits: ["filePasted","update:modelValue"],
   mounted() {
     this.$el.addEventListener("paste", (e) => {
       const file = getFileFromPasteEvent(e);

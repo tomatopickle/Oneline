@@ -301,7 +301,7 @@
             class="center"
             :username="chat.name || ''"
             :src="chat?.src"
-            size="65"
+            :size="65"
           ></b-avatar>
           <h2 class="text-center">{{ chat.name }}</h2>
           <small class="block text-center text-opacity-5">{{
@@ -889,7 +889,7 @@
                   class="center"
                   :src="userInfo.data.avatar"
                   :username="userInfo.data.username || ''"
-                  size="75"
+                  :size="75"
                 ></b-avatar>
                 <b-btn
                   @click="uploadAvatar()"
@@ -1080,7 +1080,7 @@
             class="center"
             :username="chat.name || ''"
             :src="chat?.src"
-            size="75"
+            :size="75"
           ></b-avatar>
           <b-btn
             @click="uploadGroupAvatar()"

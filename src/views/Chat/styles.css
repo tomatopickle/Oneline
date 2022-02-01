@@ -1,6 +1,53 @@
 #contacts .card-text header .flex-box {
   padding: 0;
 }
+#chatImage {
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: var(--ui-radius);
+  margin: auto;
+  display: block;
+  height: 100%;
+  padding: 115px;
+  max-height: 70vh;
+}
+#imageThumbnails {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  background-color: rgb(30 30 30 / 75%);
+  padding-block: 15px;
+}
+img.thumbnailImage {
+  object-fit: contain;
+  max-height: 10vh;
+  margin-inline: 15px;
+  border: 2px solid #3e3e3e70;
+  padding: 10px;
+  border-radius: var(--ui-radius);
+  cursor: pointer;
+}
+img.thumbnailImage.selected {
+  border-color: var(--primary);
+}
+#imagePreParent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+#fullScreenImageModal .modal {
+  padding: 0;
+  margin: 0;
+}
+#fullScreenImageModal .modal-backdrop {
+  background-color: rgb(30 30 30 / 75%);
+}
+#fullScreenImageModal .modal-content {
+  margin-block: 0;
+  height: 100%;
+  padding-left: 0;
+  backdrop-filter: blur(15px);
+}
 .userInfoPara {
   opacity: 0.9;
   font-size: 12px;
@@ -223,7 +270,7 @@ figure.filterPreview::before {
   padding-block: 5px;
   align-items: center;
   backdrop-filter: blur(20px);
-  min-height:54px;;
+  min-height: 54px;
 }
 .card-text {
   flex-grow: 1;

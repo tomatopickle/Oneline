@@ -1,5 +1,17 @@
 @import '../../../variables.styl';
 
+#imageThumbnails .thumbnailImage {
+    transition: all 0.2s;
+
+    &:hover {
+        background-color: lighten($bg-dark, 8);
+    }
+
+    &:active {
+        background-color: lighten($bg-dark, 12);
+    }
+}
+
 html:not(.dark) .chatWindowDefault {
     .msg {
         .fileMsg {

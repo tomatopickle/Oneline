@@ -12,6 +12,9 @@
   --bg: 0, 0%;
   --bg-dark: 240, 5%;
 }
+.btn.loading.btn-icon {
+  height: 44px;
+}
 html.dark,
 html.dark body {
   background-color: hsl(240deg 5% 9%);
@@ -72,7 +75,7 @@ a {
   color: #6fa1ff;
   text-decoration: none;
 }
-html:not(.dark) a{
+html:not(.dark) a {
   color: var(--primary);
 }
 #splashScreen {

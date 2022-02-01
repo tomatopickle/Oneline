@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import { VueMasonryPlugin } from "vue-masonry/src/masonry.plugin.js";
-import { createHead, Head } from '@vueuse/head'
+import { createHead, Head } from '@vueuse/head';
 import bounce_ui from "bounce-ui-vue";
 import Popper from "vue3-popper";
 import Notifications from '@kyvg/vue3-notification';

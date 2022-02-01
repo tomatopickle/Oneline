@@ -1153,6 +1153,11 @@ export default {
                 time: file.time,
                 type: file.type.split("/")[0] === "image" ? "image" : "file",
             });
+            update(child(ref(db), `chatImages/${this.chat.id}/${file.time}`), {
+                sender: this.user.id,
+                file,
+                time: file.time,
+            });
             this.instantUpload.loading = true;
             this.instantUpload.file = {};
             this.instantUpload.show = false;
