@@ -10623,6 +10623,11 @@ yorkie@^2.0.0:
     normalize-path "^1.0.0"
     strip-indent "^2.0.0"
 
+zoom-by-ironex@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/zoom-by-ironex/-/zoom-by-ironex-1.0.1.tgz#744dfa02e1c57abb4d160aa3f698b7f1d424b691"
+  integrity sha512-DfIc8pjEpfsc0NwcNqqSbWKTwz9xsQo4GlqNLytWKj6IwMr7trkCB1tCy2QZ59mYAvPZjYcdyYxJOQZligC8yQ==
+
 zuck.js@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/zuck.js/-/zuck.js-1.6.0.tgz#5fefff0d014a0be5ce3d3e48524b6cb00f20cc7a"

@@ -392,12 +392,7 @@
         </template>
       </b-nav>
       <div style="flex-grow: 1">
-        <v-lazy-image
-          id="chatImage"
-          src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-          :src="image.file?.url"
-          :alt="image.file?.name"
-        />
+        <ZoomImage :file="image.file"></ZoomImage>
       </div>
       <div id="imageThumbnails">
         <v-lazy-image
@@ -457,9 +452,17 @@ twemoji.base =
 import { find } from "linkifyjs";
 import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
+import ZoomImage from "../../../components/ZoomImage/ZoomImage.vue";
 export default {
   name: "ChatWindow",
-  components: { Picker, Emoji, LinkPreview, ShortPreview, VueHorizontal },
+  components: {
+    Picker,
+    Emoji,
+    LinkPreview,
+    ShortPreview,
+    VueHorizontal,
+    ZoomImage,
+  },
   emits: ["playAudio", "reply", "startMeetingWithUser", "openShort"],
   props: {
     user: Object,
