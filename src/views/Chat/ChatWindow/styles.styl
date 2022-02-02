@@ -369,13 +369,16 @@ html:not(.dark) .chatWindowDefault {
             border-radius: var(--ui-radius);
             max-width: 99%;
             object-fit: contain;
+            height: max-content;
+            max-height: 200px;
+            min-height: 60px;
         }
 
         .controls {
             display: flex;
             position: absolute;
             top: 5px;
-            right: 5px;
+            right: 15px;
             transition: opacity 0.2s;
 
             .btn {

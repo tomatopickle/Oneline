@@ -281,11 +281,23 @@ export default {
         },
         checkIfUsersAreTyping() {
             return Object.keys(this.typing).length != 0
+        },
+        getLastUpdatedTime() {
+            return localStorage.getItem("lastUpdateTime") ? `Last Updated On: ${new Date(parseInt(localStorage.getItem("lastUpdateTime"))).toLocaleString()}` : false
         }
     },
     methods: {
         log(e) {
             console.log(e)
+        },
+        clearCache() {
+            if (!confirm("You will be logged out after clearing cache, do you want to proceed?")) return
+            caches.keys().then(function (names) {
+                for (let name of names) caches.delete(name);
+            });
+            localStorage.clear();
+            alert("Cache cleared");
+            router.push("/login");
         },
         filePastedInMsgBar(fileObj) {
             console.log(fileObj);
@@ -376,7 +388,7 @@ export default {
                     this.openChat(chat);
                     this.shorts.show = false;
                     update(child(ref(db), `messages/${chat.id}/${Date.now()}`), { type: "commentShort", short: this.shorts.short, text: this.shorts.commentText, sender: this.user.id, time: Date.now() });
-                    this.shorts.commentText = false;
+                    this.shorts.commentText = '';
                 }
             }
         },

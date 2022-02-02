@@ -257,11 +257,13 @@
             <transition name="fade" :duration="{ enter: 1000, leave: 10 }">
               <small
                 id="lastOnline"
-                v-show="chat?.lastOnline && chat.lastOnline != 0"
+                v-if="chat?.lastOnline && chat.lastOnline != 0"
                 ref="lastOnline"
               >
                 <span>Available {{ timeSince(chat?.lastOnline) }} ago</span>
               </small>
+
+              <small id="lastOnline" v-else-if="chat.type == 'personal'">Online</small>
             </transition>
           </template>
           <template v-slot:actions>
@@ -1007,10 +1009,20 @@
               </b-flex>
             </template>
             <template v-slot:5>
+              <h4 class="my-0">Cache</h4>
+              <p v-if="getLastUpdatedTime">{{ getLastUpdatedTime }}</p>
+              <!-- I had to wrap this in a p tag to get the perfect padding -->
+              <p>
+                <b-flex bare>
+                  <span>Force Update</span>
+                  <b-btn class="-my-9 ml-5" @click="clearCache()" size="small">Clear Cache</b-btn>
+                </b-flex>
+              </p>
               <h4 class="my-0">Bugs</h4>
               <p>
                 Found a bug? Great!, please report it at our
                 <a
+                  target="_blank"
                   href="https://github.com/tomatopickle/Oneline/issues/new"
                   title="Report Bug"
                   >issues section</a
@@ -1020,6 +1032,7 @@
               <p>
                 Icons made by
                 <a
+                  target="_blank"
                   href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
                   title="Ilham Fitrotul Hayat"
                   >Ilham Fitrotul Hayat</a

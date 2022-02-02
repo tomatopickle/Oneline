@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'production') {
       caches.keys().then(function (names) {
         for (let name of names) caches.delete(name);
       });
+      localStorage.setItem("lastUpdateTime", Date.now());
     },
     offline() {
       console.log('No internet connection found. App is running in offline mode.')
