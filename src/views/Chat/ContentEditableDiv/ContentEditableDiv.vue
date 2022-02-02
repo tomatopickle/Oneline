@@ -8,19 +8,10 @@
   ></div>
 </template>
 <script>
-function getFileFromPasteEvent(event) {
-  const items = (event.clipboardData || event.originalEvent.clipboardData)
-    .items;
-  for (let index in items) {
-    const item = items[index];
-    if (item.kind === "file") {
-      return item.getAsFile();
-    }
-  }
-}
+import { getFileFromPasteEvent } from "../../../scripts/globalFunctions.js";
 export default {
   props: ["modelValue"],
-  emits: ["filePasted","update:modelValue"],
+  emits: ["filePasted", "update:modelValue"],
   mounted() {
     this.$el.addEventListener("paste", (e) => {
       const file = getFileFromPasteEvent(e);

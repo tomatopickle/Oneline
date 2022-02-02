@@ -91,6 +91,7 @@
     <div class="short">
       <figure :class="shortModal.short.filter">
         <img class="shortImage" :src="shortModal.short.src" alt="" />
+        <h4 class="shortImageCaption">{{ shortModal.short?.caption }}</h4>
       </figure>
     </div>
   </b-modal>
@@ -342,7 +343,13 @@ export default {
   backdrop-filter: blur(10px);
 }
 #shortsModal figure {
-  margin: 0;
+  position: relative;
+  width: max-content;
+  max-width: 100%;
+  margin: auto;
+}
+#shortsModal figure:hover .shortImageCaption{
+  opacity: 0;
 }
 #shortsModal figure::after,
 #shortsModal figure::before {

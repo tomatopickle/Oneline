@@ -3,6 +3,7 @@ import axios from "axios";
 import filters from "./scripts/filters.js";
 import db from "../../fire.js";
 import { storage } from "../../fire.js";
+import { getFileFromPasteEvent } from "../../scripts/globalFunctions.js";
 import PubNub from "pubnub";
 import VueHorizontal from "vue-horizontal";
 import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
@@ -203,6 +204,22 @@ export default {
         };
     },
     mounted() {
+        window.addEventListener('paste', (e) => {
+            console.log(e);
+            if (this.short.photo.show && !this.short.photo.uploadBtnLoading) {
+                this.short.photo.uploadBtnLoading = true;
+                var file = getFileFromPasteEvent(e);
+                console.log(file);
+                uploadBytes(storageRef(storage, `stories/${this.user.id}/${Date.now()}`), file).then((snapshot) => {
+                    console.log('Uploaded a blob or file!');
+                    console.log(snapshot);
+                    getDownloadURL(snapshot.metadata.ref).then((url) => {
+                        this.short.photo.data.src = url;
+                        this.short.photo.uploadBtnLoading = false;
+                    });
+                });
+            }
+        });
         if (Notification) {
             this.settings.notificationGranted = Notification.permission == "granted";
         } else {
@@ -452,6 +469,7 @@ export default {
                 time,
                 type: "photo",
                 src: this.short.photo.data.src,
+                caption: this.short.photo.data.caption,
                 filter: this.short.photo.data.filter
             });
             this.openShort({ user: this.user, badge: 1 });

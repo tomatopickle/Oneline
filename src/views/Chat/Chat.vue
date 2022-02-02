@@ -269,7 +269,7 @@
               <b-btn
                 icon
                 @click="startMeeting()"
-                :disabled="newMeetingBtnDisabled"
+                :loading="newMeetingBtnDisabled"
               >
                 <b-icon name="mdi mdi-video"></b-icon>
               </b-btn>
@@ -386,7 +386,7 @@
           </div>
         </div>
         <div v-show="instantUpload.show">
-          <div id="instantUpload" >
+          <div id="instantUpload">
             <span>{{
               instantUpload.loading ? "Uploading..." : instantUpload.fileName
             }}</span>
@@ -398,10 +398,20 @@
                 style="transform: scale(0.5); margin: -15px"
               ></b-spinner>
               <div v-else class="flex">
-                <b-btn @click="deleteInstantUpload()" size="small" icon class="mr-1">
+                <b-btn
+                  @click="deleteInstantUpload()"
+                  size="small"
+                  icon
+                  class="mr-1"
+                >
                   <b-icon name="mdi mdi-delete"></b-icon>
                 </b-btn>
-                <b-btn @click="sendInstantUpload()" size="small" icon color="primary">
+                <b-btn
+                  @click="sendInstantUpload()"
+                  size="small"
+                  icon
+                  color="primary"
+                >
                   <b-icon name="mdi mdi-send"></b-icon>
                 </b-btn>
               </div>
@@ -758,6 +768,10 @@
                 <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
                 Upload Image
               </b-btn>
+              <br /><br />
+              <small class="text-center block w-full"
+                ><b>Tip:</b> You can also paste images</small
+              >
             </div>
             <div v-else>
               <figure
@@ -774,7 +788,7 @@
           </transition>
           <transition name="fadeUp">
             <div v-if="short.photo.data.src">
-              <h4>Filters</h4>
+              <h4 style="margin-block: 0">Filters</h4>
               <vue-horizontal ref="shortsPhotoFilters" style="width: 42vw">
                 <template v-slot:btn-prev>
                   <b-btn size="small" bounce circle icon>
@@ -816,6 +830,10 @@
                   </figure>
                 </template>
               </vue-horizontal>
+              <b-input
+                v-model="short.photo.data.caption"
+                placeholder="Caption for Short"
+              ></b-input>
               <br />
               <b-btn
                 block
@@ -1193,6 +1211,7 @@
               :src="short.src"
               alt=""
             />
+            <h4 class="shortImageCaption">{{ shorts.short?.caption }}</h4>
           </figure>
         </div>
       </vue-horizontal>

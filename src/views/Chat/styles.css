@@ -67,8 +67,29 @@ html {
 #shorts .modal-backdrop {
   backdrop-filter: blur(10px);
 }
-#shorts figure {
+.shortImageCaption {
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  padding-inline: 15px;
   margin: 0;
+  border-bottom-left-radius: var(--ui-radius);
+  border-bottom-right-radius: var(--ui-radius);
+  background-image: linear-gradient(rgb(0 0 0 / 5%), rgb(0 0 0 / 75%));
+  font-size: 20px;
+  transition: opacity 0.2s;
+  opacity: 1;
+}
+#shorts figure:hover .shortImageCaption {
+  opacity: 0;
+}
+#shorts figure {
+  width: max-content;
+  margin: auto;
+  position: relative;
+  max-width: 100%;
 }
 #shorts figure::after,
 #shorts figure::before {
