@@ -26,4 +26,8 @@ export default {
   transition: -webkit-transform ease 200ms;
   transition: transform ease 200ms;
 }
+
+.zoom {
+  height: 100%;
+}
 </style>
