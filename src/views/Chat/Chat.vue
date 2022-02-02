@@ -832,7 +832,7 @@
               </vue-horizontal>
               <b-input
                 v-model="short.photo.data.caption"
-                placeholder="Caption for Short"
+                placeholder="Caption for Short (Optional)"
               ></b-input>
               <br />
               <b-btn
