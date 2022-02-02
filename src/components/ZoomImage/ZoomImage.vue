@@ -19,14 +19,6 @@ export default {
 };
 </script>
 <style lang="stylus">
-.zoom-transition { // Transition class name can be renamed in settings
-  transition: -moz-transform ease 200ms;
-  transition: -ms-transform ease 200ms;
-  transition: -o-transform ease 200ms;
-  transition: -webkit-transform ease 200ms;
-  transition: transform ease 200ms;
-}
-
 .zoom {
   height: 100%;
 }
