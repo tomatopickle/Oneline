@@ -164,7 +164,12 @@
                   >
                     <b-icon name="mdi mdi-download"></b-icon>
                   </b-btn>
-                  <b-btn icon glass color="primary">
+                  <b-btn
+                    v-on:click="openImage(message)"
+                    icon
+                    glass
+                    color="primary"
+                  >
                     <b-icon name="mdi mdi-fullscreen"></b-icon>
                   </b-btn>
                 </div>
@@ -222,9 +227,10 @@
                     ></b-avatar>
                     <div
                       v-html="
-                        message.replyingTo.text
-                          ? convertMessageToHTML(message.replyingTo.text)
-                          : ''
+                        convertMessageToHTML(
+                          message.replyingTo?.text ||
+                            getMessagePreview(message.replyingTo)
+                        )
                       "
                     ></div>
                   </div>
@@ -299,12 +305,74 @@
       set="apple"
       @select="addReaction"
   /></b-modal>
+  <b-modal
+    v-model="image.show"
+    height="100vh"
+    width="100vw"
+    id="fullScreenImageModal"
+  >
+    <div id="imagePreParent">
+      <b-nav style="position: relative"
+        ><template v-slot:branding>
+          <b-flex class="m-0 p-0 w-full">
+            <b-avatar
+              :src="this.users[image.message?.sender]?.avatar || ''"
+              :username="this.users[image.message?.sender]?.username || ''"
+              :size="35"
+            ></b-avatar>
+            <h3 class="mt-0 mb-1">
+              {{ this.users[image.message?.sender]?.username }}
+            </h3>
+            <transition name="fade" :duration="{ enter: 1000, leave: 10 }">
+              <small id="lastOnline">
+                <span> {{ getFormattedTime(image.message?.time) }} </span>
+              </small>
+            </transition>
+          </b-flex>
+        </template>
+        <template v-slot:actions>
+          <b-flex bare>
+            <b-btn
+              :loading="download.loading"
+              style="height: 44px"
+              icon
+              ghost
+              @click="downloadFile(image.file)"
+            >
+              <b-icon name="mdi mdi-download"></b-icon>
+            </b-btn>
+            <b-btn icon ghost @click="image.show = false">
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
+          </b-flex>
+        </template>
+      </b-nav>
+      <div style="flex-grow: 1">
+        <ZoomImage :file="image.file"></ZoomImage>
+      </div>
+      <div id="imageThumbnails">
+        <v-lazy-image
+          :class="{
+            thumbnailImage: true,
+            selected: imageThumb.file.time == image.file.time,
+          }"
+          v-for="imageThumb in image.images"
+          :key="imageThumb.time"
+          src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+          :src="imageThumb.file?.url"
+          :alt="imageThumb.file?.name"
+          v-on:click="openImage(imageThumb)"
+        />
+      </div>
+    </div>
+  </b-modal>
 </template>
 
 <script>
 /* eslint-disable */
 import db from "../../../fire.js";
 import { storage } from "../../../fire.js";
+import VueHorizontal from "vue-horizontal";
 import linkifyHtml from "linkify-html";
 import {
   ref,
@@ -314,6 +382,15 @@ import {
   onValue,
   update,
   remove,
+  query,
+  orderByChild,
+  limitToLast,
+  equalTo,
+  startAfter,
+  endBefore,
+  orderByKey,
+  startAt,
+  off,
 } from "firebase/database";
 import {
   ref as storageRef,
@@ -329,12 +406,20 @@ twemoji.size = "";
 twemoji.base =
   "https://raw.githubusercontent.com/iamcal/emoji-data/master/img-apple-160";
 import { find } from "linkifyjs";
-import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
+import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
+import ZoomImage from "../../../components/ZoomImage/ZoomImage.vue";
 export default {
   name: "ChatWindow",
-  components: { Picker, Emoji, LinkPreview, ShortPreview },
-  emits: ["playAudio", "reply"],
+  components: {
+    Picker,
+    Emoji,
+    LinkPreview,
+    ShortPreview,
+    VueHorizontal,
+    ZoomImage,
+  },
+  emits: ["playAudio", "reply", "startMeetingWithUser", "openShort"],
   props: {
     user: Object,
     chat: Object,
@@ -345,8 +430,19 @@ export default {
   },
   data: () => {
     return {
+      image: {
+        show: false,
+        message: {},
+        file: {
+          src: "",
+          name: "",
+        },
+        images: {},
+      },
       users: {},
       emojiIndex: emojiIndex,
+      baseUrl: "https://" + location.host,
+
       download: {
         loading: false,
         time: "",
@@ -398,6 +494,71 @@ export default {
     log(e) {
       console.log(e);
     },
+    getMessagePreview(message) {
+      if (message.type == "file") {
+        return `(File) ${message.file.name}`;
+      } else if (message.type == "likeShort") {
+        return `Liked your Short`;
+      } else if (message.type == "image") {
+        return `(Image) ${message.file.name}`;
+      } else if (message.type == "audio") {
+        return `(Audio) ${message.duration}`;
+      }
+      return `${message.text}`;
+    },
+    openImage(message) {
+      const file = message.file;
+      this.image.show = true;
+      this.image.file = file;
+      this.image.message = message;
+      onValue(
+        query(
+          ref(db, `chatImages/${this.chat.id}`),
+          orderByKey(),
+          startAfter(file.time.toString()),
+          limitToLast(15)
+        ),
+        (snapshot) => {
+          const nextImages = snapshot.val();
+          onValue(
+            query(
+              ref(db, `chatImages/${this.chat.id}`),
+              orderByKey(),
+              endBefore(file.time.toString()),
+              limitToLast(15)
+            ),
+            (snapshot) => {
+              const prevImages = snapshot.val();
+              const allImages = {
+                ...prevImages,
+                ...{ [message.time]: JSON.parse(JSON.stringify(message)) },
+                ...nextImages,
+              };
+              this.image.images = allImages;
+              off(
+                query(
+                  ref(db, `chatImages/${this.chat.id}`),
+                  orderByKey(),
+                  endBefore(file.time.toString()),
+                  limitToLast(15)
+                )
+              );
+              off(
+                query(
+                  ref(db, `chatImages/${this.chat.id}`),
+                  orderByKey(),
+                  startAfter(file.time.toString()),
+                  limitToLast(15)
+                )
+              );
+            }
+          );
+        }
+      );
+    },
+    getFormattedTime(time) {
+      return `${this.formatToDay(time)}, ${this.formatTimeToAMPM(time)}`;
+    },
     async downloadFile(file) {
       this.download.loading = true;
       this.download.time = file.time;
@@ -421,6 +582,7 @@ export default {
       return find(text)[0]?.href || false;
     },
     convertMessageToHTML(text) {
+      if (!text) return;
       return twemoji.parse(
         linkifyHtml(text, { defaultProtocol: "https", target: "_blank" }),
         {
@@ -571,7 +733,6 @@ export default {
       const msgIndex = Object.keys(messages).indexOf(i);
       const d1 = new Date(message?.time);
       const d2 = new Date(this.getByIndex(this.messages, msgIndex - 1)?.time);
-      console.log(d1.getMonth(), d2.getMonth());
       return !(
         d1.getFullYear() === d2.getFullYear() &&
         d1.getMonth() === d2.getMonth() &&

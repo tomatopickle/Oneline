@@ -47,9 +47,10 @@
 
     :not(.me) {
         &.sub, &.sub.last {
-            .msg-text, .fileMsg, .msg-image {
-                margin-left: 30px;
-            }
+            margin-left: 30px;
+            // .msg-text, .fileMsg , .msg-image, .msg-short-comment, .msg-short-liked {
+            // margin-left: 30px;
+            // }
         }
     }
 
@@ -135,6 +136,11 @@
 
         img {
             border-radius: var(--ui-radius);
+            max-width: 99%;
+            object-fit: contain;
+            height: max-content;
+            min-height: 60px;
+            max-height: 40vh;
         }
 
         .controls {
@@ -231,11 +237,11 @@
         }
     }
 
-    .msg:not(.me):not(.sub):not(.sub.last) .msg-reply-parent, :not(.me) .sub {
-        .msg-reply-parent .msg-reply {
-            margin-left: 30px;
-        }
-    }
+    // .msg:not(.me):not(.sub):not(.sub.last) .msg-reply-parent, :not(.me) .sub {
+    //     .msg-reply-parent .msg-reply {
+    //         margin-left: 30px;
+    //     }
+    // }
 
     .me {
         .msg-reply-parent {
