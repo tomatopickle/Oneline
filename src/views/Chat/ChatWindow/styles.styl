@@ -2,13 +2,14 @@
 
 #imageThumbnails .thumbnailImage {
     transition: all 0.2s;
+    -webkit-user-drag: none;
 
     &:hover {
-        background-color: lighten($bg-dark, 8);
+        border-color: lighten($bg-dark, 20);
     }
 
     &:active {
-        background-color: lighten($bg-dark, 12);
+        border-color: lighten($bg-dark, 25);
     }
 }
 

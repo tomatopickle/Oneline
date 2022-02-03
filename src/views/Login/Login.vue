@@ -180,30 +180,6 @@ export default {
           }
         }
       );
-      // get(child(ref(db), `users`))
-      //   .then((snapshot) => {
-      //     if (snapshot.exists()) {
-      //       var data = snapshot.val();
-      //       console.log(data);
-      //       for (var usr in data) {
-      //         usr = data[usr];
-      //         if (usr.pwd == this.login.pwd && usr.email == this.login.email) {
-      //           localStorage.setItem("id", usr.id);
-      //           // router.push("/");
-      //           this.login.loading = false;
-      //         }
-      //       }
-      //       this.login.loading = false;
-      //     } else {
-      //       alert(
-      //         "An error occurred with Oneline, please try again later. \nError: /users/ not available"
-      //       );
-      //       this.login.loading = false;
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error(error);
-      //   });
     },
   },
 };
