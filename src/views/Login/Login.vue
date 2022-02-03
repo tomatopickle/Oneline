@@ -174,7 +174,7 @@ export default {
           if (usr.pwd == this.login.pwd) {
             console.log(usr);
             localStorage.setItem("id", usr.id);
-            // router.push("/");
+            router.push("/");
           } else {
             this.login.pwdErrorText = "Wrong Password";
           }
