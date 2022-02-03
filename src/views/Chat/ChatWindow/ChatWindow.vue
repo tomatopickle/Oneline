@@ -284,7 +284,12 @@
                 }}</span>
                 <div
                   class="parent-message"
-                  v-html="convertMessageToHTML(message.replyingTo?.text)"
+                  v-html="
+                    convertMessageToHTML(
+                      message.replyingTo?.text ||
+                        getMessagePreview(message.replyingTo)
+                    )
+                  "
                 ></div>
               </b-flex>
               <div
@@ -537,6 +542,18 @@ export default {
   methods: {
     log(e) {
       console.log(e);
+    },
+    getMessagePreview(message) {
+      if (message.type == "file") {
+        return `(File) ${message.file.name}`;
+      } else if (message.type == "likeShort") {
+        return `Liked your Short`;
+      } else if (message.type == "image") {
+        return `(Image) ${message.file.name}`;
+      } else if (message.type == "audio") {
+        return `(Audio) ${message.duration}`;
+      }
+      return `${message.text}`;
     },
     openImage(message) {
       const file = message.file;

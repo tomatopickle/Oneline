@@ -1292,13 +1292,13 @@
         >
           <template v-slot:0>
             <p>
-                <b-input
-                  class="center"
-                  label="Email ID"
-                  type="email"
-                  v-model="newChat.data.personal.email"
-                  placeholder="Email of the user you want to chat with"
-                ></b-input>
+              <b-input
+                class="center"
+                label="Email ID"
+                type="email"
+                v-model="newChat.data.personal.email"
+                placeholder="Email of the user you want to chat with"
+              ></b-input>
               <br />
               <b-flex>
                 <b-spacer></b-spacer>
@@ -1325,6 +1325,7 @@
                 <b-spacer></b-spacer>
                 <b-btn
                   @click="joinGroup()"
+                  :disabled="!newChat.data.group.id"
                   :loading="newChat.data.group.loading"
                   color="primary"
                   >Join Chat</b-btn
@@ -1350,7 +1351,10 @@
               <b-flex>
                 <b-spacer></b-spacer>
                 <b-btn
-                  :disabled="!newChat.data.newGroup.name"
+                  :disabled="
+                    !newChat.data.newGroup.name ||
+                    !newChat.data.newGroup.description
+                  "
                   :loading="newChat.data.newGroup.loading"
                   @click="createGroupChat()"
                   color="primary"

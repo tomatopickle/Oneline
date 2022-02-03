@@ -4,12 +4,14 @@
     transition: all 0.2s;
     -webkit-user-drag: none;
 
-    &:hover {
-        border-color: lighten($bg-dark, 20);
-    }
+    &:not(.selected) {
+        &:hover {
+            border-color: lighten($bg-dark, 20);
+        }
 
-    &:active {
-        border-color: lighten($bg-dark, 25);
+        &:active {
+            border-color: lighten($bg-dark, 25);
+        }
     }
 }
 
