@@ -2776,10 +2776,10 @@ bootstrap@^4.4.0:
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.1.tgz#bc25380c2c14192374e8dec07cf01b2742d222a2"
   integrity sha512-0dj+VgI9Ecom+rvvpNZ4MUZJz8dcX7WCX+eTID9+/8HgOkv3dsRzi8BGeZJCQU6flWQVYxwTQnEZFrmJSEO7og==
 
-bounce-ui-vue@^0.1.13:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/bounce-ui-vue/-/bounce-ui-vue-0.1.13.tgz#33d1ddb367ad4f7f0b70cd355d4bacfe75a708dd"
-  integrity sha512-Dw+RrBpUgTT4jyhvFoYhzOr7g609fA8GwWsp0xjLJsfpntCn3CjyIvqKEjW8vKd7iEN0uJl9FiZxWGnFT9UNsA==
+bounce-ui-vue@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/bounce-ui-vue/-/bounce-ui-vue-0.2.14.tgz#2124f569fb9e52ef6fbbcfce1922bdbed6570f9f"
+  integrity sha512-MAtLakxUuUOymUw824kJ+R4S19mlwwZy25XU+2a8TcC9fWwTGyO27vjfSExzQu2VwwZuYEp/WfDKyOGBPN9diA==
   dependencies:
     core-js "^3.6.5"
     stylus "^0.55.0"
