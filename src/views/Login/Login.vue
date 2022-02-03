@@ -38,10 +38,12 @@
                   v-model="login.email"
                   label="Email"
                   type="email"
+                  :errorText="login.emailErrorText"
                 ></b-input>
                 <b-input
                   v-model="login.pwd"
                   label="Password"
+                  :errorText="login.pwdErrorText"
                   type="password"
                 ></b-input>
               </b-form>
@@ -96,7 +98,17 @@
 
 <script>
 import db from "../../fire.js";
-import { ref, set, get, child } from "firebase/database";
+import {
+  ref,
+  set,
+  // off,
+  query,
+  onValue,
+  startAt,
+  endAt,
+  orderByChild,
+  limitToLast,
+} from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
 export default {
@@ -118,6 +130,8 @@ export default {
         pwd: "",
         email: "",
         loading: false,
+        emailErrorText: "",
+        pwdErrorText: "",
       },
     };
   },
@@ -139,30 +153,57 @@ export default {
     },
     checkUser() {
       this.login.loading = true;
-      get(child(ref(db), `users`))
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            var data = snapshot.val();
-            console.log(data);
-            for (var usr in data) {
-              usr = data[usr];
-              if (usr.pwd == this.login.pwd && usr.email == this.login.email) {
-                localStorage.setItem("id", usr.id);
-                router.push("/");
-                this.login.loading = false;
-              }
-            }
-            this.login.loading = false;
-          } else {
-            alert(
-              "An error occurred with Oneline, please try again later. \nError: /users/ not available"
-            );
-            this.login.loading = false;
+      this.login.emailErrorText = "";
+      this.login.pwdErrorText = "";
+      onValue(
+        query(
+          ref(db, `users/`),
+          orderByChild("email"),
+          limitToLast(1),
+          startAt(this.login.email),
+          endAt(this.login.email + "\uf8ff")
+        ),
+        (snapshot) => {
+          this.login.loading = false;
+          if (!snapshot.exists()) {
+            this.login.emailErrorText = "Invalid Email";
+            return;
           }
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+          const data = snapshot.val();
+          const usr = data[Object.keys(data)[0]];
+          if (usr.pwd == this.login.pwd) {
+            console.log(usr);
+            localStorage.setItem("id", usr.id);
+            // router.push("/");
+          } else {
+            this.login.pwdErrorText = "Wrong Password";
+          }
+        }
+      );
+      // get(child(ref(db), `users`))
+      //   .then((snapshot) => {
+      //     if (snapshot.exists()) {
+      //       var data = snapshot.val();
+      //       console.log(data);
+      //       for (var usr in data) {
+      //         usr = data[usr];
+      //         if (usr.pwd == this.login.pwd && usr.email == this.login.email) {
+      //           localStorage.setItem("id", usr.id);
+      //           // router.push("/");
+      //           this.login.loading = false;
+      //         }
+      //       }
+      //       this.login.loading = false;
+      //     } else {
+      //       alert(
+      //         "An error occurred with Oneline, please try again later. \nError: /users/ not available"
+      //       );
+      //       this.login.loading = false;
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error(error);
+      //   });
     },
   },
 };
