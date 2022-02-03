@@ -263,7 +263,9 @@
                 <span>Available {{ timeSince(chat?.lastOnline) }} ago</span>
               </small>
 
-              <small id="lastOnline" v-else-if="chat.type == 'personal'">Online</small>
+              <small id="lastOnline" v-else-if="chat.type == 'personal'"
+                >Online</small
+              >
             </transition>
           </template>
           <template v-slot:actions>
@@ -1015,7 +1017,9 @@
               <p>
                 <b-flex bare>
                   <span>Force Update</span>
-                  <b-btn class="-my-9 ml-5" @click="clearCache()" size="small">Clear Cache</b-btn>
+                  <b-btn class="-my-9 ml-5" @click="clearCache()" size="small"
+                    >Clear Cache</b-btn
+                  >
                 </b-flex>
               </p>
               <h4 class="my-0">Bugs</h4>
@@ -1288,13 +1292,13 @@
         >
           <template v-slot:0>
             <p>
-              <b-input
-                class="center"
-                label="Email ID"
-                type="email"
-                v-model="newChat.data.personal.email"
-                placeholder="Email of the user you want to chat with"
-              ></b-input>
+                <b-input
+                  class="center"
+                  label="Email ID"
+                  type="email"
+                  v-model="newChat.data.personal.email"
+                  placeholder="Email of the user you want to chat with"
+                ></b-input>
               <br />
               <b-flex>
                 <b-spacer></b-spacer>

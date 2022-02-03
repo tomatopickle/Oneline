@@ -1,10 +1,7 @@
 <template>
   <Head>
     <title>Login | Oneline</title>
-     <meta
-      property="og:description"
-      content="Login to use Oneline"
-    />
+    <meta property="og:description" content="Login to use Oneline" />
   </Head>
   <b-app>
     <b-flex>
@@ -36,16 +33,18 @@
         <b-tab-content v-model="tabIndex" :tabs="tabs">
           <template v-slot:0>
             <p>
-              <b-input
-                v-model="login.email"
-                label="Email"
-                type="email"
-              ></b-input>
-              <b-input
-                v-model="login.pwd"
-                label="Password"
-                type="password"
-              ></b-input>
+              <b-form @submit="checkUser()">
+                <b-input
+                  v-model="login.email"
+                  label="Email"
+                  type="email"
+                ></b-input>
+                <b-input
+                  v-model="login.pwd"
+                  label="Password"
+                  type="password"
+                ></b-input>
+              </b-form>
             </p>
             <br />
             <b-btn
@@ -60,21 +59,23 @@
           </template>
           <template v-slot:1>
             <p>
-              <b-input v-model="signUp.username" label="Username"></b-input>
-              <b-input
-                v-model="signUp.email"
-                label="Email"
-                type="email"
-              ></b-input>
-              <b-input
-                v-model="signUp.pwd"
-                label="Password"
-                type="password"
-              ></b-input>
-              <b-textarea
-                v-model="signUp.description"
-                label="Description"
-              ></b-textarea>
+              <b-form @submit="createUser()">
+                <b-input v-model="signUp.username" label="Username"></b-input>
+                <b-input
+                  v-model="signUp.email"
+                  label="Email"
+                  type="email"
+                ></b-input>
+                <b-input
+                  v-model="signUp.pwd"
+                  label="Password"
+                  type="password"
+                ></b-input>
+                <b-textarea
+                  v-model="signUp.description"
+                  label="Description"
+                ></b-textarea>
+              </b-form>
             </p>
             <br />
             <b-btn
