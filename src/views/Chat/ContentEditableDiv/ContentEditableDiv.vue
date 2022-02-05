@@ -9,7 +9,6 @@
   ></div>
 </template>
 <script>
-import { getFileFromPasteEvent } from "../../../scripts/globalFunctions.js";
 import "medium-editor/dist/css/themes/beagle.min.css";
 import "medium-editor/dist/css/medium-editor.min.css";
 import MediumEditor from "medium-editor";
@@ -17,46 +16,20 @@ export default {
   props: ["modelValue"],
   emits: ["filePasted", "update:modelValue"],
   mounted() {
-    var editor = new MediumEditor(".editable", {
-      // toolbar: {
-      //   allowMultiParagraphSelection: true,
-      //   buttons: [
-      //     "bold",
-      //     "italic",
-      //     "justifyLeft",
-      //     "justifyCenter",
-      //     "justifyRight",
-      //     "unorderedlist",
-      //   ],
-      //   anchor: {
-      //     customClassOption: null,
-      //     customClassOptionText: "Button",
-      //     linkValidation: false,
-      //     placeholderText: "Paste or type a link",
-      //     targetCheckbox: false,
-      //     targetCheckboxText: "Open in new window",
-      //   },
-      //   diffLeft: 0,
-      //   diffTop: -10,
-      //   firstButtonClass: "medium-editor-button-first",
-      //   lastButtonClass: "medium-editor-button-last",
-      //   relativeContainer: null,
-      //   standardizeSelectionStart: false,
-      //   static: false,
-      //   align: "center",
-      //   sticky: false,
-      //   updateOnEmptySelection: false,
-      // },
-    });
-    console.log(editor);
-    this.$el.addEventListener("paste", (e) => {
-      const file = getFileFromPasteEvent(e);
-      if (file) {
-        this.$emit("filePasted", file);
-      }
-      e.preventDefault();
-      var text = e.clipboardData.getData("text/plain");
-      document.execCommand("insertText", false, text);
+    new MediumEditor(".editable", {
+      targetBlank: true,
+      toolbar: {
+        buttons: [
+          "bold",
+          "italic",
+          "underline",
+          "anchor",
+          "h2",
+          "h3",
+          "quote",
+          "unorderedlist",
+        ],
+      },
     });
   },
 };
@@ -65,8 +38,10 @@ export default {
 @import '../../../variables.styl';
 
 .editable {
-  blockqoute {
-    border-left : 1px solid $primary;
+  blockquote {
+    border-left: 3px solid var(--primary);
+    padding-left: 10px;
+    margin: 0;
   }
 
   p {

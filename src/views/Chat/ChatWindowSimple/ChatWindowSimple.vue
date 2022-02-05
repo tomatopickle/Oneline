@@ -1,7 +1,7 @@
 <template>
   <div class="chatWindowSimple">
     <transition-group name="messageAnimation" tag="div">
-      <template v-for="(message, i) in messages" :key="i">
+      <template v-for="(message, i) in messages" :key="message.time">
         <div
           :class="{
             msg: true,
@@ -164,19 +164,19 @@
                 <b-flex bare>
                   <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <!-- <div> -->
-                    <short-preview
-                      v-on:click="
-                        Object.keys(this.users).forEach((usr) => {
-                          if (message.sender != usr) {
-                            $emit('openShort', {
-                              short: message.short,
-                              sender: usr,
-                            });
-                          }
-                        })
-                      "
-                      :short="message.short"
-                    ></short-preview>
+                  <short-preview
+                    v-on:click="
+                      Object.keys(this.users).forEach((usr) => {
+                        if (message.sender != usr) {
+                          $emit('openShort', {
+                            short: message.short,
+                            sender: usr,
+                          });
+                        }
+                      })
+                    "
+                    :short="message.short"
+                  ></short-preview>
                   <!-- </div> -->
                 </b-flex>
                 <b-flex bare>

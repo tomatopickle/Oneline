@@ -1,0 +1,36 @@
+@import '../../../variables.styl';
+
+.chatWindowPreview {
+    background-color: lighten($bg-dark, 2%);
+    border-radius: var(--ui-radius);
+    cursor: pointer;
+    border: solid 2px lighten($bg-dark, 2%);
+    transition: border-color 0.2s;
+
+    &:hover {
+        border-color: lighten($bg-dark, 15%);
+    }
+
+    &:active {
+        border-color: lighten($bg-dark, 20%);
+    }
+
+    &.selected {
+        border-color: $primary;
+    }
+}
+
+.msg-text {
+    blockquote {
+        border-left: 3px solid $primary;
+        padding-left: 10px;
+        margin: 0;
+        opacity: 0.7;
+    }
+}
+
+&.me {
+    blockquote {
+        border-color: white;
+    }
+}

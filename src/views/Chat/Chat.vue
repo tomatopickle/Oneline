@@ -453,7 +453,7 @@
         <transition name="fade" :duration="{ leave: 300 }">
           <div id="typingBar" v-if="checkIfUsersAreTyping">
             <span v-for="username in typing" :key="username">{{
-              (username == this.user.username ? "You" : username) + " "
+              username + " "
             }}</span>
             typing...
           </div>
@@ -494,7 +494,6 @@
             @click="fileUpload.show = true"
           ></b-icon>
           <content-editable-div
-            @filePasted="filePastedInMsgBar($event)"
             @keypress="checkIfUserTyping($event)"
             @keydown="checkEnterKey($event)"
             @blur="userLeftMessageBox()"
@@ -898,10 +897,79 @@
                   v-model="settings.data.lightMode"
                 ></b-switch>
               </b-flex>
-              <b-flex>
-                <span>Messages Simple Mode</span>
-                <b-spacer></b-spacer>
-                <b-switch v-model="settings.data.messagesSimpleMode"></b-switch>
+
+              <h4 class="ml-2 my-0">Chat UI</h4>
+              <b-flex class="m-auto w-max">
+                <div>
+                  <div
+                    @click="
+                      settings.data.messagesSimpleMode = false;
+                      updateSettings();
+                    "
+                    :class="{
+                      chatWindowPreview: true,
+                      selected: !settings.data.messagesSimpleMode,
+                    }"
+                  >
+                    <svg
+                      width="373"
+                      height="149"
+                      viewBox="0 0 373 149"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="104"
+                        y="18"
+                        width="208"
+                        height="36"
+                        rx="18"
+                        fill="#242427"
+                      />
+                      <circle cx="67.5" cy="36.5" r="28.5" fill="#353535" />
+                      <rect
+                        x="104"
+                        y="97"
+                        width="208"
+                        height="36"
+                        rx="18"
+                        fill="#242427"
+                      />
+                      <circle cx="67.5" cy="115.5" r="28.5" fill="#353535" />
+                    </svg>
+                  </div>
+                  <h4 class="text-center my-1">Text</h4>
+                </div>
+                <div>
+                  <div
+                    @click="
+                      settings.data.messagesSimpleMode = true;
+                      updateSettings();
+                    "
+                    :class="{
+                      chatWindowPreview: true,
+                      selected: settings.data.messagesSimpleMode,
+                    }"
+                  >
+                    <svg
+                      width="416"
+                      height="151"
+                      viewBox="0 0 416 151"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M199 34C199 32.1429 199 31.2143 199.051 30.4303C199.839 18.4122 209.412 8.8391 221.43 8.05139C222.214 8 223.143 8 225 8H402.571C405.79 8 407.4 8 408.494 8.87267C408.728 9.05942 408.941 9.27187 409.127 9.50604C410 10.6003 410 12.2098 410 15.4286V15.4286C410 34.7415 410 44.398 404.764 50.9638C403.643 52.3688 402.369 53.6435 400.964 54.764C394.398 60 384.742 60 365.429 60H225C223.143 60 222.214 60 221.43 59.9486C209.412 59.1609 199.839 49.5878 199.051 37.5697C199 36.7857 199 35.8571 199 34V34Z"
+                        fill="#3958FC"
+                      />
+                      <path
+                        d="M6 97.4286C6 94.2098 6 92.6003 6.87267 91.506C7.05942 91.2719 7.27187 91.0594 7.50604 90.8727C8.60034 90 10.2098 90 13.4286 90H173C174.857 90 175.786 90 176.57 90.0514C188.588 90.8391 198.161 100.412 198.949 112.43C199 113.214 199 114.143 199 116V116C199 117.857 199 118.786 198.949 119.57C198.161 131.588 188.588 141.161 176.57 141.949C175.786 142 174.857 142 173 142H50.5714C31.2585 142 21.602 142 15.0362 136.764C13.6312 135.643 12.3565 134.369 11.236 132.964C6 126.398 6 116.741 6 97.4286V97.4286Z"
+                        fill="#1D1D20"
+                      />
+                    </svg>
+                  </div>
+                  <h4 class="text-center my-1">Simple</h4>
+                </div>
               </b-flex>
             </template>
             <template v-slot:1>
@@ -1444,7 +1512,7 @@
 </template>
 <script src="./script.js"></script>
 <style>
-@import url("./styles.css");
+@import url("./styles/style.css");
 </style>
 <style scoped>
 .contact {

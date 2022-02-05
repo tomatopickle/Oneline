@@ -1,5 +1,6 @@
 /* eslint-disable */
 import axios from "axios";
+import './styles/style.styl';
 import filters from "./scripts/filters.js";
 import db from "../../fire.js";
 import { storage } from "../../fire.js";
@@ -205,7 +206,6 @@ export default {
     },
     mounted() {
         window.addEventListener('paste', (e) => {
-            console.log(e);
             if (this.short.photo.show && !this.short.photo.uploadBtnLoading) {
                 this.short.photo.uploadBtnLoading = true;
                 var file = getFileFromPasteEvent(e);
@@ -218,6 +218,9 @@ export default {
                         this.short.photo.uploadBtnLoading = false;
                     });
                 });
+            } else {
+                if(!getFileFromPasteEvent(e)) return
+                this.filePastedInMsgBar(getFileFromPasteEvent(e));
             }
         });
         if (Notification) {
@@ -300,7 +303,6 @@ export default {
             router.push("/login");
         },
         filePastedInMsgBar(fileObj) {
-            console.log(fileObj);
             this.instantUpload.loading = true;
             this.instantUpload.fileName = fileObj.name;
             this.instantUpload.show = true;
@@ -314,13 +316,10 @@ export default {
                 type: fileObj.type,
             }
             uploadBytes(storageRef(storage, `messages/${id}_${fileObj.name}`), fileObj).then((snapshot) => {
-                console.log('Uploaded a blob or file!');
-                console.log(snapshot);
                 getDownloadURL(snapshot.metadata.ref).then((url) => {
                     file.url = url;
                     this.instantUpload.file = file;
                     this.instantUpload.loading = false;
-                    console.log(file);
                 });
             });
         },
@@ -765,7 +764,7 @@ export default {
                     onValue((child(ref(db), `typing/${userId}`)), (snapshot) => {
                         if (snapshot.exists()) {
                             var user = snapshot.val();
-                            if ((user?.typing) && this.chat.id == user?.chat) {
+                            if ((user?.typing) && this.chat.id == user?.chat && user?.user?.username != this.user.username) {
                                 this.typing[userId] = user.user.username;
                             } else if ((!user?.typing) && this.chat.id == user?.chat) {
                                 delete this.typing[userId];
