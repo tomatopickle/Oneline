@@ -751,9 +751,6 @@ export default {
                     if (this.seen && this.seen[this.user.username]) {
                         delete this.seen[this.user.username];
                     }
-                    if (this.enableScroll) {
-                        this.scrollDown();
-                    }
                 });
                 if (!chatData.name) {
                     this.chat.name = chat.name;
@@ -1019,6 +1016,10 @@ export default {
                 return `${chat.lastMessage.senderInfo.username}: (Audio) ${chat.lastMessage.duration}`
             }
             return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`
+        },
+        stripHtml(html) {
+            let doc = new DOMParser().parseFromString(html, 'text/html');
+            return doc.body.textContent || "";
         },
         timeSince(date) {
             if (date == 0) return ''

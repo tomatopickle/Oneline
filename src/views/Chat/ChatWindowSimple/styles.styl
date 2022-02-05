@@ -9,10 +9,45 @@
         font-size: 17px;
         word-break: break-word;
         transition: border-radius 0.5s;
-        /* This is to align the emojis perfectly with the text */
-        display: flex;
         align-items: center;
         white-space: break-spaces;
+        max-width: 50vw;
+    }
+
+    .messageActions {
+        display: none;
+        padding: 5px;
+
+        .icon {
+            transition: all 0.2s;
+            margin-inline: 3px;
+            opacity: 0.5;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 1;
+            }
+
+            &:active {
+                transform: scale(0.9);
+            }
+        }
+
+        &:hover {
+            display: flex;
+        }
+    }
+
+    .msg:not(.me) + .messageActions {
+        margin-left: 45px;
+    }
+
+    .msg.me + .messageActions {
+        margin-right: 10px;
+    }
+
+    .msg:hover + .messageActions {
+        display: flex;
     }
 
     .link-preview-parent {
@@ -166,8 +201,12 @@
     .username {
         position: absolute;
         left: 55px;
-        top: 5px;
+        top: -10px;
         color: grey;
+    }
+
+    :not(.last).reacted {
+        margin-bottom: 20px;
     }
 
     .time {
@@ -227,22 +266,6 @@
         margin-top: 10px;
     }
 
-    .msg:not(.me):not(.sub):not(.last) .msg-reply-parent {
-        .msg-text {
-            margin-top: 0;
-        }
-
-        .msg-reply {
-            margin-top: 10px;
-        }
-    }
-
-    // .msg:not(.me):not(.sub):not(.sub.last) .msg-reply-parent, :not(.me) .sub {
-    //     .msg-reply-parent .msg-reply {
-    //         margin-left: 30px;
-    //     }
-    // }
-
     .me {
         .msg-reply-parent {
             .msg-text {
@@ -280,16 +303,20 @@
 
     .reactions {
         position: absolute;
-        bottom: -8px;
-        background-color: #1c1c1c;
+        bottom: -15px;
+        background-color: lighten($bg-dark, 7);
         border-radius: 35px;
         height: max-content;
-        left: 50px;
+        left: 20px;
         display: flex;
     }
 
+    .msg:not(.sub, .me) .reactions {
+        left: 50px;
+    }
+
     .reaction:hover {
-        background-color: #2c2c2c;
+        background-color: lighten($bg-dark, 9);
         cursor: pointer;
     }
 
@@ -335,32 +362,6 @@
 
     .inline-block {
         display: block !important;
-    }
-
-    .messageActions {
-        width: max-content;
-        min-width: 50px;
-    }
-
-    .messageActions .card-text {
-        margin: 0;
-        padding: 0 !important;
-        padding-left: 10px;
-        padding-right: 10px;
-        display: block;
-    }
-
-    .messageActions .list-item-content p {
-        padding-inline: 15px;
-    }
-
-    .messageActions .b-list-item {
-        margin: 0;
-        width: 95%;
-    }
-
-    .messageActions .b-list-item .list-item-content {
-        padding: 0;
     }
 
     .reactions .flex-box span {
@@ -422,5 +423,24 @@
     .me a {
         text-decoration: underline;
         color: white;
+    }
+
+    .msg:not(.sub) {
+        .msg-reply-parent {
+            &:not(.me) {
+                .msg-text {
+                    margin-top: 0 !important;
+                }
+
+                .msg-reply {
+                    margin-top: 10px;
+                    margin-bottom: 2px;
+                }
+            }
+        }
+
+        .msg-image {
+            margin-top: 10px;
+        }
     }
 }

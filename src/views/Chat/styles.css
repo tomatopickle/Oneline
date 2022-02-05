@@ -1,6 +1,9 @@
 #contacts .card-text header .flex-box {
   padding: 0;
 }
+p {
+  margin: 0;
+}
 #chatImage {
   max-width: 100%;
   object-fit: contain;
@@ -164,9 +167,10 @@ html {
   width: max-content;
   padding: 5px;
   border-radius: var(--ui-radius);
-  min-width: 80px;
+  padding-inline: 20px;
   text-align: center;
   margin: auto;
+  margin-block: 15px;
 }
 #lastOnline {
   position: absolute;
@@ -687,9 +691,9 @@ html:not(.dark) #replyMessage {
   cursor: text;
 }
 
-#messageInp .editable:empty:before {
-  content: attr(data-placeholder);
-  opacity: 0.7;
+.msg-text * {
+  /* So if u copy past smthn thts html, u dont want its styling u want urs */
+  background-color: transparent !important;
 }
 
 #messageInp .editable:hover:empty:before {

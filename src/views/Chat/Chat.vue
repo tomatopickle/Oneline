@@ -206,7 +206,7 @@
                       </span>
                       <br />
                       <small class="chatMessagePreview">{{
-                        getMessagePreview(chat)
+                        stripHtml(getMessagePreview(chat))
                       }}</small>
                     </span>
                   </b-flex>
@@ -327,6 +327,10 @@
           @playAudio="
             audio.show = true;
             audio.src = $event.src;
+          "
+          @openShort="
+            log($event.short);
+            openShortWithId($event.short.time, $event.sender);
           "
           v-if="settings.data.messagesSimpleMode"
           :limit="limit"

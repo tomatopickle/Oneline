@@ -241,7 +241,7 @@
                 <short-preview
                   v-on:click="
                     Object.keys(this.users).forEach((usr) => {
-                      if (usr != user.id) {
+                      if (message.sender != usr) {
                         $emit('openShort', {
                           short: message.short,
                           sender: usr,
@@ -264,7 +264,7 @@
                 <short-preview
                   v-on:click="
                     Object.keys(this.users).forEach((usr) => {
-                      if (usr != user.id) {
+                      if (message.sender != usr) {
                         $emit('openShort', {
                           short: message.short,
                           sender: usr,
