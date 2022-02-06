@@ -21,6 +21,7 @@ import EmojiConvertor from "emoji-js";
 import { ref as storageRef, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import recordAudio from "./scripts/recordAudio.js";
 import Player from '../../components/Player/Player.vue';
+import Swatch from '../../components/Swatch/Swatch.vue';
 // Variables for emoji search and display
 let meetingRingtone = new Audio(require("./assets/ringtone.mp3"));
 meetingRingtone.loop = true;
@@ -38,7 +39,7 @@ let pubnub;
 export default {
     name: "Chat",
     components: {
-        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal
+        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal, Swatch
     },
     data: () => {
         return {
@@ -153,6 +154,7 @@ export default {
                     check: false
                 },
                 index: 0,
+                colors: ["var(--primary)", "var(--success)", "var(--danger)", "#5327f1", "#f127e4", "#9cb009", "#f14d27"],
                 notificationGranted: false,
                 likeEmojiModal: false,
                 data: {
@@ -161,6 +163,7 @@ export default {
                     lightMode: false,
                     likeEmoji: { "_data": { "name": "Thumbs Up Sign", "unified": "1F44D", "has_img_apple": true, "has_img_google": true, "has_img_twitter": true, "has_img_facebook": true, "keywords": ["thumbs_up", "thumbsup", "yes", "awesome", "good", "agree", "accept", "cool", "hand", "like"], "text": "", "short_names": ["+1", "thumbsup"], "added_in": "6.0", "sheet_x": 13, "sheet_y": 28, "search": "+1,thumbsup,thumbs,up,sign,thumbs_up,yes,awesome,good,agree,accept,cool,hand,like", "skin_tone": 1 }, "_skins": null, "_sanitized": { "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍" }, "id": "+1", "name": "Thumbs Up Sign", "colons": ":+1::skin-tone-1:", "unified": "1f44d", "skin": 1, "native": "👍", "short_names": ["+1", "thumbsup"], "short_name": "+1" },
                     messagesSimpleMode: false,
+                    messagesSimpleModeColor: "var(--primary)",
                     notification: {
                         granted: false,
                         enabled: true,
@@ -219,7 +222,7 @@ export default {
                     });
                 });
             } else {
-                if(!getFileFromPasteEvent(e)) return
+                if (!getFileFromPasteEvent(e)) return
                 this.filePastedInMsgBar(getFileFromPasteEvent(e));
             }
         });
@@ -1325,7 +1328,9 @@ export default {
         },
         applySettings() {
             const settingsData = this.settings.data;
-            console.log(settingsData.lightMode);
+            if (settingsData.messagesSimpleModeColor) {
+                document.documentElement.style.setProperty('--chat-me-color', settingsData.messagesSimpleModeColor);
+            }
             if (settingsData?.lightMode) {
                 document.querySelector("html").classList.remove("dark");
                 document.querySelector("meta[name='theme-color']").setAttribute("content", "#fff");

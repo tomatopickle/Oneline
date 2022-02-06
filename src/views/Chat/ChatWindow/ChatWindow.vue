@@ -115,8 +115,9 @@
                         </div>
                       </b-flex>
                       <b-flex style="width: 107%; padding-block: 5px">
-                        <b-spacer></b-spacer>
+                        <b-spacer v-if="message.sender != user.id"></b-spacer>
                         <b-btn
+                          v-if="message.sender != user.id"
                           style="margin-right: -15px"
                           size="small"
                           color="primary"

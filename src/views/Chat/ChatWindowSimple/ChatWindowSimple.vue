@@ -51,8 +51,10 @@
             >
             <b-flex>
               <b-spacer v-if="message.sender == user.id"></b-spacer>
-              <div class="senderAvatar">
+              <Popper arrow :interactive="true" placement="right">
                 <b-avatar
+                  :size="30"
+                  class="senderAvatarEl"
                   v-if="
                     message.sender != user.id &&
                     (checkTimeDifference(message, i) ||
@@ -61,14 +63,71 @@
                         !checkTimeDifference(message, i)
                       ))
                   "
-                  :size="30"
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
                   "
                   :src="users[message.sender]?.avatar"
                 >
                 </b-avatar>
-              </div>
+                <template #content>
+                  <b-card
+                    glass
+                    class="p-0"
+                    style="
+                      max-width: 310px;
+                      padding-right: 35px;
+                      padding-bottom: 5px;
+                    "
+                  >
+                    <b-flex>
+                      <div>
+                        <b-avatar
+                          :size="45"
+                          :username="
+                            users[message.sender]
+                              ? users[message.sender].username
+                              : ''
+                          "
+                          :src="users[message.sender]?.avatar"
+                        ></b-avatar>
+                      </div>
+                      <div>
+                        <h4 class="m-0 mt-3 ml-2">
+                          {{ users[message.sender]?.username }}
+                        </h4>
+                        <p class="userInfoPara">
+                          {{ users[message.sender]?.description }}
+                        </p>
+                      </div>
+                    </b-flex>
+                    <b-flex style="width: 107%; padding-block: 5px">
+                      <b-spacer v-if="message.sender != user.id"></b-spacer>
+                      <b-btn
+                        v-if="message.sender != user.id"
+                        style="margin-right: -15px"
+                        size="small"
+                        color="primary"
+                        v-on:click="
+                          $emit('startMeetingWithUser', users[message.sender])
+                        "
+                      >
+                        <b-icon name="mdi mdi-video" left class="pr-1"></b-icon>
+                        Meet
+                      </b-btn>
+                      <router-link :to="`/user/${message.sender}`">
+                        <b-btn size="small">
+                          <b-icon
+                            name="mdi mdi-account"
+                            left
+                            class="pr-1"
+                          ></b-icon>
+                          View Profile
+                        </b-btn></router-link
+                      >
+                    </b-flex>
+                  </b-card>
+                </template>
+              </Popper>
               <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
               <div v-if="message.type == 'gif'" class="msg-gif">
                 <v-lazy-image

@@ -1,5 +1,9 @@
 @import '../../../variables.styl';
 
+:root {
+    --chat-me-color: $primary;
+}
+
 .chatWindowSimple {
     .msg .msg-text {
         padding: 8px;
@@ -76,7 +80,7 @@
     }
 
     .me .msg-text {
-        background-color: var(--primary);
+        background-color: var(--chat-me-color);
         border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
     }
 
@@ -205,8 +209,8 @@
         color: grey;
     }
 
-    :not(.last).reacted {
-        margin-bottom: 20px;
+    .reacted {
+        margin-bottom: 15px;
     }
 
     .time {
@@ -246,6 +250,7 @@
 
     .msg .flex-box {
         padding-block: 1px;
+        align-items: inherit;
     }
 
     .msg-text .emojiImg {
