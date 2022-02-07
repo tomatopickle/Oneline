@@ -1,6 +1,14 @@
+const path = require("path");
 module.exports = {
   devServer: {
     disableHostCheck: true
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
   },
   pages: {
     index: {

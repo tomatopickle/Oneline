@@ -19,8 +19,9 @@
     }
 
     .messageActions {
-        display: none;
         padding: 5px;
+        opacity: 0;
+        transition: opacity 0.2s;
 
         .icon {
             transition: all 0.2s;
@@ -38,7 +39,7 @@
         }
 
         &:hover {
-            display: flex;
+            opacity: 1;
         }
     }
 
@@ -50,8 +51,8 @@
         margin-right: 10px;
     }
 
-    .msg:hover + .messageActions {
-        display: flex;
+    .msg:hover .messageActions {
+        opacity: 1;
     }
 
     .link-preview-parent {
