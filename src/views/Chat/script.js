@@ -154,7 +154,7 @@ export default {
                     check: false
                 },
                 index: 0,
-                colors: ["var(--primary)", "var(--success)", "var(--danger)", "#5327f1", "#f127e4", "#9cb009", "#f14d27"],
+                colors: ["var(--primary)", "var(--success)", "var(--danger)", "#5327f1", "#f127e4", "#eab308", "#f14d27"],
                 notificationGranted: false,
                 likeEmojiModal: false,
                 data: {
