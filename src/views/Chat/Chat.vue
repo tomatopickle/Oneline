@@ -887,7 +887,7 @@
             <template #6> About </template>
           </b-nav-panel></template
         >
-        <b-card bare height="325px" width="100%">
+        <b-card bare height="325px" width="100%" >
           <b-tab-content v-model="settings.index">
             <template v-slot:0>
               <div>

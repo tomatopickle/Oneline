@@ -7,7 +7,7 @@ import { storage } from "../../fire.js";
 import { getFileFromPasteEvent } from "../../scripts/globalFunctions.js";
 import PubNub from "pubnub";
 import VueHorizontal from "vue-horizontal";
-import { ref, set, get, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
+import { ref, set, get, endAt, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "../../router";
 import stringify from "json-stable-stringify";
@@ -830,15 +830,16 @@ export default {
         },
         getGroupChat(chatId, chat) {
             let unreadMessages = 0;
-            onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)), (snapshot) => {
+            let q = query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100));
+            onValue(q, (snapshot) => {
                 if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
                     console.log("chat aint there")
                     unreadMessages = Object.keys(snapshot.val()).length;
                 } else {
                     unreadMessages = 0;
                 }
-                off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)));
-                onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
+                off(q);
+                onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
                     var lastMessage = data.val();
                     if (this.chat.id == chatId) {
                         this.newMessage(lastMessage);
@@ -853,7 +854,7 @@ export default {
                         }
                         if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
                             if (this.windowHidden && this.user.id != lastMessage?.sender) {
-                                new Notification(`${sender.username} in ${chat.name}`, { body: lastMessage.text });
+                                new Notification(`${sender.username} in ${chat.name}`, { body: this.stripHtml(lastMessage.text) });
                             }
                         };
                     });
@@ -879,7 +880,8 @@ export default {
         },
         getPersonalChat(chatId, chat) {
             let unreadMessages = 0;
-            onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)), (snapshot) => {
+            let q = query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100));
+            onValue(q, (snapshot) => {
                 if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
                     console.log("chat aint there")
                     unreadMessages = Object.keys(snapshot.val()).length;
@@ -887,9 +889,10 @@ export default {
                     unreadMessages = 0;
                 }
                 // We only need this query once
-                off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100)));
-                onChildAdded(query(ref(db, 'messages/' + chatId), limitToLast(1)), (data) => {
+                off(q);
+                onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
                     var lastMessage = data.val();
+                    console.log("NEW MESSAAAAAAAAAAAAGE")
                     if (this.chat.id == chatId) {
                         this.newMessage(lastMessage);
                     }
@@ -903,7 +906,7 @@ export default {
                         }
                         if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
                             if (this.windowHidden && this.user.id != lastMessage?.sender) {
-                                new Notification(`${sender.username} in DMs`, { body: lastMessage.text });
+                                new Notification(`${sender.username} in DMs`, { body: this.stripHtml(lastMessage.text) });
                             } else if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
                                 set(ref(db, "seen/" + chatId), { [this.user.username]: true });
                             }
