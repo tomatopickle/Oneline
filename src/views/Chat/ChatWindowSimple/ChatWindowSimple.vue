@@ -248,7 +248,7 @@
                   <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <div :class="`msg-reply`">
                     <b-avatar
-                      :size="20"
+                      :size="22"
                       :username="
                         users[message.replyingTo.sender]
                           ? users[message.replyingTo.sender].username
@@ -257,6 +257,7 @@
                       :src="users[message.replyingTo.sender]?.avatar"
                     ></b-avatar>
                     <div
+                      class="pr-2"
                       v-html="
                         convertMessageToHTML(
                           message.replyingTo?.text ||

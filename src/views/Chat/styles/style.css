@@ -282,6 +282,9 @@ figure.filterPreview::before {
   padding-inline: 10px;
   font-size: 18px;
   padding-block: 5px;
+  height: 37px;
+  text-overflow: clip;
+  overflow-y: auto;
 }
 #instantUpload {
   z-index: 6;
