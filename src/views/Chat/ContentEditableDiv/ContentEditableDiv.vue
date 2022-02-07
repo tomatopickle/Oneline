@@ -38,6 +38,11 @@ export default {
 @import '../../../variables.styl';
 
 .editable {
+  overflow-y: auto;
+  max-height: 70vh;
+}
+
+.editable {
   blockquote {
     border-left: 3px solid var(--primary);
     padding-left: 10px;
