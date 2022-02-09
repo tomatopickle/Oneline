@@ -359,6 +359,19 @@
               </b-flex>
             </span>
           </div>
+          <b-flex v-if="!!message.seen && i == lastMessage" class="seenUsers">
+            <b-spacer v-if="message.sender == user.id"></b-spacer>
+            <span v-for="(user, key) in message.seen" :key="key">
+              <b-flex style="padding: 0">
+                <b-avatar
+                  v-if="user.username"
+                  :username="user.username || ''"
+                  :src="user.avatar || ''"
+                  :size="20"
+                ></b-avatar>
+              </b-flex>
+            </span>
+          </b-flex>
         </div>
         <div v-else>
           <span class="info-message">
@@ -540,6 +553,9 @@ export default {
     },
     emojiGroups() {
       return EmojiGroups;
+    },
+    lastMessage() {
+      return Object.keys(this.messages)[Object.keys(this.messages).length - 1];
     },
   },
   updated() {

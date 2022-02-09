@@ -764,12 +764,6 @@ html:not(.dark) #replyMessage {
 #emojiComplete .selected {
   background-color: var(--primary);
 }
-
-#seenIndicator {
-  position: absolute;
-  right: 10px;
-  top: -20px;
-}
 #audioPlyr {
   position: absolute;
   top: -55px;

@@ -458,17 +458,6 @@
             typing...
           </div>
         </transition>
-        <transition name="fade" :duration="{ enter: 200, leave: 300 }">
-          <small
-            id="seenIndicator"
-            v-if="seen && Object.keys(seen).length != 0"
-          >
-            <span> Seen by </span>
-            <span v-for="(i, usr) in seen" :key="usr">
-              {{ usr }}
-            </span>
-          </small>
-        </transition>
         <div v-if="recording.show" class="w-full">
           <b-flex v-if="!recording.uploading">
             <div id="recordingLight"></div>

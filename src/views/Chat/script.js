@@ -269,8 +269,15 @@ export default {
             }
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
-                if (!this.windowHidden && this.chat.id && this.messages[Object.keys(this.messages)[Object.keys(this.messages).length - 1]].sender != this.user.id) {
-                    set(ref(db, "seen/" + this.chat.id), { [this.user.username]: true });
+                const lastMessage = this.messages[Object.keys(this.messages)[Object.keys(this.messages).length - 1]];
+                if (!!lastMessage.time && !this.windowHidden && this.chat.id && lastMessage.sender != this.user.id) {
+                    set(
+                        child(
+                            ref(db),
+                            `messages/${this.chat.id}/${Object.keys(this.messages)[Object.keys(this.messages).length - 1]}/seen/${this.user.username}`
+                        ),
+                        this.user
+                    );
                 }
             });
             if (localStorage.getItem("lastOpenedChat")) {
@@ -747,13 +754,6 @@ export default {
                 this.chat = chatData;
                 this.chat.src = chat?.src;
                 this.chat.lastOnline = chat?.lastOnline;
-                onValue(query(ref(db, `seen/${chat.id}`)), (snapshot) => {
-                    if (this.chat.id != chat.id) return
-                    this.seen = snapshot.val();
-                    if (this.seen && this.seen[this.user.username]) {
-                        delete this.seen[this.user.username];
-                    }
-                });
                 if (!chatData.name) {
                     this.chat.name = chat.name;
                 }
@@ -856,7 +856,16 @@ export default {
                             if (this.windowHidden && this.user.id != lastMessage?.sender) {
                                 new Notification(`${sender.username} in ${chat.name}`, { body: this.stripHtml(lastMessage.text) });
                             }
-                        };
+                        }
+                        if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
+                            set(
+                                child(
+                                    ref(db),
+                                    `messages/${chatId}/${Object.keys(this.messages)[Object.keys(this.messages).length - 1]}/seen/${this.user.username}`
+                                ),
+                                this.user
+                            );
+                        }
                     });
                 });
                 onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
@@ -892,7 +901,6 @@ export default {
                 off(q);
                 onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
                     var lastMessage = data.val();
-                    console.log("NEW MESSAAAAAAAAAAAAGE")
                     if (this.chat.id == chatId) {
                         this.newMessage(lastMessage);
                     }
@@ -907,9 +915,16 @@ export default {
                         if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
                             if (this.windowHidden && this.user.id != lastMessage?.sender) {
                                 new Notification(`${sender.username} in DMs`, { body: this.stripHtml(lastMessage.text) });
-                            } else if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
-                                set(ref(db, "seen/" + chatId), { [this.user.username]: true });
                             }
+                        }
+                        if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
+                            set(
+                                child(
+                                    ref(db),
+                                    `messages/${chatId}/${Object.keys(this.messages)[Object.keys(this.messages).length - 1]}/seen/${this.user.username}`
+                                ),
+                                this.user
+                            );
                         }
                     });
                 });
@@ -1070,7 +1085,6 @@ export default {
             this.message.text = "";
             this.reply = { show: false, message: {} };
             document.querySelector("#messageInp .editable").innerHTML = "";
-            remove(ref(db, `seen/${this.chat.id}`));
         },
         createPersonalChat() {
             this.newChat.data.personal.loading = true;
@@ -1172,7 +1186,6 @@ export default {
             update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: emojiConvertor.replace_colons(this.message.text), sender: this.user.id, time: Date.now() });
             this.message.text = "";
             document.querySelector("#messageInp .editable").innerHTML = "";
-            remove(ref(db, `seen/${this.chat.id}`));
         },
         deleteInstantUpload() {
             deleteObject(storageRef(storage, this.instantUpload.file.path)).then(() => {
