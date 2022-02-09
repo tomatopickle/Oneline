@@ -381,7 +381,7 @@
             <span class="text-blue-600">{{
               members[reply.message.sender]?.username
             }}</span
-            >:&nbsp;<span v-html="getReplyPreview(reply.message)"></span>
+            >:&nbsp;<span class="w-full flex-grow" v-html="getReplyPreview(reply.message)"></span>
             <b-spacer></b-spacer>
             <b-btn
               icon
