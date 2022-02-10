@@ -834,8 +834,12 @@ export default {
                 console.log(lastSeenMessageTime)
                 onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)), (snapshot) => {
                     off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)));
-                    if (!snapshot.exists()) return
-                    console.log(snapshot.val());
+                    if (!snapshot.exists() || this.chat.id == chatId) {
+                        if (this.chats[chatId]) {
+                            this.chats[chatId].unreadMessages = 0;
+                        }
+                        return
+                    }
                     if (this.chats[chatId]) {
                         this.chats[chatId].unreadMessages = Object.keys(snapshot.val()).length;
                     } else {
@@ -873,9 +877,11 @@ export default {
                         var sender = snapshot.val();
                         lastMessage.senderInfo = sender;
                     }
-                     // If there's a past record of an unread message
-                     if (this.chats[chatId]) {
+                    // If there's a past record of an unread message
+                    if (this.chats[chatId] && this.chat.id != chatId) {
                         unreadMessages = this.chats[chatId].unreadMessages;
+                    } else {
+                        unreadMessages = 0;
                     }
                     this.chats[chatId] = { name: chat.name, src: chat.avatar, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, unreadMessages, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
                     var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
@@ -891,11 +897,14 @@ export default {
                 if (!snapshot.exists()) return
                 let lastSeenMessageTime = snapshot.val()
                 lastSeenMessageTime = lastSeenMessageTime.toString();
-                console.log(lastSeenMessageTime)
                 onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)), (snapshot) => {
                     off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)));
-                    if (!snapshot.exists()) return
-                    console.log(snapshot.val());
+                    if (!snapshot.exists() || this.chat.id == chatId) {
+                        if (this.chats[chatId]) {
+                            this.chats[chatId].unreadMessages = 0;
+                        }
+                        return
+                    }
                     if (this.chats[chatId]) {
                         this.chats[chatId].unreadMessages = Object.keys(snapshot.val()).length;
                     } else {
@@ -952,8 +961,10 @@ export default {
                                             lastMessage.senderInfo = sender;
                                         }
                                         // If there's a past record of an unread message
-                                        if (this.chats[chatId]) {
+                                        if (this.chats[chatId] && this.chat.id != chatId) {
                                             unreadMessages = this.chats[chatId].unreadMessages;
+                                        } else {
+                                            unreadMessages = 0;
                                         }
                                         console.log(unreadMessages)
                                         this.chats[chatId] = { name: data.username, src: data.avatar, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
@@ -964,8 +975,6 @@ export default {
                                     });
 
                                 });
-
-
                             });
                         }
                     });
