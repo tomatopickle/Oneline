@@ -1206,7 +1206,7 @@ export default {
                 });
         },
         sendMessage() {
-            if (this.message.text.trim().length < 1) return
+            if (document.querySelector("#messageInp .editable").textContent.trim().length < 1) return
             if (!this.instantUpload.loading && this.instantUpload.file) {
                 this.sendInstantUpload();
             }
