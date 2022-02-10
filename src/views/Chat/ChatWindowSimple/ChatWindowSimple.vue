@@ -361,16 +361,18 @@
           </div>
           <b-flex v-if="!!message.seen && i == lastMessage" class="seenUsers">
             <b-spacer v-if="message.sender == user.id"></b-spacer>
-            <span v-for="(user, key) in message.seen" :key="key">
-              <b-flex style="padding: 0">
-                <b-avatar
-                  v-if="user.username"
-                  :username="user.username || ''"
-                  :src="user.avatar || ''"
-                  :size="20"
-                ></b-avatar>
-              </b-flex>
-            </span>
+              <template v-for="(usr, key) in message.seen" :key="key">
+                <span v-if="usr.id != user.id">
+                  <b-flex style="padding: 0">
+                    <b-avatar
+                      v-if="usr.username"
+                      :username="usr.username || ''"
+                      :src="usr.avatar || ''"
+                      :size="20"
+                    ></b-avatar>
+                  </b-flex>
+                </span>
+              </template>
           </b-flex>
         </div>
         <div v-else>

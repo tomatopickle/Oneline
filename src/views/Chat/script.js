@@ -270,14 +270,8 @@ export default {
             document.addEventListener("visibilitychange", (e) => {
                 this.windowHidden = (document.visibilityState === "hidden");
                 const lastMessage = this.messages[Object.keys(this.messages)[Object.keys(this.messages).length - 1]];
-                if (!!lastMessage.time && !this.windowHidden && this.chat.id && lastMessage.sender != this.user.id) {
-                    set(
-                        child(
-                            ref(db),
-                            `messages/${this.chat.id}/${Object.keys(this.messages)[Object.keys(this.messages).length - 1]}/seen/${this.user.username}`
-                        ),
-                        this.user
-                    );
+                if (!this.windowHidden && this.chat.id) {
+                    this.userSeenLastMessage();
                 }
             });
             if (localStorage.getItem("lastOpenedChat")) {
@@ -782,6 +776,9 @@ export default {
                     this.groupInfo.data.description = chatData?.description;
                     this.typing = {};
                     this.messages = data || {};
+                    if (!this.windowHidden) {
+                        this.userSeenLastMessage();
+                    }
                 });
             });
         },
@@ -830,148 +827,169 @@ export default {
         },
         getGroupChat(chatId, chat) {
             let unreadMessages = 0;
-            let q = query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100));
-            onValue(q, (snapshot) => {
-                if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
-                    console.log("chat aint there")
-                    unreadMessages = Object.keys(snapshot.val()).length;
-                } else {
-                    unreadMessages = 0;
-                }
-                off(q);
-                onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
-                    var lastMessage = data.val();
-                    if (this.chat.id == chatId) {
-                        this.newMessage(lastMessage);
+            onValue(query(ref(db, `lastSeenMessage/${this.user.id}/${chatId}`)), (snapshot) => {
+                if (!snapshot.exists()) return
+                let lastSeenMessageTime = snapshot.val()
+                lastSeenMessageTime = lastSeenMessageTime.toString();
+                console.log(lastSeenMessageTime)
+                onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)), (snapshot) => {
+                    off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)));
+                    if (!snapshot.exists()) return
+                    console.log(snapshot.val());
+                    if (this.chats[chatId]) {
+                        this.chats[chatId].unreadMessages = Object.keys(snapshot.val()).length;
+                    } else {
+                        unreadMessages = Object.keys(snapshot.val()).length;
                     }
-                    if (this.chats[chatId] && this.chat.id != chatId) {
-                        unreadMessages = this.chats[chatId].unreadMessages + 1;
-                    }
-                    get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
-                        if (lastMessage) {
-                            var sender = snapshot.val();
-                            lastMessage.senderInfo = sender;
-                        }
-                        if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
-                            if (this.windowHidden && this.user.id != lastMessage?.sender) {
-                                new Notification(`${sender.username} in ${chat.name}`, { body: this.stripHtml(lastMessage.text) });
-                            }
-                        }
-                        if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
-                            set(
-                                child(
-                                    ref(db),
-                                    `messages/${chatId}/${Object.keys(this.messages)[Object.keys(this.messages).length - 1]}/seen/${this.user.username}`
-                                ),
-                                this.user
-                            );
-                        }
-                    });
                 });
-                onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
-                    if (snapshot.exists()) {
-                        var lastMessage = snapshot.val();
-                        lastMessage = lastMessage[Object.keys(lastMessage)[0]];
+            });
+            onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
+                var lastMessage = data.val();
+                if (this.chat.id == chatId) {
+                    this.newMessage(lastMessage);
+                }
+                if (this.chats[chatId] && this.chat.id != chatId) {
+                    this.chats[chatId].unreadMessages++;
+                }
+                get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                    if (lastMessage) {
+                        var sender = snapshot.val();
+                        lastMessage.senderInfo = sender;
                     }
-                    get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
-                        if (lastMessage) {
-                            var sender = snapshot.val();
-                            lastMessage.senderInfo = sender;
+                    if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
+                        if (this.windowHidden && this.user.id != lastMessage?.sender) {
+                            new Notification(`${sender.username} in ${chat.name}`, { body: this.stripHtml(lastMessage.text) });
                         }
-                        this.chats[chatId] = { name: chat.name, src: chat.avatar, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, unreadMessages, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
-                        var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
-                            return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
-                        });
-                        this.chats = JSON.parse(s);
+                    }
+                });
+            });
+            onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
+                if (snapshot.exists()) {
+                    var lastMessage = snapshot.val();
+                    lastMessage = lastMessage[Object.keys(lastMessage)[0]];
+                }
+                get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                    if (lastMessage) {
+                        var sender = snapshot.val();
+                        lastMessage.senderInfo = sender;
+                    }
+                     // If there's a past record of an unread message
+                     if (this.chats[chatId]) {
+                        unreadMessages = this.chats[chatId].unreadMessages;
+                    }
+                    this.chats[chatId] = { name: chat.name, src: chat.avatar, id: chat.id, type: "group", description: chat.description, addedTime: chat.addedTime, unreadMessages, lastMessage: lastMessage ? (lastMessage) : { text: "New Group", time: Date.now() } };
+                    var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
+                        return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
                     });
+                    this.chats = JSON.parse(s);
                 });
             });
         },
         getPersonalChat(chatId, chat) {
             let unreadMessages = 0;
-            let q = query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(this.user.lastOnline ? this.user.lastOnline.toString() : 0), limitToLast(100));
-            onValue(q, (snapshot) => {
-                if (!this.chats[chatId] && this.chat.id != chatId && snapshot.exists()) {
-                    console.log("chat aint there")
-                    unreadMessages = Object.keys(snapshot.val()).length;
-                } else {
-                    unreadMessages = 0;
-                }
-                // We only need this query once
-                off(q);
-                onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
-                    var lastMessage = data.val();
-                    if (this.chat.id == chatId) {
-                        this.newMessage(lastMessage);
-                    }
-                    if (this.chats[chatId] && this.chat.id != chatId) {
-                        unreadMessages = this.chats[chatId].unreadMessages + 1;
-                    }
-                    get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
-                        if (lastMessage) {
-                            var sender = snapshot.val();
-                            lastMessage.senderInfo = sender;
-                        }
-                        if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
-                            if (this.windowHidden && this.user.id != lastMessage?.sender) {
-                                new Notification(`${sender.username} in DMs`, { body: this.stripHtml(lastMessage.text) });
-                            }
-                        }
-                        if (!this.windowHidden && this.chat.id == chatId && this.user.id != lastMessage?.sender && this.enableScroll) {
-                            set(
-                                child(
-                                    ref(db),
-                                    `messages/${chatId}/${Object.keys(this.messages)[Object.keys(this.messages).length - 1]}/seen/${this.user.username}`
-                                ),
-                                this.user
-                            );
-                        }
-                    });
-                });
-                this.user.chats[chatId].members.forEach((usr) => {
-                    if (usr != this.user.id) {
-                        get(ref(db, `users/${usr}`)).then(snapshot => {
-                            if (snapshot.exists()) {
-                                var data = snapshot.val();
-                                this.getShorts(data);
-                                let lastOnline = 0;
-                                onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
-                                    var status = snapshot.exists() ? snapshot.val().status : "offline";
-                                    if (status == "offline") {
-                                        lastOnline = data.lastOnline || 0;
-                                    } else {
-                                        lastOnline = 0;
-                                    }
-                                    if (this.chat.id == chatId) {
-                                        this.chat.lastOnline = lastOnline;
-                                    }
-                                    // Used to get the latest message preview
-                                    onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
-                                        if (snapshot.exists()) {
-                                            var lastMessage = snapshot.val();
-                                            lastMessage = lastMessage[Object.keys(lastMessage)[0]];
-                                        }
-                                        get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
-                                            if (lastMessage) {
-                                                var sender = snapshot.val();
-                                                lastMessage.senderInfo = sender;
-                                            }
-                                            this.chats[chatId] = { name: data.username, src: data.avatar, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
-                                            var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
-                                                return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
-                                            });
-                                            this.chats = JSON.parse(s);
-                                        });
-
-                                    });
-
-
-                                });
-                            }
-                        });
+            onValue(query(ref(db, `lastSeenMessage/${this.user.id}/${chatId}`)), (snapshot) => {
+                if (!snapshot.exists()) return
+                let lastSeenMessageTime = snapshot.val()
+                lastSeenMessageTime = lastSeenMessageTime.toString();
+                console.log(lastSeenMessageTime)
+                onValue(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)), (snapshot) => {
+                    off(query(ref(db, `messages/${chatId}`), orderByKey(), startAfter(lastSeenMessageTime), limitToLast(100)));
+                    if (!snapshot.exists()) return
+                    console.log(snapshot.val());
+                    if (this.chats[chatId]) {
+                        this.chats[chatId].unreadMessages = Object.keys(snapshot.val()).length;
+                    } else {
+                        unreadMessages = Object.keys(snapshot.val()).length;
                     }
                 });
             });
+            onChildAdded(query(ref(db, 'messages/' + chatId), orderByKey(), startAfter(Date.now().toString()), limitToLast(1)), (data) => {
+                var lastMessage = data.val();
+                if (this.chat.id == chatId) {
+                    this.newMessage(lastMessage);
+                }
+                if (this.chats[chatId] && this.chat.id != chatId) {
+                    this.chats[chatId].unreadMessages++;
+                }
+                get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                    if (lastMessage) {
+                        var sender = snapshot.val();
+                        lastMessage.senderInfo = sender;
+                    }
+                    if (this.settings.notificationGranted && this.settings.data.notification.enabled && this.settings.data.notification.newMessage) {
+                        if (this.windowHidden && this.user.id != lastMessage?.sender) {
+                            new Notification(`${sender.username} in DMs`, { body: this.stripHtml(lastMessage.text) });
+                        }
+                    }
+                });
+            });
+            this.user.chats[chatId].members.forEach((usr) => {
+                if (usr != this.user.id) {
+                    get(ref(db, `users/${usr}`)).then(snapshot => {
+                        if (snapshot.exists()) {
+                            var data = snapshot.val();
+                            this.getShorts(data);
+                            let lastOnline = 0;
+                            onValue(query(ref(db, `status/${usr}`)), (snapshot) => {
+                                var status = snapshot.exists() ? snapshot.val().status : "offline";
+                                if (status == "offline") {
+                                    lastOnline = data.lastOnline || 0;
+                                } else {
+                                    lastOnline = 0;
+                                }
+                                if (this.chat.id == chatId) {
+                                    this.chat.lastOnline = lastOnline;
+                                }
+                                // Used to get the latest message preview
+                                onValue(query(ref(db, `messages/${chatId}`), limitToLast(1)), (snapshot) => {
+                                    if (snapshot.exists()) {
+                                        var lastMessage = snapshot.val();
+                                        lastMessage = lastMessage[Object.keys(lastMessage)[0]];
+                                    }
+                                    get(ref(db, `users/${lastMessage?.sender}`)).then((snapshot) => {
+                                        if (lastMessage) {
+                                            var sender = snapshot.val();
+                                            lastMessage.senderInfo = sender;
+                                        }
+                                        // If there's a past record of an unread message
+                                        if (this.chats[chatId]) {
+                                            unreadMessages = this.chats[chatId].unreadMessages;
+                                        }
+                                        console.log(unreadMessages)
+                                        this.chats[chatId] = { name: data.username, src: data.avatar, id: chat.id, type: "personal", addedTime: chat.addedTime, lastOnline, unreadMessages, data, lastMessage: snapshot.exists() ? lastMessage : { text: "New Chat", time: Date.now() }, status };
+                                        var s = stringify(JSON.parse(JSON.stringify(this.chats)), function (a, b) {
+                                            return a.value.lastMessage?.time < b.value.lastMessage?.time ? 1 : -1;
+                                        });
+                                        this.chats = JSON.parse(s);
+                                    });
+
+                                });
+
+
+                            });
+                        }
+                    });
+                }
+            });
+        },
+        userSeenLastMessage() {
+            const lastSeenMsgTime = Object.keys(this.messages)[Object.keys(this.messages).length - 1];
+            if (this.messages[lastSeenMsgTime].sender != this.user.id) {
+                set(
+                    child(
+                        ref(db),
+                        `messages/${this.chat.id}/${lastSeenMsgTime}/seen/${this.user.username}`
+                    ),
+                    this.user
+                );
+            }
+            set(
+                child(
+                    ref(db),
+                    `lastSeenMessage/${this.user.id}/${this.chat.id}`
+                ),
+                lastSeenMsgTime
+            );
         },
         getShorts(user) {
             var date = new Date();
