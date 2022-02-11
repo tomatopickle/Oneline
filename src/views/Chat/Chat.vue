@@ -323,6 +323,7 @@
           @reply="
             reply.show = true;
             reply.message = $event;
+            $refs.messageBar.$el.focus();
           "
           @playAudio="
             audio.show = true;
@@ -344,6 +345,7 @@
           @reply="
             reply.show = true;
             reply.message = $event;
+            $refs.messageBar.$el.focus();
           "
           @playAudio="
             audio.show = true;
@@ -381,7 +383,10 @@
             <span class="text-blue-600">{{
               members[reply.message.sender]?.username
             }}</span
-            >:&nbsp;<span class="w-full flex-grow" v-html="getReplyPreview(reply.message)"></span>
+            >:&nbsp;<span
+              class="w-full flex-grow"
+              v-html="getReplyPreview(reply.message)"
+            ></span>
             <b-spacer></b-spacer>
             <b-btn
               icon
@@ -483,6 +488,7 @@
             @click="fileUpload.show = true"
           ></b-icon>
           <content-editable-div
+            ref="messageBar"
             @keypress="checkIfUserTyping($event)"
             @keydown="checkEnterKey($event)"
             @blur="userLeftMessageBox()"
@@ -876,7 +882,7 @@
             <template #6> About </template>
           </b-nav-panel></template
         >
-        <b-card bare height="325px" width="100%" >
+        <b-card bare height="325px" width="100%">
           <b-tab-content v-model="settings.index">
             <template v-slot:0>
               <div>
@@ -1088,7 +1094,7 @@
               </b-flex>
             </template>
             <template v-slot:5>
-              <h4 class="my-0">Cache</h4>
+              <h4 class="my-0 pt-2">Cache</h4>
               <p v-if="getLastUpdatedTime">{{ getLastUpdatedTime }}</p>
               <!-- I had to wrap this in a p tag to get the perfect padding -->
               <p>
@@ -1099,7 +1105,7 @@
                   >
                 </b-flex>
               </p>
-              <h4 class="my-0">Bugs</h4>
+              <h4 class="my-0 pt-2">Bugs</h4>
               <p>
                 Found a bug? Great!, please report it at our
                 <a
@@ -1109,7 +1115,7 @@
                   >issues section</a
                 >
               </p>
-              <h4 class="my-0">Credits</h4>
+              <h4 class="my-0 pt-2">Credits</h4>
               <p>
                 Icons made by
                 <a
