@@ -2,14 +2,14 @@
 import axios from "axios";
 import './styles/style.styl';
 import filters from "./scripts/filters.js";
-import db from "../../fire.js";
-import { storage } from "../../fire.js";
-import { getFileFromPasteEvent } from "../../scripts/globalFunctions.js";
+import db from "@/fire.js";
+import { storage } from "@/fire.js";
+import { getFileFromPasteEvent } from "@/scripts/globalFunctions.js";
 import PubNub from "pubnub";
 import VueHorizontal from "vue-horizontal";
 import { ref, set, get, endAt, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
 import { nanoid } from "nanoid";
-import router from "../../router";
+import router from "@/router";
 import stringify from "json-stable-stringify";
 import ChatWindow from "./ChatWindow/ChatWindow";
 import ChatWindowSimple from "./ChatWindowSimple/ChatWindowSimple";
@@ -20,8 +20,10 @@ import { Picker, EmojiIndex, Emoji } from "emoji-mart-vue-fast/src";
 import EmojiConvertor from "emoji-js";
 import { ref as storageRef, getDownloadURL, uploadBytes, deleteObject } from "firebase/storage";
 import recordAudio from "./scripts/recordAudio.js";
-import Player from '../../components/Player/Player.vue';
-import Swatch from '../../components/Swatch/Swatch.vue';
+import Player from '@/components/Player/Player.vue';
+import Swatch from '@/components/Swatch/Swatch.vue';
+import ShortVideoUploader from '@/components/ShortVideoUploader/ShortVideoUploader.vue';
+
 // Variables for emoji search and display
 let meetingRingtone = new Audio(require("./assets/ringtone.mp3"));
 meetingRingtone.loop = true;
@@ -39,7 +41,12 @@ let pubnub;
 export default {
     name: "Chat",
     components: {
-        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal, Swatch
+        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal, Swatch, ShortVideoUploader
+    },
+    provide() {
+        return {
+            openShort: this.openShort
+        }
     },
     data: () => {
         return {
@@ -72,6 +79,9 @@ export default {
                         caption: "",
                         src: "",
                     }
+                },
+                video: {
+                    show: false
                 }
             },
             meetingInvite: {

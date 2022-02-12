@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy": "surge --domain oneline.surge.sh --project C:/Users/mohammed/Abaan/oneline/dist",
+    "tunnel": "lt --port 4000 --subdomain oneline",
     "publish": "npm run build && npm run deploy"
   },
   "dependencies": {

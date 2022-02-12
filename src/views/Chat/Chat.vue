@@ -219,11 +219,13 @@
           <b-divider class="mt-0 mb-0" style="height: 15px"></b-divider>
           <b-list-item class="m-0 p-0">
             <b-flex class="m-0 p-0">
-              <b-avatar
-                :username="user.username ? user?.username : 'loading'"
-                :src="user.avatar"
-                :size="35"
-              ></b-avatar>
+              <router-link :to="'/user/' + user.id">
+                <b-avatar
+                  :username="user.username ? user?.username : 'loading'"
+                  :src="user.avatar"
+                  :size="35"
+                ></b-avatar>
+              </router-link>
               <b-list-item style="padding: 0">
                 <template v-slot:heading>
                   <h4>{{ user?.username }}</h4>
@@ -726,7 +728,15 @@
                 <b-icon size="50px" name="mdi mdi-camera"></b-icon>
                 <h4>Photo</h4>
               </b-btn>
-              <b-btn glass class="storyModeBtn" color="primary">
+              <b-btn
+                @click="
+                  short.show = false;
+                  short.video.show = true;
+                "
+                glass
+                class="storyModeBtn"
+                color="primary"
+              >
                 <br />
                 <b-icon size="50px" name="mdi mdi-video"></b-icon>
                 <h4>Video</h4>
@@ -852,6 +862,7 @@
         <template #footer> </template>
       </b-card>
     </b-modal>
+    <short-video-uploader :user="user" :show="short.video.show" />
     <b-modal v-model="settings.modal" width="750px">
       <b-card
         height="440px"
@@ -1300,7 +1311,7 @@
           </b-btn>
         </template>
         <div class="short" v-for="short in shorts.shorts" :key="short.time">
-          <figure :class="short.filter">
+          <figure :class="short.filter" v-if="short.type == 'photo'">
             <img
               @load="
                 $refs.shortsSlider.refresh();
@@ -1313,14 +1324,36 @@
             />
             <h4 class="shortImageCaption">{{ shorts.short?.caption }}</h4>
           </figure>
+          <figure :class="short.filter" v-else-if="short.type == 'video'">
+            <video
+              @load="
+                $refs.shortsSlider.refresh();
+                $refs.shortsSlider.scrollToIndex(0);
+                this.shorts.index = 0;
+              "
+              class="shortImage"
+              :src="short.src"
+              controls
+              alt=""
+            />
+          </figure>
         </div>
       </vue-horizontal>
       <b-flex>
-        <b-input
-          ghost
-          v-model="shorts.commentText"
-          :placeholder="'Message ' + shorts.user.username"
-        ></b-input>
+        <b-form
+          class="w-full"
+          @submit="
+            if (shorts.commentText) {
+              commentShort();
+            }
+          "
+        >
+          <b-input
+            ghost
+            v-model="shorts.commentText"
+            :placeholder="'Message ' + shorts.user.username"
+          ></b-input>
+        </b-form>
         <b-btn @click="commentShort()" circle icon glass color="secondary">
           <b-icon size="26px" name="mdi mdi-send"></b-icon>
         </b-btn>

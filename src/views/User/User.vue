@@ -89,9 +89,23 @@
     <br />
 
     <div class="short">
-      <figure :class="shortModal.short.filter">
+      <figure
+        v-if="shortModal.short.type == 'photo'"
+        :class="shortModal.short.filter"
+      >
         <img class="shortImage" :src="shortModal.short.src" alt="" />
         <h4 class="shortImageCaption">{{ shortModal.short?.caption }}</h4>
+      </figure>
+      <figure
+        v-else-if="shortModal.short.type == 'video'"
+      >
+        <video
+          class="shortImage"
+          :src="shortModal.short.src"
+          autoplay
+          controls
+          alt=""
+        />
       </figure>
     </div>
   </b-modal>
@@ -348,7 +362,7 @@ export default {
   max-width: 100%;
   margin: auto;
 }
-#shortsModal figure:hover .shortImageCaption{
+#shortsModal figure:hover .shortImageCaption {
   opacity: 0;
 }
 #shortsModal figure::after,

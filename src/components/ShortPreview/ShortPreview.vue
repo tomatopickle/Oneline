@@ -5,6 +5,11 @@
         <img :src="short.src" alt="" srcset="" />
       </figure>
     </div>
+    <div v-else-if="short.type == 'video'">
+      <figure>
+        <video :src="short.src" muted alt="" />
+      </figure>
+    </div>
   </div>
 </template>
 <script>
@@ -17,12 +22,14 @@ export default {
 @import '../../variables.styl';
 
 .chatWindowSimple .shortPreview, .chatWindowDefault .shortPreview {
-  /* width: 35%; */
-  margin-left: 35px;
   margin-top: 5px;
   margin-bottom: 5px;
   position: relative;
   cursor: pointer;
+}
+
+.chatWindowDefault .shortPreview {
+  margin-left: 35px;
 }
 
 .chatWindowSimple, .chatWindowDefault {
@@ -39,22 +46,22 @@ export default {
   .msg-short-like, .msg-short-comment {
     div:first-child {
       position: relative;
+    }
 
-      :after {
-        content: '';
-        left: 0;
-        top: 0;
-        bottom: 0;
-        right: 0;
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        border-radius: var(--ui-radius);
-        background-color: alpha($bg-dark, 0.5);
-        z-index: 1;
-        transition: opacity 0.2s;
-        opacity: 0;
-      }
+    .shortPreview:after {
+      content: '';
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--ui-radius);
+      background-color: alpha($bg-dark, 0.5);
+      z-index: 1;
+      transition: opacity 0.2s;
+      opacity: 0;
     }
   }
 
@@ -79,11 +86,13 @@ export default {
   border-radius: var(--ui-radius);
 }
 
-.shortPreview img {
-  border-radius: var(--ui-radius);
-  width: 100%;
-  max-height: 50vh;
-  object-fit: contain;
+.shortPreview {
+  img, video {
+    border-radius: var(--ui-radius);
+    width: 100%;
+    max-height: 50vh;
+    object-fit: contain;
+  }
 }
 
 .chatWindowDefault .msg-short-like .shortPreview::after {
@@ -98,7 +107,7 @@ export default {
   line-height: 1;
 }
 
-.chatWindowSimple .msg-short-like .shortPreview::after {
+.chatWindowSimple .msg-short-like figure::after {
   content: '❤';
   position: absolute;
   right: -7px;
@@ -108,9 +117,10 @@ export default {
   padding: 5px;
   border-radius: 30px;
   line-height: 1;
+  z-index: 2;
 }
 
-.chatWindowSimple .me .shortPreview::after {
+.chatWindowSimple .me figure::after {
   right: unset;
   left: -7px;
 }
