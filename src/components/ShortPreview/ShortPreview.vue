@@ -10,6 +10,17 @@
         <video :src="short.src" muted alt="" />
       </figure>
     </div>
+    <div v-else-if="short.type == 'poll'">
+      <b-card width="100%" style="min-width: 0; max-width: unset">
+        <h3>{{ short.poll.name }}</h3>
+        <template v-for="option in short.poll.options" :key="option">
+          <b-btn v-if="option.name" block style="margin-top: 5px; z-index: 0">
+            {{ option.name }}
+          </b-btn>
+        </template>
+        <br />
+      </b-card>
+    </div>
   </div>
 </template>
 <script>

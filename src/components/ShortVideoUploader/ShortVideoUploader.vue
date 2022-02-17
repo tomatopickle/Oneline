@@ -1,47 +1,40 @@
 <template>
-  <b-modal v-model="showModal" width="50vw">
-    <b-card height="500px" glass>
-      <template #header>
-        <b-flex>
-          <h4 class="mt-0 mb-0">Upload Short</h4>
-          <b-spacer></b-spacer>
-          <b-btn @click="showModal = false" icon ghost
-            ><b-icon name="mdi mdi-close"></b-icon
-          ></b-btn>
-        </b-flex>
-      </template>
-      <div>
-        <transition name="fadeUp" mode="out-in">
-          <div v-if="!data.src">
-            <b-btn
-              @click="uploadVideo()"
-              :loading="uploadBtnLoading"
-              color="primary"
-              class="center mt-36"
-            >
-              <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
-              Upload Video
-            </b-btn>
-            <br /><br />
-          </div>
-          <div v-else>
-            <video controls autoplay :src="data.src"></video>
-            <br /><br /><br />
-            <b-btn
-              block
-              color="primary"
-              class="mt-1"
-              @click="uploadShortVideo()"
-            >
-              <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
-              Upload Short
-            </b-btn>
-          </div>
-        </transition>
-      </div>
-      <template #footer> </template>
-    </b-card>
-  </b-modal>
+  <b-card height="500px" glass>
+    <template #header>
+      <b-flex>
+        <h4 class="mt-0 mb-0">Upload Short</h4>
+        <b-spacer></b-spacer>
+        <b-btn icon ghost @click="$emit('close')"
+          ><b-icon name="mdi mdi-close"></b-icon
+        ></b-btn>
+      </b-flex>
+    </template>
+    <div>
+      <transition name="fadeUp" mode="out-in">
+        <div v-if="!data.src">
+          <b-btn
+            @click="uploadVideo()"
+            :loading="uploadBtnLoading"
+            color="primary"
+            class="center mt-36"
+          >
+            <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
+            Upload Video
+          </b-btn>
+          <br /><br />
+        </div>
+        <div v-else>
+          <video controls autoplay :src="data.src"></video>
+          <br /><br /><br />
+          <b-btn block color="primary" class="mt-1" @click="uploadShortVideo()">
+            <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
+            Upload Short
+          </b-btn>
+        </div>
+      </transition>
+    </div>
+    <template #footer> </template>
+  </b-card>
 </template>
 <script>
 import { storage } from "@/fire.js";
@@ -54,8 +47,9 @@ import {
 import { ref, set } from "firebase/database";
 export default {
   name: "ShortVideoUploader",
-  props: ["show", "user"],
+  props: ["user"],
   inject: ["openShort"],
+  emits: ["close"],
   data: () => {
     return {
       showModal: false,
@@ -82,6 +76,7 @@ export default {
           getDownloadURL(snapshot.metadata.ref).then((url) => {
             this.data.src = url;
             this.uploadBtnLoading = false;
+            this.$emit("close");
           });
         });
       };
@@ -95,12 +90,9 @@ export default {
         src: this.data.src,
       });
       this.openShort({ user: this.user, badge: 1 });
-      this.showModal = false;
       this.data.src = "";
+      this.$emit("close");
     },
-  },
-  updated() {
-    this.showModal = this.show;
   },
 };
 </script>

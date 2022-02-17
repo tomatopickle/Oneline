@@ -23,7 +23,8 @@ import recordAudio from "./scripts/recordAudio.js";
 import Player from '@/components/Player/Player.vue';
 import Swatch from '@/components/Swatch/Swatch.vue';
 import ShortVideoUploader from '@/components/ShortVideoUploader/ShortVideoUploader.vue';
-
+import ShortPollWizard from '@/components/ShortPollWizard/ShortPollWizard.vue';
+import ShortPollResults from '@/components/ShortPollResults/ShortPollResults.vue';
 // Variables for emoji search and display
 let meetingRingtone = new Audio(require("./assets/ringtone.mp3"));
 meetingRingtone.loop = true;
@@ -41,7 +42,7 @@ let pubnub;
 export default {
     name: "Chat",
     components: {
-        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal, Swatch, ShortVideoUploader
+        ChatWindow, ContentEditableDiv, ChatWindowSimple, Picker, Emoji, Player, VueHorizontal, Swatch, ShortVideoUploader, ShortPollWizard, ShortPollResults
     },
     provide() {
         return {
@@ -81,6 +82,9 @@ export default {
                     }
                 },
                 video: {
+                    show: false
+                },
+                poll: {
                     show: false
                 }
             },
@@ -222,10 +226,7 @@ export default {
             if (this.short.photo.show && !this.short.photo.uploadBtnLoading) {
                 this.short.photo.uploadBtnLoading = true;
                 var file = getFileFromPasteEvent(e);
-                console.log(file);
                 uploadBytes(storageRef(storage, `stories/${this.user.id}/${Date.now()}`), file).then((snapshot) => {
-                    console.log('Uploaded a blob or file!');
-                    console.log(snapshot);
                     getDownloadURL(snapshot.metadata.ref).then((url) => {
                         this.short.photo.data.src = url;
                         this.short.photo.uploadBtnLoading = false;
@@ -253,7 +254,6 @@ export default {
             }
             this.user = data;
             this.userInfo.data = data;
-            console.log(data)
             pubnub = new PubNub({
                 publishKey: "pub-c-c7a63789-7f5f-4050-826c-e75505e9631e",
                 subscribeKey: "sub-c-2a2cb9c6-7935-11ec-add2-a260b15b99c5",
@@ -406,6 +406,7 @@ export default {
             }
         },
         viewedShort() {
+            console.log("CAALLLLLEEDg248")
             this.shorts.short = this.getByIndex(this.shorts.shorts, this.shorts.index);
             console.log(this.getByIndex(this.shorts.shorts, this.shorts.index));
             if (this.shorts.short) {
@@ -1025,12 +1026,18 @@ export default {
                 this.shortsAvatars[user.id] = { user, badge: Object.keys(snapshot.val()).length };
             });
         },
-
+        votePoll(option) {
+            set(child(ref(db), `shorts/${this.shorts.user.id}/${this.shorts.short.time}/poll/options/${option.name}/voters/${this.user.id}`), this.user);
+            set(child(ref(db), `shorts/${this.shorts.user.id}/${this.shorts.short.time}/poll/options/${option.name}/votes`), option.votes++);
+            set(child(ref(db), `shorts/${this.shorts.user.id}/${this.shorts.short.time}/voters/${this.user.id}`), this.user);
+            get(child(ref(db), `shorts/${this.shorts.user.id}/${this.shorts.short.time}`))
+                .then((snapshot) => {
+                    this.shorts.shorts[this.shorts.short.time] = snapshot.val();
+                });
+        },
         openShort(short) {
-            console.log(short)
             this.shorts.show = true;
             onValue(query(ref(db, `shorts/${short.user.id}`), limitToLast(short.badge)), (snapshot) => {
-                console.log(snapshot.val());
                 this.shorts.user = short.user;
                 this.shorts.shorts = JSON.parse(stringify(snapshot.val(), function (a, b) {
                     return a.key > b.key ? 1 : -1;
@@ -1041,18 +1048,20 @@ export default {
                     delete this.shortsAvatars[short.user.id]
                 }
             });
+            setTimeout(() => {
+                this.$refs.shortsSlider.refresh();
+                this.$refs.shortsSlider.scrollToIndex(0);
+                this.shorts.index = 0;
+            }, 1000);
         },
         openShortWithId(id, userId, controlled) {
-            console.log(id, userId)
             this.shorts.show = true;
             get(child(ref(db), `users/${userId}`))
                 .then((snapshot) => {
                     const user = snapshot.val();
-                    console.log(user);
                     this.shorts.user = user;
                     get(child(ref(db), `shorts/${userId}/${id}`))
                         .then((snapshot) => {
-                            console.log(snapshot.val());
                             this.shorts.shorts = { [id]: snapshot.val() }
                             this.shorts.short = snapshot.val();
                             if (controlled) {

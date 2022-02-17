@@ -741,10 +741,18 @@
                 <b-icon size="50px" name="mdi mdi-video"></b-icon>
                 <h4>Video</h4>
               </b-btn>
-              <b-btn glass class="storyModeBtn" color="primary">
+              <b-btn
+                @click="
+                  short.show = false;
+                  short.poll.show = true;
+                "
+                glass
+                class="storyModeBtn"
+                color="primary"
+              >
                 <br />
                 <b-icon size="50px" name="mdi mdi-poll"></b-icon>
-                <h4>Poll</h4>
+                <h4>Poll (Beta)</h4>
               </b-btn>
               <b-btn glass class="storyModeBtn text-left" color="primary">
                 <h1>&nbsp;More</h1>
@@ -862,7 +870,13 @@
         <template #footer> </template>
       </b-card>
     </b-modal>
-    <short-video-uploader :user="user" :show="short.video.show" />
+
+    <b-modal v-model="short.video.show" width="50vw">
+      <short-video-uploader @close="short.video.show = false" :user="user" />
+    </b-modal>
+    <b-modal v-model="short.poll.show" width="500px">
+      <short-poll-wizard @close="short.poll.show = false" :user="user" />
+    </b-modal>
     <b-modal v-model="settings.modal" width="750px">
       <b-card
         height="440px"
@@ -1316,7 +1330,7 @@
               @load="
                 $refs.shortsSlider.refresh();
                 $refs.shortsSlider.scrollToIndex(0);
-                this.shorts.index = 0;
+                shorts.index = 0;
               "
               class="shortImage"
               :src="short.src"
@@ -1329,7 +1343,7 @@
               @load="
                 $refs.shortsSlider.refresh();
                 $refs.shortsSlider.scrollToIndex(0);
-                this.shorts.index = 0;
+                shorts.index = 0;
               "
               class="shortImage"
               :src="short.src"
@@ -1337,6 +1351,36 @@
               alt=""
             />
           </figure>
+          <div
+            :class="short.filter"
+            v-else-if="short.type == 'poll'"
+          >
+            <b-card glass width="400px" class="center">
+              <h4>{{ short.poll.name }}</h4>
+              <div class="center w-3/4">
+                  <div
+                    v-if="!Object.keys(short?.voters || {}).includes(user.id)"
+                  >
+                    <template
+                      v-for="option in short.poll.options"
+                      :key="option"
+                    >
+                      <b-btn
+                        v-on:click="votePoll(option)"
+                        block
+                        style="margin-top: 5px; z-index: 0"
+                      >
+                        {{ option.name }}
+                      </b-btn>
+                    </template>
+                  </div>
+                  <div v-else>
+                    <ShortPollResults :poll="short.poll" />
+                  </div>
+                <br />
+              </div>
+            </b-card>
+          </div>
         </div>
       </vue-horizontal>
       <b-flex>

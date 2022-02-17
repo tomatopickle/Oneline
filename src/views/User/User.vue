@@ -96,9 +96,7 @@
         <img class="shortImage" :src="shortModal.short.src" alt="" />
         <h4 class="shortImageCaption">{{ shortModal.short?.caption }}</h4>
       </figure>
-      <figure
-        v-else-if="shortModal.short.type == 'video'"
-      >
+      <figure v-else-if="shortModal.short.type == 'video'">
         <video
           class="shortImage"
           :src="shortModal.short.src"
@@ -107,6 +105,11 @@
           alt=""
         />
       </figure>
+      <div v-else-if="shortModal.short.type == 'poll'">
+        <b-card class="center">
+          <ShortPollResults :poll="shortModal.short.poll" />
+        </b-card>
+      </div>
     </div>
   </b-modal>
 </template>
@@ -125,10 +128,12 @@ import {
   orderByValue,
 } from "firebase/database";
 import stringify from "json-stable-stringify";
-import ShortPreview from "../../components/ShortPreview/ShortPreview.vue";
+import ShortPreview from "@/components/ShortPreview/ShortPreview.vue";
+import ShortPollResults from "@/components/ShortPollResults/ShortPollResults.vue";
+
 export default {
   name: "User",
-  components: { ShortPreview, VueHorizontal },
+  components: { ShortPreview, VueHorizontal, ShortPollResults },
   data: () => {
     return {
       baseUrl: "https://" + location.host,
