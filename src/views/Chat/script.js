@@ -128,6 +128,7 @@ export default {
             chat: {},
             windowHidden: false,
             leavingGroup: false,
+            archiveGroup: false,
             gif: {
                 gifs: [],
                 chips: [],
@@ -756,6 +757,7 @@ export default {
                     return
                 }
                 let chatData = snapshot.val();
+                console.log(chatData);
                 this.chat = chatData;
                 this.chat.src = chat?.src;
                 this.chat.lastOnline = chat?.lastOnline;
@@ -1172,6 +1174,7 @@ export default {
                 name: this.newChat.data.newGroup.name,
                 description: this.newChat.data.newGroup.description,
                 type: "group",
+                admin: this.user.id,
                 members: [this.user.id],
                 addedTime: Date.now()
             };
@@ -1204,6 +1207,15 @@ export default {
                         this.newChat.data.group.loading = false;
                     }
                 });
+        },
+        archiveGroupFunction() {
+            set(child(ref(db), `chats/${this.chat.id}/archive`), true);
+            this.archiveGroup = false;
+            update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `The admin (${this.user.username}) archived the group`, type: "info", time: Date.now(), sender: this.user.id, action: "groupArchived" });
+        },
+        unarchiveGroupFunction() {
+            set(child(ref(db), `chats/${this.chat.id}/archive`), false);
+            update(child(ref(db), `messages/${this.chat.id}/${Date.now()}`), { text: `The admin (${this.user.username}) unarchived the group`, type: "info", time: Date.now(), sender: this.user.id, action: "groupUnarchived" });
         },
         leaveGroupFunction() {
             this.leavingGroup = true;

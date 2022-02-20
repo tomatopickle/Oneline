@@ -29,6 +29,7 @@
           <div class="messageActions">
             <b-flex>
               <b-icon
+                v-if="!chat.archive"
                 style="height: 22px"
                 v-on:click="
                   reaction.message = i;
@@ -39,6 +40,7 @@
               </b-icon>
               <b-icon
                 size="18px"
+                v-if="!chat.archive"
                 name="mdi mdi-reply"
                 v-on:click="$emit('reply', message)"
               >
@@ -314,18 +316,18 @@
           </span>
         </div>
         <div class="reactions" v-if="!!message.seen && i == lastMessage">
-           <template v-for="(usr, key) in message.seen" :key="key">
-              <span v-if="usr.id != user.id">
-                <b-flex style="padding: 0">
-                  <b-avatar
-                    v-if="usr.username"
-                    :username="usr.username || ''"
-                    :src="usr.avatar || ''"
-                    :size="20"
-                  ></b-avatar>
-                </b-flex>
-              </span>
-            </template>
+          <template v-for="(usr, key) in message.seen" :key="key">
+            <span v-if="usr.id != user.id">
+              <b-flex style="padding: 0">
+                <b-avatar
+                  v-if="usr.username"
+                  :username="usr.username || ''"
+                  :src="usr.avatar || ''"
+                  :size="20"
+                ></b-avatar>
+              </b-flex>
+            </span>
+          </template>
         </div>
       </div>
       <div v-else>

@@ -8,7 +8,7 @@ import App from './App.vue';
 import VLazyImage from "v-lazy-image";
 import FileUpload from "./components/FileUpload/FileUpload.vue";
 import router from './router';
-import './registerServiceWorker'
+import './registerServiceWorker';
 const app = createApp(App);
 const head = createHead();
 app.use(head);

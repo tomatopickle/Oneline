@@ -1,5 +1,16 @@
 @import '../../../variables.styl';
 
+#groupArchivedMessage {
+    padding: 15px;
+    background-color: lighten($bg-dark, 9%);
+    display: flex;
+    align-items: center;
+
+    .btn {
+        padding: 5px;
+    }
+}
+
 .chatWindowPreview {
     background-color: lighten($bg-dark, 2%);
     border-radius: var(--ui-radius);
@@ -20,8 +31,6 @@
     }
 }
 
-
-
 .msg-text {
     blockquote {
         border-left: 3px solid $primary;
@@ -34,5 +43,31 @@
 &.me {
     blockquote {
         border-color: white;
+    }
+}
+
+.memberLabel {
+    position: absolute;
+    right: 0;
+    top: 8px;
+    font-size: 14px;
+    border: 2px solid;
+    border-radius: 5px;
+    padding-inline: 5px;
+}
+
+.adminLabel {
+    border-color: $primary;
+    color: $primary;
+}
+
+html.dark .adminLabel {
+    color: $primary-text;
+}
+
+html:not(.dark) {
+    #groupArchivedMessage {
+        background-color: white;
+        border: 1px solid darken($bg, 5%);
     }
 }

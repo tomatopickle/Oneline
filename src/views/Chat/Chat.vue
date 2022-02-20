@@ -273,6 +273,7 @@
           <template v-slot:actions>
             <b-flex bare>
               <b-btn
+                v-if="!chat.archive"
                 icon
                 @click="startMeeting()"
                 :loading="newMeetingBtnDisabled"
@@ -378,8 +379,14 @@
           </b-btn>
         </transition>
       </div>
+      <div
+        id="groupArchivedMessage"
+        v-if="chat.archive"
+      >
+        <p>This group is archived, you can't send new messages</p>
+      </div>
       <template v-if="audio.show || reply.show"><br /><br /></template>
-      <div id="messageInp" v-if="chat?.id">
+      <div id="messageInp" v-if="chat?.id && !chat.archive">
         <div v-show="reply.show">
           <div id="replyMessage">
             <span class="text-blue-600">{{
@@ -1351,32 +1358,24 @@
               alt=""
             />
           </figure>
-          <div
-            :class="short.filter"
-            v-else-if="short.type == 'poll'"
-          >
+          <div :class="short.filter" v-else-if="short.type == 'poll'">
             <b-card glass width="400px" class="center">
               <h4>{{ short.poll.name }}</h4>
               <div class="center w-3/4">
-                  <div
-                    v-if="!Object.keys(short?.voters || {}).includes(user.id)"
-                  >
-                    <template
-                      v-for="option in short.poll.options"
-                      :key="option"
+                <div v-if="!Object.keys(short?.voters || {}).includes(user.id)">
+                  <template v-for="option in short.poll.options" :key="option">
+                    <b-btn
+                      v-on:click="votePoll(option)"
+                      block
+                      style="margin-top: 5px; z-index: 0"
                     >
-                      <b-btn
-                        v-on:click="votePoll(option)"
-                        block
-                        style="margin-top: 5px; z-index: 0"
-                      >
-                        {{ option.name }}
-                      </b-btn>
-                    </template>
-                  </div>
-                  <div v-else>
-                    <ShortPollResults :poll="short.poll" />
-                  </div>
+                      {{ option.name }}
+                    </b-btn>
+                  </template>
+                </div>
+                <div v-else>
+                  <ShortPollResults :poll="short.poll" />
+                </div>
                 <br />
               </div>
             </b-card>
@@ -1422,6 +1421,33 @@
               @click="leaveGroupFunction()"
             >
               Leave
+            </b-btn>
+          </b-flex>
+        </template>
+      </b-card>
+    </b-modal>
+    <b-modal width="500px" v-model="archiveGroup">
+      <b-card glass>
+        <template v-slot:header>
+          <h4 class="mt-0 mb-0">Archive Group</h4>
+        </template>
+        <p>
+          Messages sent will not be deleted, members can still view previous
+          messages but won't be able to send new ones.
+        </p>
+        <p>Are you sure you want to archive this group?</p>
+        <br />
+        <br />
+        <template v-slot:float>
+          <b-flex>
+            <b-spacer></b-spacer>
+            <b-btn @click="archiveGroup = false"> Cancel </b-btn>
+            <b-btn
+              color="danger"
+              :loading="leavingGroup"
+              @click="archiveGroupFunction()"
+            >
+              Archive
             </b-btn>
           </b-flex>
         </template>
@@ -1558,6 +1584,7 @@
                   <b-icon size="22px" name="mdi mdi-pencil"></b-icon>
                 </b-btn>
                 <b-btn
+                  v-if="!chat.archive"
                   icon
                   circle
                   outline
@@ -1570,6 +1597,7 @@
                 <b-btn
                   icon
                   circle
+                  v-if="user.id != chat.admin"
                   outline
                   data-tooltip="Leave Group"
                   v-on:click="leaveGroup = true"
@@ -1577,11 +1605,39 @@
                 >
                   <b-icon size="22px" name="mdi mdi-logout-variant"></b-icon>
                 </b-btn>
+                <b-btn
+                  v-else-if="!chat.archive"
+                  icon
+                  circle
+                  outline
+                  data-tooltip="Archive Group"
+                  v-on:click="archiveGroup = true"
+                  color="danger"
+                >
+                  <b-icon size="22px" name="mdi mdi-archive-outline"></b-icon>
+                </b-btn>
+                <b-btn
+                  v-else
+                  icon
+                  circle
+                  outline
+                  data-tooltip="Unarchive Group"
+                  v-on:click="unarchiveGroupFunction()"
+                  color="danger"
+                >
+                  <b-icon
+                    size="22px"
+                    name="mdi mdi-archive-arrow-up-outline"
+                  ></b-icon>
+                </b-btn>
               </b-flex>
             </div>
             <h3>Members</h3>
             <template v-for="(user, i) in members" :key="i">
-              <b-list-item>
+              <b-list-item class="relative">
+                <div v-if="i == chat.admin" class="memberLabel adminLabel">
+                  Admin
+                </div>
                 <b-flex>
                   <b-avatar
                     :size="35"

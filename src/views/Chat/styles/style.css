@@ -25,6 +25,9 @@ p {
   background-color: rgb(30 30 30 / 75%);
   padding-block: 15px;
 }
+html:not(.dark) #imageThumbnails {
+  background-color: rgb(255 255 255 / 75%);
+}
 img.thumbnailImage {
   object-fit: contain;
   max-height: 10vh;
@@ -775,4 +778,24 @@ html:not(.dark) #replyMessage {
 audio.sc-vm-file,
 video.sc-vm-file {
   display: none;
+}
+
+#contacts > div {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#contacts > div > div > div > div.card-text > main > div > div > h3 {
+  position: sticky;
+  top: 0;
+}
+#contacts > div > div > div > div.card-footer {
+  position: sticky;
+  bottom: -5px;
+  background-color: #242428;
+}
+html:not(.dark) #contacts > div > div > div > div.card-footer {
+  background-color: white;
+}
+#contacts > div > div > div > div.card-text {
+  padding-bottom: 20px;
 }

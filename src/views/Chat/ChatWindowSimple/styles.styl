@@ -460,3 +460,33 @@
         }
     }
 }
+
+html:not(.dark) .chatWindowSimple {
+    .info-message, .sameDay {
+        background-color: white;
+        border: 1px solid darken($bg, 5%);
+    }
+
+    .reactions {
+        background-color: #fff;
+        border: 1px solid darken($bg, 7%);
+    }
+
+    .reaction:hover {
+        background-color: #e5e5e5;
+    }
+
+    .msg.me .msg-text {
+        color: white;
+    }
+
+    .msg:not(.me) .msg-text {
+        background-color: white;
+        color: $bg-dark;
+    }
+
+    .msg:not(.me) .msg-reply {
+        background-color: white;
+        color: $bg-dark;
+    }
+}

@@ -59,6 +59,7 @@
                 <b-spacer v-if="message.sender == user.id"></b-spacer>
                 <b-icon
                   style="height: 22px"
+                  v-if="!chat.archive"
                   v-on:click="
                     reaction.message = i;
                     reaction.show = true;
@@ -69,6 +70,7 @@
                 <b-icon
                   size="18px"
                   name="mdi mdi-reply"
+                  v-if="!chat.archive"
                   v-on:click="$emit('reply', message)"
                 >
                 </b-icon>
@@ -361,18 +363,18 @@
           </div>
           <b-flex v-if="!!message.seen && i == lastMessage" class="seenUsers">
             <b-spacer v-if="message.sender == user.id"></b-spacer>
-              <template v-for="(usr, key) in message.seen" :key="key">
-                <span v-if="usr.id != user.id">
-                  <b-flex style="padding: 0">
-                    <b-avatar
-                      v-if="usr.username"
-                      :username="usr.username || ''"
-                      :src="usr.avatar || ''"
-                      :size="20"
-                    ></b-avatar>
-                  </b-flex>
-                </span>
-              </template>
+            <template v-for="(usr, key) in message.seen" :key="key">
+              <span v-if="usr.id != user.id">
+                <b-flex style="padding: 0">
+                  <b-avatar
+                    v-if="usr.username"
+                    :username="usr.username || ''"
+                    :src="usr.avatar || ''"
+                    :size="20"
+                  ></b-avatar>
+                </b-flex>
+              </span>
+            </template>
           </b-flex>
         </div>
         <div v-else>
