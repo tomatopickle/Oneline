@@ -1775,7 +1775,7 @@
                             style="font-size: 15px; padding-block: 2px"
                             block
                             v-on:click="assignTag(i, usr.id)"
-                            >Remove current tag</b-btn
+                            >Remove tag</b-btn
                           >
                         </div>
                       </template>
