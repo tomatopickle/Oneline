@@ -202,8 +202,7 @@ html:not(.dark) .chatWindowDefault {
     .messageActions {
         background-color: #1c1c1c;
         border-radius: 30px;
-        transform: scale(0);
-        transition: all 0.2s;
+        opacity: 0;
         position: absolute;
         display: block;
         padding: 0;
@@ -228,7 +227,7 @@ html:not(.dark) .chatWindowDefault {
     }
 
     .msg:hover .messageActions {
-        transform: scale(1);
+        opacity: 1;
     }
 
     .msg:hover .msg-text {
