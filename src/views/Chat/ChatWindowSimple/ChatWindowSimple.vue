@@ -38,7 +38,7 @@
           ></div>
           <div class="relative">
             <small
-              class="username"
+              class="username flex"
               v-if="
                 message.sender != user.id &&
                 (checkTimeDifference(message, i) ||
@@ -47,8 +47,19 @@
                     !checkTimeDifference(message, i)
                   ))
               "
-              >{{ users[message.sender]?.username }}</small
             >
+              <span>{{ users[message.sender]?.username }}</span>
+              <div
+                v-if="checkIfUserHasTag(message.sender)"
+                class="userTag"
+                :style="{
+                  '--tagColor':
+                    this.chat.tags[checkIfUserHasTag(message.sender)].color,
+                }"
+              >
+                {{ checkIfUserHasTag(message.sender) }}
+              </div>
+            </small>
             <b-flex>
               <b-spacer v-if="message.sender == user.id"></b-spacer>
               <b-flex
@@ -594,6 +605,17 @@ export default {
   methods: {
     log(e) {
       console.log(e);
+    },
+    checkIfUserHasTag(userId) {
+      if (
+        this.chat?.assignedTags &&
+        this.chat?.assignedTags[userId] &&
+        this.chat?.tags[this.chat.assignedTags[userId]]?.name
+      ) {
+        return this.chat?.tags[this.chat.assignedTags[userId]]?.name;
+      } else {
+        return false;
+      }
     },
     getMessagePreview(message) {
       if (message.type == "file") {

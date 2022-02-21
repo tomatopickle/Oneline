@@ -379,10 +379,7 @@
           </b-btn>
         </transition>
       </div>
-      <div
-        id="groupArchivedMessage"
-        v-if="chat.archive"
-      >
+      <div id="groupArchivedMessage" v-if="chat.archive">
         <p>This group is archived, you can't send new messages</p>
       </div>
       <template v-if="audio.show || reply.show"><br /><br /></template>
@@ -1453,6 +1450,48 @@
         </template>
       </b-card>
     </b-modal>
+    <b-modal width="500px" v-model="createTag.show">
+      <b-card glass>
+        <template v-slot:header>
+          <h4 class="mt-0 mb-0">Create Tag</h4>
+        </template>
+        <h5 class="my-2">Tag Name</h5>
+
+        <b-input
+          v-model="createTag.data.name"
+          placeholder="Something cool... what about a 'Ghost' tag"
+        ></b-input>
+        <h5 class="my-2">Tag Color</h5>
+        <div class="w-max flex center">
+          <template v-for="color in createTag.colors" :key="color">
+            <swatch
+              class="mx-1"
+              v-on:click="createTag.data.color = color"
+              :color="color"
+            />
+          </template>
+        </div>
+        <br />
+        <template v-if="createTag.data.name">
+          <h5 class="my-2">Tag Preview</h5>
+
+          <div
+            id="tagPreview"
+            :style="{ backgroundColor: this.createTag.data.color }"
+          >
+            {{ createTag.data.name }}
+          </div>
+          <br
+        /></template>
+        <template v-slot:footer>
+          <b-flex>
+            <b-spacer></b-spacer>
+            <b-btn @click="createTag.show = false"> Cancel </b-btn>
+            <b-btn color="primary" @click="createTagFunction()"> Create </b-btn>
+          </b-flex>
+        </template>
+      </b-card>
+    </b-modal>
     <b-modal width="500px" v-model="newChat.modal">
       <b-card>
         <template v-slot:header>
@@ -1597,6 +1636,16 @@
                 <b-btn
                   icon
                   circle
+                  @click="createTag.show = true"
+                  outline
+                  data-tooltip="Create tag"
+                  color="primary"
+                >
+                  <b-icon size="22px" name="mdi mdi-tag-plus"></b-icon>
+                </b-btn>
+                <b-btn
+                  icon
+                  circle
                   v-if="user.id != chat.admin"
                   outline
                   data-tooltip="Leave Group"
@@ -1632,19 +1681,106 @@
                 </b-btn>
               </b-flex>
             </div>
+            <template v-if="chat.tags">
+              <h3 class="mb-1">Tags</h3>
+              <div class="px-2" id="totTags">
+                <template v-for="(tag, i) in chat.tags" :key="i">
+                  <div
+                    class="tag"
+                    :style="{
+                      backgroundColor: tag.color,
+                      '--tagColor': tag.color,
+                    }"
+                  >
+                    {{ tag.name }}
+                    <div
+                      v-if="chat.admin == user.id"
+                      data-tooltip="Remove tag"
+                      v-on:click="removeTag(i)"
+                      class="tagCloseButton"
+                    >
+                      &#215;
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
             <h3>Members</h3>
-            <template v-for="(user, i) in members" :key="i">
-              <b-list-item class="relative">
-                <div v-if="i == chat.admin" class="memberLabel adminLabel">
+            <template v-for="(usr, i) in members" :key="i">
+              <b-list-item
+                :class="{
+                  relative: true,
+                  memberInfo: true,
+                  isAdmin: i == chat?.admin,
+                }"
+              >
+                <div v-if="i == chat?.admin" class="memberLabel adminLabel">
                   Admin
+                </div>
+                <div
+                  v-if="
+                    chat?.assignedTags &&
+                    chat?.assignedTags[i] &&
+                    chat?.tags[chat.assignedTags[i]]?.name
+                  "
+                  class="memberLabel"
+                  :style="{
+                    backgroundColor: chat.tags[chat.assignedTags[i]].color,
+                  }"
+                >
+                  {{ chat.tags[chat.assignedTags[i]].name }}
                 </div>
                 <b-flex>
                   <b-avatar
                     :size="35"
-                    :username="user.username"
-                    :src="user?.avatar"
+                    :username="usr.username"
+                    :src="usr?.avatar"
                   ></b-avatar>
-                  <span>{{ user.username }}</span>
+                  <span>{{ usr.username }}</span>
+                  <div class="memberActionButtons" v-if="chat.admin == user.id">
+                    <Popper arrow :interactive="false" placement="top">
+                      <b-btn icon>
+                        <b-icon name="mdi mdi-tag"></b-icon>
+                      </b-btn>
+                      <template #content>
+                        <div glass class="tagSelectDialog">
+                          <b-flex
+                            style="
+                              margin-left: 5px;
+                              margin-bottom: 5px;
+                              margin-top: 2px;
+                            "
+                          >
+                            <b-avatar
+                              :size="25"
+                              :username="usr.username"
+                              :src="usr?.avatar"
+                            ></b-avatar>
+                            <h5 class="my-0">
+                              Assign a tag to {{ usr.username }}
+                            </h5></b-flex
+                          >
+                          <div style="margin-bottom: 5px">
+                            <template v-for="(tag, i) in chat.tags" :key="i">
+                              <div
+                                v-on:click="assignTag(i, usr.id)"
+                                class="tag"
+                                :style="{ backgroundColor: tag.color }"
+                              >
+                                {{ tag.name }}
+                              </div>
+                            </template>
+                          </div>
+                          <b-btn
+                            style="font-size: 15px; padding-block: 2px"
+                            block
+                            v-on:click="assignTag(i, usr.id)"
+                            >Remove current tag</b-btn
+                          >
+                        </div>
+                      </template>
+                    </Popper>
+                  </div>
                 </b-flex>
               </b-list-item>
             </template>

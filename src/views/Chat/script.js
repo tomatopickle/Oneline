@@ -217,6 +217,13 @@ export default {
                     }
                 }
             },
+            createTag: {
+                show: false,
+                colors: ["var(--primary)", "var(--success)", "var(--danger)", "#5327f1", "#f127e4", "#eab308", "#f14d27"],
+                data: {
+                    color: "var(--primary)"
+                }
+            },
             opnChat: (chat) => {
                 app.openChat(chat);
             }
@@ -307,6 +314,19 @@ export default {
     methods: {
         log(e) {
             console.log(e)
+        },
+        createTagFunction() {
+            set(child(ref(db), `chats/${this.chat.id}/tags/${this.createTag.data.name}`), this.createTag.data);
+            this.createTag.show = false;
+        },
+        removeTag(tagName) {
+            remove(child(ref(db), `chats/${this.chat.id}/tags/${tagName}`));
+        },
+        assignTag(tagName, userId) {
+            set(child(ref(db), `chats/${this.chat.id}/assignedTags/${userId}`), tagName);
+        },
+        removeCurrentTag(tagName, userId) {
+            remove(child(ref(db), `chats/${this.chat.id}/assignedTags/${userId}`));
         },
         clearCache() {
             if (!confirm("You will be logged out after clearing cache, do you want to proceed?")) return
