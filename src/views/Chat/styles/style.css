@@ -787,6 +787,7 @@ video.sc-vm-file {
 #contacts > div > div > div > div.card-text > main > div > div > h3 {
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 #contacts > div > div > div > div.card-footer {
   position: sticky;
