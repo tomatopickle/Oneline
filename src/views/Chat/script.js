@@ -7,7 +7,7 @@ import { storage } from "@/fire.js";
 import { getFileFromPasteEvent } from "@/scripts/globalFunctions.js";
 import PubNub from "pubnub";
 import VueHorizontal from "vue-horizontal";
-import { ref, set, get, endAt, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
+import { ref, set, get, endAt, orderByChild, remove, child, onValue, update, limitToLast, query, onDisconnect, onChildAdded, orderByKey, startAfter, serverTimestamp, startAt, off } from "firebase/database";
 import { nanoid } from "nanoid";
 import router from "@/router";
 import stringify from "json-stable-stringify";
@@ -1093,7 +1093,7 @@ export default {
                 });
         },
         getMessagePreview(chat) {
-            if (!chat.lastMessage.senderInfo) { return `New Chat` }
+            if (!chat.lastMessage?.senderInfo) { return `New Chat` }
             if (chat.lastMessage.type == "file") {
                 return `${chat.lastMessage.senderInfo.username}: (File) ${chat.lastMessage.file.name}`
             } else if (chat.lastMessage.type == "likeShort") {
@@ -1157,26 +1157,30 @@ export default {
         createPersonalChat() {
             this.newChat.data.personal.loading = true;
             var chatId = nanoid(15);
-            get(child(ref(db), `users`))
-                .then((snapshot) => {
+            onValue(
+                query(
+                    ref(db, `users/`),
+                    orderByChild("email"),
+                    limitToLast(1),
+                    startAt(this.newChat.data.personal.email),
+                    endAt(this.newChat.data.personal.email + "\uf8ff")
+                ), (snapshot) => {
                     if (snapshot.exists()) {
                         var data = snapshot.val();
-                        for (var usr in data) {
-                            usr = data[usr];
-                            const chat = {
-                                id: chatId,
-                                type: "personal",
-                                members: [this.user.id, usr.id],
-                                addedTime: Date.now()
-                            };
-                            if (usr.email == this.newChat.data.personal.email) {
-                                set(ref(db, "chats/" + chatId), chat);
-                                update(child(ref(db), `users/${this.user.id}/chats`), { [chatId]: chat });
-                                update(child(ref(db), `users/${usr.id}/chats`), { [chatId]: chat });
-                                this.newChat.data.personal.loading = false;
-                                this.newChat.modal = false;
-                            }
-                        }
+                        let usr = data[Object.keys(data)[0]];
+                        const chat = {
+                            id: chatId,
+                            type: "personal",
+                            members: [this.user.id, usr.id],
+                            addedTime: Date.now()
+                        };
+                        set(ref(db, "chats/" + chatId), chat);
+                        update(child(ref(db), `users/${this.user.id}/chats`), { [chatId]: chat });
+                        update(child(ref(db), `users/${usr.id}/chats`), { [chatId]: chat });
+                        this.newChat.data.personal.loading = false;
+                        this.newChat.modal = false;
+
+
                     } else {
                         alert(
                             "User not found"
