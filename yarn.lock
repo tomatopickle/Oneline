@@ -2781,12 +2781,13 @@ bootstrap@^4.4.0:
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.1.tgz#bc25380c2c14192374e8dec07cf01b2742d222a2"
   integrity sha512-0dj+VgI9Ecom+rvvpNZ4MUZJz8dcX7WCX+eTID9+/8HgOkv3dsRzi8BGeZJCQU6flWQVYxwTQnEZFrmJSEO7og==
 
-bounce-ui-vue@^0.2.16:
-  version "0.2.16"
-  resolved "https://registry.yarnpkg.com/bounce-ui-vue/-/bounce-ui-vue-0.2.16.tgz#fc7979904d3b2dfab98b378b03d08c6d5dbac9b0"
-  integrity sha512-3+kvggLsHmOhMxtEbhj9otdrJWz1hHl8OUEFC84PYIQqflUlt3+JeCXYuxrK5xJ/D1qsb8KaOTycVyEnJ+hhdQ==
+bounce-ui-vue@^0.2.18:
+  version "0.2.18"
+  resolved "https://registry.yarnpkg.com/bounce-ui-vue/-/bounce-ui-vue-0.2.18.tgz#5de654b7361c3dd93729cd8086c52565112931f1"
+  integrity sha512-/bbDyWMwnIxGXnGOpHbOJeetzpjeKmZTTTotGFBvBJzh4su+07QGtPTWAR2iKpo8RgWcvz+2cYjGg4gEhZ3ZCw==
   dependencies:
     core-js "^3.6.5"
+    focus-trap "^6.7.3"
     stylus "^0.55.0"
     stylus-loader "^3.0.2"
     vue "^3.0.0"
@@ -5002,6 +5003,13 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
+
+focus-trap@^6.7.3:
+  version "6.7.3"
+  resolved "https://registry.yarnpkg.com/focus-trap/-/focus-trap-6.7.3.tgz#b5dc195b49c90001f08a63134471d1e6dd381ddd"
+  integrity sha512-8xCEKndV4KrseGhFKKKmczVA14yx1/hnmFICPOjcFjToxCJYj/NHH43tPc3YE/PLnLRNZoFug0EcWkGQde/miQ==
+  dependencies:
+    tabbable "^5.2.1"
 
 follow-redirects@^1.0.0, follow-redirects@^1.14.4:
   version "1.14.6"
@@ -9642,6 +9650,11 @@ svgo@^1.0.0, svgo@^1.3.2:
     stable "^0.1.8"
     unquote "~1.1.1"
     util.promisify "~1.0.0"
+
+tabbable@^5.2.1:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/tabbable/-/tabbable-5.2.1.tgz#e3fda7367ddbb172dcda9f871c0fdb36d1c4cd9c"
+  integrity sha512-40pEZ2mhjaZzK0BnI+QGNjJO8UYx9pP5v7BGe17SORTO0OEuuaAwQTkAp8whcZvqon44wKFOikD+Al11K3JICQ==
 
 table@^5.2.3:
   version "5.4.6"
