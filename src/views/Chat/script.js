@@ -1171,6 +1171,13 @@ export default {
                     startAt(this.newChat.data.personal.email),
                     endAt(this.newChat.data.personal.email + "\uf8ff")
                 ), (snapshot) => {
+                    off(query(
+                        ref(db, `users/`),
+                        orderByChild("email"),
+                        limitToLast(1),
+                        startAt(this.newChat.data.personal.email),
+                        endAt(this.newChat.data.personal.email + "\uf8ff")
+                    ));
                     if (snapshot.exists()) {
                         var data = snapshot.val();
                         let usr = data[Object.keys(data)[0]];
@@ -1185,8 +1192,6 @@ export default {
                         update(child(ref(db), `users/${usr.id}/chats`), { [chatId]: chat });
                         this.newChat.data.personal.loading = false;
                         this.newChat.modal = false;
-
-
                     } else {
                         alert(
                             "User not found"
@@ -1194,7 +1199,6 @@ export default {
                         this.newChat.data.personal.loading = false;
                     }
                 });
-
         },
         createGroupChat() {
             this.newChat.data.newGroup.loading = true;
