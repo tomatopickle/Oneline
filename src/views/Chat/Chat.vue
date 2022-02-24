@@ -292,7 +292,7 @@
           <img
             class="center block"
             height="150"
-            src="../../assets/logos/logo.png"
+            src="@/assets/logos/logo.png"
             alt="Oneline Logo"
           />
           <br />
@@ -302,6 +302,18 @@
             <b-icon name="mdi mdi-plus" left></b-icon>
             Create New Chat
           </b-btn>
+        </div>
+         <div class="w-max center" v-else-if="!chat.id">
+          <br /><br /><br />
+          <img
+            class="center block"
+            height="150"
+            src="@/assets/pickChatIcon.png"
+            alt="Oneline Logo"
+          />
+          <br />
+          <h1 class="mt-0">Pick a chat from the left sidebar</h1>
+          <br />
         </div>
         <div v-if="chat.id">
           <b-avatar

@@ -150,6 +150,7 @@ export default {
       this.signUp.loading = false;
       localStorage.setItem("id", userId);
       router.push("/");
+      localStorage.removeItem("lastOpenedChat");
     },
     checkUser() {
       this.login.loading = true;
@@ -174,6 +175,7 @@ export default {
           if (usr.pwd == this.login.pwd) {
             console.log(usr);
             localStorage.setItem("id", usr.id);
+            localStorage.removeItem("lastOpenedChat");
             router.push("/");
           } else {
             this.login.pwdErrorText = "Wrong Password";
