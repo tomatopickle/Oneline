@@ -1636,6 +1636,7 @@
                 <b-btn
                   icon
                   circle
+                  v-if="user.id != chat.admin"
                   @click="createTag.show = true"
                   outline
                   data-tooltip="Create tag"

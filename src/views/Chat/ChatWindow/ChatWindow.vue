@@ -325,7 +325,7 @@
             </b-flex>
           </span>
         </div>
-        <div class="reactions" v-if="!!message.seen && i == lastMessage">
+        <div class="reactions seenUsersIndicator" v-if="!!message.seen && i == lastMessage">
           <template v-for="(usr, key) in message.seen" :key="key">
             <span v-if="usr.id != user.id">
               <b-flex style="padding: 0">

@@ -123,7 +123,7 @@ export default {
             user: {},
             settingsHeading: ["Appearance", "Account", "Chat", "Notifications", "Sounds", "About"],
             chats: {},
-            baseUrl: "https://" + location.host,
+            baseUrl: "https://" + location.host + "/",
             chatInfo: false,
             chat: {},
             windowHidden: false,
@@ -533,6 +533,12 @@ export default {
                         caption: "",
                         src: "",
                     }
+                },
+                video: {
+                    show: false
+                },
+                poll: {
+                    show: false
                 }
             }
         },

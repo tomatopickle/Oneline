@@ -786,8 +786,16 @@ video.sc-vm-file {
 }
 #contacts > div > div > div > div.card-text > main > div > div > h3 {
   position: sticky;
-  top: 0;
+  top: -5px;
   z-index: 1;
+  background-color: white;
+}
+.dark #contacts > div > div > div > div.card-text > main > div > div > h3 {
+  background-color: #242428;
+}
+.seenUsersIndicator {
+  gap: 5px;
+  background-color: transparent !important;
 }
 #contacts > div > div > div > div.card-footer {
   position: sticky;
