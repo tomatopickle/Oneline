@@ -1504,7 +1504,7 @@
         </template>
       </b-card>
     </b-modal>
-    <b-modal width="500px" v-model="newChat.modal">
+    <b-modal width="510px" v-model="newChat.modal">
       <b-card>
         <template v-slot:header>
           <b-flex>
