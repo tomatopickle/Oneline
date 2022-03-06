@@ -2812,10 +2812,10 @@ bootstrap@^4.4.0:
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.1.tgz#bc25380c2c14192374e8dec07cf01b2742d222a2"
   integrity sha512-0dj+VgI9Ecom+rvvpNZ4MUZJz8dcX7WCX+eTID9+/8HgOkv3dsRzi8BGeZJCQU6flWQVYxwTQnEZFrmJSEO7og==
 
-bounce-ui-vue@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/bounce-ui-vue/-/bounce-ui-vue-0.4.1.tgz#754587a6eeeff37d03b31ce54dc3d435bc9e01b4"
-  integrity sha512-qIUC6oQeJZ7IilvQShomzT7zOzFbOFnXM4UpyOSddcK3oiVfDyGGCFVCbL/l+XA3XiIMK/f613+NPSb2oVanRQ==
+bounce-ui-vue@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/bounce-ui-vue/-/bounce-ui-vue-0.5.0.tgz#40d3e9c823c87eb5e5fa7257058baf7b2bee269f"
+  integrity sha512-aAhwjh2A2V05h09hqJ3SBbRqUx+dxgD7tF+cOl9S/J22XJbRPNfAB+jl7/09ybJ1K6n1iOiABYLtW0fnw6UKMg==
   dependencies:
     core-js "^3.6.5"
     focus-trap "^6.7.3"
