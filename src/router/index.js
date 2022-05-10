@@ -7,6 +7,8 @@ import Login from "@/views/Login/Login.vue";
 import Meeting from "@/views/Meeting/Meeting.vue"; 
 import Invite from "@/views/Invite/Invite.vue";
 import User from "@/views/User/User.vue";
+import Beta from "@/views/Beta/Beta.vue";
+
 const defaultTitle = "Oneline";
 const routes = [
   {
@@ -27,6 +29,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/beta",
+    name: "Beta",
+    component: Beta,
   },
   {
     path: "/meeting",

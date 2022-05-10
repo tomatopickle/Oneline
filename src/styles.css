@@ -103,3 +103,14 @@ html:not(.dark) a {
 #app[v-cloak] + #splashScreen {
   display: block;
 }
+.vue-skeletor{
+  border-radius: var(--ui-radius);
+}
+html.dark .vue-skeletor:not(.vue-skeletor--shimmerless):after {
+  background-image: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0%),
+    rgb(57 57 64 / 30%),
+    rgba(37, 22, 22, 0)
+  );
+}
