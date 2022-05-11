@@ -103,7 +103,7 @@ html:not(.dark) a {
 #app[v-cloak] + #splashScreen {
   display: block;
 }
-.vue-skeletor{
+.vue-skeletor {
   border-radius: var(--ui-radius);
 }
 html.dark .vue-skeletor:not(.vue-skeletor--shimmerless):after {
@@ -113,4 +113,14 @@ html.dark .vue-skeletor:not(.vue-skeletor--shimmerless):after {
     rgb(57 57 64 / 30%),
     rgba(37, 22, 22, 0)
   );
+}
+/* To automatically add margin to consecutive inputs/textareas */
+sl-input + sl-input,
+sl-textarea + sl-input,
+sl-input + sl-textarea {
+  margin-top: 5px;
+}
+sl-input::part(form-control-label),
+sl-textarea::part(form-control-label) {
+  font-size: var(--sl-input-label-font-size-small);
 }

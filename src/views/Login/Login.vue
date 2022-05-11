@@ -6,12 +6,9 @@
   <b-app>
     <b-flex>
       <b-spacer></b-spacer>
-      <b-btn icon @click="$toggleTheme"
-        ><b-icon name="mdi mdi-brightness-6"></b-icon
-      ></b-btn>
     </b-flex>
-    <b-card width="350px">
-      <template v-slot:header>
+    <sl-card>
+      <div slot="header">
         <b-flex>
           <img
             height="35"
@@ -20,79 +17,71 @@
           />
           <h4>Oneline</h4>
         </b-flex>
-      </template>
-      <p>
-        <b-tab
-          style="width: 75%"
-          class="center"
-          v-model="tabIndex"
-          :tabs="tabs"
-        ></b-tab>
-
-        <br />
-        <b-tab-content v-model="tabIndex" :tabs="tabs">
-          <template v-slot:0>
-            <p>
-              <b-form @submit="checkUser()">
-                <b-input
-                  v-model="login.email"
-                  label="Email"
-                  type="email"
-                  :errorText="login.emailErrorText"
-                ></b-input>
-                <b-input
-                  v-model="login.pwd"
-                  label="Password"
-                  :errorText="login.pwdErrorText"
-                  type="password"
-                ></b-input>
-              </b-form>
-            </p>
-            <br />
-            <b-btn
-              :loading="login.loading"
-              @click="checkUser()"
-              block
-              color="primary"
-            >
-              Login
-            </b-btn>
-            <br />
-          </template>
-          <template v-slot:1>
-            <p>
-              <b-form @submit="createUser()">
-                <b-input v-model="signUp.username" label="Username"></b-input>
-                <b-input
-                  v-model="signUp.email"
-                  label="Email"
-                  type="email"
-                ></b-input>
-                <b-input
-                  v-model="signUp.pwd"
-                  label="Password"
-                  type="password"
-                ></b-input>
-                <b-textarea
-                  v-model="signUp.description"
-                  label="Description"
-                ></b-textarea>
-              </b-form>
-            </p>
-            <br />
-            <b-btn
-              @click="createUser()"
-              block
-              color="primary"
-              :loading="signUp.loading"
-            >
-              Sign Up
-            </b-btn>
-            <br />
-          </template>
-        </b-tab-content>
-      </p>
-    </b-card>
+      </div>
+      <sl-tab-group>
+        <sl-tab slot="nav" panel="login">Login</sl-tab>
+        <sl-tab slot="nav" panel="signUp">Sign Up</sl-tab>
+        <sl-tab-panel name="login">
+          <p>
+            <b-form @submit="checkUser()">
+              <sl-input
+                v-model="login.email"
+                label="Email"
+                type="email"
+                :helpText="login.emailErrorText"
+              ></sl-input>
+              <sl-input
+                v-model="login.pwd"
+                label="Password"
+                :helpText="login.pwdErrorText"
+                type="password"
+                toggle-password
+              ></sl-input>
+            </b-form>
+          </p>
+          <br />
+          <sl-button
+            :loading="login.loading"
+            @click="checkUser()"
+            class="w-full"
+            variant="primary"
+          >
+            Login
+          </sl-button>
+        </sl-tab-panel>
+        <sl-tab-panel name="signUp">
+          <p>
+            <b-form @submit="createUser()">
+              <sl-input v-model="signUp.username" label="Username"></sl-input>
+              <sl-input
+                v-model="signUp.email"
+                label="Email"
+                type="email"
+              ></sl-input>
+              <sl-input
+                v-model="signUp.pwd"
+                label="Password"
+                type="password"
+              ></sl-input>
+              <sl-textarea
+                rows="1"
+                v-model="signUp.description"
+                label="Description"
+              ></sl-textarea>
+            </b-form>
+          </p>
+          <br />
+          <sl-button
+            @click="createUser()"
+            class="w-full"
+            variant="primary"
+            :loading="signUp.loading"
+          >
+            Sign Up
+          </sl-button>
+        </sl-tab-panel>
+      </sl-tab-group>
+    </sl-card>
   </b-app>
 </template>
 
@@ -114,11 +103,6 @@ import router from "../../router";
 export default {
   data: () => {
     return {
-      tabs: [
-        { name: "Login", value: "login" },
-        { name: "Sign Up", value: "signup" },
-      ],
-      tabIndex: 0,
       signUp: {
         username: "",
         pwd: "",
@@ -188,10 +172,22 @@ export default {
 </script>
 
 <style scoped>
-.card {
+sl-card {
   position: fixed;
   top: 10%;
   left: 50%;
   transform: translate(-50%);
+  width: 360px;
+}
+
+h4 {
+  margin: 0;
+}
+sl-tab-group::part(nav) {
+  width: max-content;
+  margin: auto;
+}
+sl-tab-group::part(tabs) {
+  border-bottom-color: transparent;
 }
 </style>
