@@ -15,10 +15,10 @@ import '@shoelace-style/shoelace';
 import '@shoelace-style/shoelace/dist/themes/light.css';
 import '@shoelace-style/shoelace/dist/themes/dark.css';
 import ShoelaceModelDirective from '@shoelace-style/vue-sl-model';
-
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path';
 
 setBasePath('https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/');
+
 const app = createApp(App);
 const head = createHead();
 app.use(ShoelaceModelDirective);

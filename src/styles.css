@@ -12,6 +12,10 @@
   --bg: 0, 0%;
   --bg-dark: 240, 5%;
 }
+html,
+body {
+  font-size: var(--sl-font-size-medium);
+}
 .btn.loading.btn-icon {
   height: 44px;
 }

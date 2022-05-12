@@ -31,24 +31,22 @@
       </b-flex>
     </teleport>
     <template v-slot:prepend>
-      <b-sidebar id="contacts" width="250px">
-        <template v-slot:header>
-          <b-flex class="m-0" style="margin-left: -15px">
+      <sl-card id="contacts" width="250px">
+        <div slot="header">
+          <b-flex class="m-0">
             <img height="30" src="../../assets/logos/logo.png" alt="Logo" />
             <div class="font-normal">Oneline</div>
             <b-spacer></b-spacer>
-            <b-btn icon ghost @click="settings.modal = true"
-              ><b-icon name="mdi mdi-cog"></b-icon
-            ></b-btn>
+            <sl-icon-button
+              name="gear"
+              label="Settings"
+              @click="settings.modal = true"
+            ></sl-icon-button>
           </b-flex>
-        </template>
+        </div>
         <div>
-          <br />
-          <b-list
-            class="border-0 p-0 m-0"
-            style="margin: -19px; background: transparent"
-          >
-            <template v-slot:header>
+          <sl-card class="no-border no-padding w-full">
+            <div slot="header">
               <b-flex>
                 <b-avatar
                   id="uploadShort"
@@ -76,7 +74,7 @@
                 </template>
               </b-flex>
               <b-flex class="pl-4 pr-1">
-                <h4 class="m-0">Chats</h4>
+                <h3 class="m-0">Chats</h3>
                 <b-spacer></b-spacer>
                 <Popper
                   arrow
@@ -84,9 +82,9 @@
                   offsetDistance="15px"
                   offsetSkid="-35px"
                 >
-                  <b-btn icon color="primary" ghost>
-                    <b-icon name="mdi mdi-plus"></b-icon
-                  ></b-btn>
+                  <sl-button icon variant="primary" outline circle>
+                    <sl-icon name="plus-lg" label="Settings"></sl-icon>
+                  </sl-button>
                   <template #content>
                     <b-card class="contextMenu p-0 m-0">
                       <b-list-item
@@ -126,12 +124,15 @@
                   </template>
                 </Popper>
               </b-flex>
-            </template>
-            <b-input ghost placeholder="Search" class="w-11/12 center">
-              <template v-slot:inner-prepend>
-                <b-icon name="mdi mdi-magnify"></b-icon>
-              </template>
-            </b-input>
+            </div>
+            <sl-input
+              clearable
+              filled
+              placeholder="Search"
+              class="w-11/12 center my-2"
+            >
+              <sl-icon name="search" slot="prefix"></sl-icon>
+            </sl-input>
             <template v-if="Object.keys(chats).length == 0">
               <br />
               <svg
@@ -154,20 +155,20 @@
                       d="m134.19 197.83c-8.46 17.63-13.19 37.36-13.19 58.17 0 37.48 15.42 72.44 42.77 97.97l-27.77 37.03h120c20.81 0 40.54-4.73 58.17-13.19z"
                       fill="#5e5e5e"
                       data-original="#000000"
-                      class=""
-                    ></path>
+                      class
+                    />
                     <path
                       d="m256 121c-20.81 0-40.54 4.73-58.17 13.19l179.98 179.98c8.46-17.63 13.19-37.36 13.19-58.17 0-74.44-60.56-135-135-135z"
                       fill="#5e5e5e"
                       data-original="#000000"
-                      class=""
-                    ></path>
+                      class
+                    />
                     <path
                       d="m256 0c-141.486 0-256 114.497-256 256 0 141.568 114.389 256 256 256 141.486 0 256-114.497 256-256 0-141.568-114.389-256-256-256zm-226 256c0-57.051 21.095-109.126 55.909-148.878l318.969 318.969c-39.748 34.813-91.821 55.909-148.878 55.909-124.996 0-226-100.969-226-226zm396.091 148.878-318.969-318.969c39.748-34.813 91.821-55.909 148.878-55.909 124.996 0 226 100.969 226 226 0 57.051-21.095 109.126-55.909 148.878z"
                       fill="#5e5e5e"
                       data-original="#000000"
-                      class=""
-                    ></path>
+                      class
+                    />
                   </g>
                 </g>
               </svg>
@@ -179,17 +180,12 @@
                 class="center"
                 size="small"
                 @click="newChat.modal = true"
-              >
-                New Chat</b-btn
+                >New Chat</b-btn
               >
             </template>
             <transition-group name="flip-list" tag="div">
               <template v-for="(chat, i) in chats" :key="i">
-                <b-list-item
-                  clickable
-                  v-on:click="openChat(chat)"
-                  class="contact"
-                >
+                <div clickable v-on:click="openChat(chat)" class="contact">
                   <div class="badge" v-show="chat.unreadMessages > 0">
                     <span>{{ chat.unreadMessages }}</span>
                   </div>
@@ -201,41 +197,36 @@
                       :src="chat?.src"
                     ></b-avatar>
                     <span class="flex-grow">
-                      <span class="chatName">
-                        {{ chat.name }}
-                      </span>
+                      <span class="chatName">{{ chat.name }}</span>
                       <br />
                       <small class="chatMessagePreview">{{
                         stripHtml(getMessagePreview(chat))
                       }}</small>
                     </span>
                   </b-flex>
-                </b-list-item>
+                </div>
               </template>
             </transition-group>
-          </b-list>
+          </sl-card>
         </div>
-        <template v-slot:footer>
-          <b-divider class="mt-0 mb-0" style="height: 15px"></b-divider>
-          <b-list-item class="m-0 p-0">
-            <b-flex class="m-0 p-0">
-              <router-link :to="'/user/' + user.id">
-                <b-avatar
-                  :username="user.username ? user?.username : 'loading'"
-                  :src="user.avatar"
-                  :size="35"
-                ></b-avatar>
-              </router-link>
-              <b-list-item style="padding: 0">
-                <template v-slot:heading>
-                  <h4>{{ user?.username }}</h4>
-                </template>
-                <small>{{ user?.email }}</small>
-              </b-list-item>
-            </b-flex>
-          </b-list-item>
-        </template>
-      </b-sidebar>
+        <div slot="footer">
+          <b-flex class="m-0 p-0">
+            <router-link :to="'/user/' + user.id">
+              <b-avatar
+                :username="user.username ? user?.username : 'loading'"
+                :src="user.avatar"
+                :size="35"
+              ></b-avatar>
+            </router-link>
+            <sl-card class="no-padding no-border">
+              <div slot="header">
+                <h4>{{ user?.username }}</h4>
+              </div>
+              <small>{{ user?.email }}</small>
+            </sl-card>
+          </b-flex>
+        </div>
+      </sl-card>
     </template>
     <div
       class="flex flex-col h-full"
@@ -246,8 +237,8 @@
         class="flex-grow overflow-y-scroll overflow-x-hidden"
         id="msgs"
       >
-        <b-nav sticky v-if="chat.id"
-          ><template v-slot:branding>
+        <b-nav sticky v-if="chat.id">
+          <template v-slot:branding>
             <b-flex class="m-0 p-0 w-full">
               <b-avatar
                 :username="chat?.name || ''"
@@ -280,15 +271,20 @@
               >
                 <b-icon name="mdi mdi-video"></b-icon>
               </b-btn>
-              <b-btn color="secondary" icon @click="chatInfo = !chatInfo"
-                ><b-icon name="mdi mdi-information-outline"></b-icon
-              ></b-btn>
+              <b-btn color="secondary" icon @click="chatInfo = !chatInfo">
+                <b-icon name="mdi mdi-information-outline"></b-icon>
+              </b-btn>
             </b-flex>
           </template>
         </b-nav>
-        <br /><br /><br /><br />
+        <br />
+        <br />
+        <br />
+        <br />
         <div class="w-max center" v-if="Object.keys(chats).length == 0">
-          <br /><br /><br />
+          <br />
+          <br />
+          <br />
           <img
             class="center block"
             height="150"
@@ -299,12 +295,13 @@
           <h1 class="mt-0">Hmm... You don't have any chats</h1>
           <br />
           <b-btn @click="newChat.modal = true" color="primary" class="center">
-            <b-icon name="mdi mdi-plus" left></b-icon>
-            Create New Chat
+            <b-icon name="mdi mdi-plus" left></b-icon>Create New Chat
           </b-btn>
         </div>
-         <div class="w-max center" v-else-if="!chat.id">
-          <br /><br /><br />
+        <div class="w-max center" v-else-if="!chat.id">
+          <br />
+          <br />
+          <br />
           <img
             class="center block"
             height="150"
@@ -394,14 +391,18 @@
       <div id="groupArchivedMessage" v-if="chat.archive">
         <p>This group is archived, you can't send new messages</p>
       </div>
-      <template v-if="audio.show || reply.show"><br /><br /></template>
+      <template v-if="audio.show || reply.show">
+        <br />
+        <br />
+      </template>
       <div id="messageInp" v-if="chat?.id && !chat.archive">
         <div v-show="reply.show">
           <div id="replyMessage">
             <span class="text-blue-600">{{
               members[reply.message.sender]?.username
             }}</span
-            >:&nbsp;<span
+            >:&nbsp;
+            <span
               class="w-full flex-grow"
               v-html="getReplyPreview(reply.message)"
             ></span>
@@ -418,9 +419,11 @@
         </div>
         <div v-show="instantUpload.show">
           <div id="instantUpload">
-            <span>{{
-              instantUpload.loading ? "Uploading..." : instantUpload.fileName
-            }}</span>
+            <span>
+              {{
+                instantUpload.loading ? "Uploading..." : instantUpload.fileName
+              }}
+            </span>
             <b-spacer></b-spacer>
             <transition name="zoom" mode="out-in">
               <b-spinner
@@ -470,8 +473,9 @@
               audio.show = false;
               audio.src = ``;
             "
-            ><b-icon name="mdi mdi-close"></b-icon
-          ></b-btn>
+          >
+            <b-icon name="mdi mdi-close"></b-icon>
+          </b-btn>
         </div>
         <transition name="fade" :duration="{ leave: 300 }">
           <div id="typingBar" v-if="checkIfUsersAreTyping">
@@ -492,8 +496,8 @@
               <b-icon name="mdi mdi-close"></b-icon>
             </b-btn>
             <b-btn icon color="success" @click="sendRecording()">
-              <b-icon name="mdi mdi-check"></b-icon
-            ></b-btn>
+              <b-icon name="mdi mdi-check"></b-icon>
+            </b-btn>
           </b-flex>
           <b-flex v-else>
             <b-spinner style="transform: scale(0.5)"></b-spinner>
@@ -539,8 +543,9 @@
                   :data="emojiIndex"
                   set="apple"
                   @select="addedEmoji"
-                /></div
-            ></template>
+                />
+              </div>
+            </template>
           </Popper>
           <Popper
             style="border: none !important"
@@ -564,7 +569,7 @@
                 <path
                   fill="currentColor"
                   d="M 6 5 C 3.8034768 5 2 6.8034768 2 9 L 2 21 C 2 23.196523 3.8034768 25 6 25 L 24 25 C 26.196523 25 28 23.196523 28 21 L 28 9 C 28 6.8034768 26.196523 5 24 5 L 6 5 z M 9.8867188 11.046875 C 11.666719 11.046875 12.975312 12.075625 13.195312 13.640625 L 11.628906 13.640625 C 11.394906 12.878625 10.762719 12.435547 9.8867188 12.435547 C 8.6707187 12.435547 7.9238281 13.401422 7.9238281 14.982422 C 7.9238281 16.595422 8.7072188 17.576172 9.9492188 17.576172 C 10.982219 17.576172 11.697516 16.964641 11.728516 16.056641 L 11.732422 15.921875 L 10.099609 15.921875 L 10.099609 14.736328 L 13.261719 14.736328 L 13.261719 15.697266 C 13.261719 17.711266 11.977875 18.964844 9.921875 18.964844 C 7.683875 18.964844 6.3105469 17.461047 6.3105469 14.998047 C 6.3105469 12.571047 7.6947187 11.046875 9.8867188 11.046875 z M 14.779297 11.240234 L 16.355469 11.240234 L 16.355469 18.771484 L 14.779297 18.771484 L 14.779297 11.240234 z M 18.185547 11.240234 L 23 11.240234 L 23 12.587891 L 19.761719 12.587891 L 19.761719 14.548828 L 22.824219 14.548828 L 22.824219 15.837891 L 19.761719 15.837891 L 19.761719 18.771484 L 18.185547 18.771484 L 18.185547 11.240234 z"
-                ></path>
+                />
               </svg>
             </b-icon>
             <template #content="{ close }">
@@ -593,8 +598,9 @@
                             size="small"
                             icon
                             @click="getGifs()"
-                            ><b-icon name="mdi mdi-arrow-left"></b-icon
-                          ></b-btn>
+                          >
+                            <b-icon name="mdi mdi-arrow-left"></b-icon>
+                          </b-btn>
                         </transition>
                         <h3 class="ml-1">Recent</h3>
                         <b-spacer></b-spacer>
@@ -604,11 +610,10 @@
                           ghost
                           size="small"
                           color="primary"
-                          >View All<b-icon
-                            right
-                            name="mdi mdi-chevron-right"
-                          ></b-icon
-                        ></b-btn>
+                        >
+                          View All
+                          <b-icon right name="mdi mdi-chevron-right"></b-icon>
+                        </b-btn>
                       </b-flex>
                       <transition-group name="fadeUp" tag="div">
                         <div
@@ -636,9 +641,9 @@
                         Trending
                       </h3>
                       <b-flex bare v-else-if="!gif.viewingRecent">
-                        <b-btn ghost size="small" icon @click="getGifs()"
-                          ><b-icon name="mdi mdi-arrow-left"></b-icon
-                        ></b-btn>
+                        <b-btn ghost size="small" icon @click="getGifs()">
+                          <b-icon name="mdi mdi-arrow-left"></b-icon>
+                        </b-btn>
                         <h3 class="ml-1">Results</h3>
                       </b-flex>
                     </transition>
@@ -677,8 +682,9 @@
                       </div>
                     </transition-group>
                   </div>
-                </b-card></div
-            ></template>
+                </b-card>
+              </div>
+            </template>
           </Popper>
         </template>
       </div>
@@ -707,13 +713,11 @@
           style="margin-bottom: 5px"
           color="success"
         >
-          <b-icon left name="mdi mdi-phone"></b-icon>
-          Join</b-btn
-        >
+          <b-icon left name="mdi mdi-phone"></b-icon>Join
+        </b-btn>
         <b-btn size="medium" block color="danger" @click="declineMeeting()">
-          <b-icon left name="mdi mdi-phone-hangup"></b-icon>
-          Decline</b-btn
-        >
+          <b-icon left name="mdi mdi-phone-hangup"></b-icon>Decline
+        </b-btn>
         <br />
       </b-card>
     </transition>
@@ -723,9 +727,9 @@
           <b-flex>
             <h4 class="mt-0 mb-0">What are you gonna post?</h4>
             <b-spacer></b-spacer>
-            <b-btn @click="short.show = false" icon ghost
-              ><b-icon name="mdi mdi-close"></b-icon
-            ></b-btn>
+            <b-btn @click="short.show = false" icon ghost>
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
           </b-flex>
         </template>
         <div>
@@ -778,7 +782,7 @@
             </b-flex>
           </transition-group>
         </div>
-        <template #footer> </template>
+        <template #footer></template>
       </b-card>
     </b-modal>
     <b-modal v-model="short.photo.show" width="50vw">
@@ -787,9 +791,9 @@
           <b-flex>
             <h4 class="mt-0 mb-0">Upload Short</h4>
             <b-spacer></b-spacer>
-            <b-btn @click="short.photo.show = false" icon ghost
-              ><b-icon name="mdi mdi-close"></b-icon
-            ></b-btn>
+            <b-btn @click="short.photo.show = false" icon ghost>
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
           </b-flex>
         </template>
         <div>
@@ -801,13 +805,13 @@
                 color="primary"
                 class="center mt-36"
               >
-                <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
-                Upload Image
+                <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>Upload Image
               </b-btn>
-              <br /><br />
-              <small class="text-center block w-full"
-                ><b>Tip:</b> You can also paste images</small
-              >
+              <br />
+              <br />
+              <small class="text-center block w-full">
+                <b>Tip:</b> You can also paste images
+              </small>
             </div>
             <div v-else>
               <figure
@@ -877,13 +881,12 @@
                 class="mt-1"
                 @click="uploadShortPhoto()"
               >
-                <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>
-                Upload Short
+                <b-icon left name="mdi mdi-tray-arrow-up"></b-icon>Upload Short
               </b-btn>
             </div>
           </transition>
         </div>
-        <template #footer> </template>
+        <template #footer></template>
       </b-card>
     </b-modal>
 
@@ -905,9 +908,9 @@
           <b-flex>
             <h4 class="m-0">{{ this.settingsHeading[settings.index] }}</h4>
             <b-spacer></b-spacer>
-            <b-btn @click="settings.modal = false" icon ghost
-              ><b-icon name="mdi mdi-close"></b-icon
-            ></b-btn>
+            <b-btn @click="settings.modal = false" icon ghost>
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
           </b-flex>
         </template>
         <template #prepend>
@@ -915,14 +918,14 @@
             <template #header>
               <h4>Settings</h4>
             </template>
-            <template #1> Appearance </template>
-            <template #2> Account </template>
-            <template #3> Chat </template>
-            <template #4> Notifications </template>
-            <template #5> Sounds </template>
-            <template #6> About </template>
-          </b-nav-panel></template
-        >
+            <template #1>Appearance</template>
+            <template #2>Account</template>
+            <template #3>Chat</template>
+            <template #4>Notifications</template>
+            <template #5>Sounds</template>
+            <template #6>About</template>
+          </b-nav-panel>
+        </template>
         <b-card bare height="325px" width="100%">
           <b-tab-content v-model="settings.index">
             <template v-slot:0>
@@ -1042,8 +1045,9 @@
                   icon
                   class="center mt-2 mb-2"
                   size="small"
-                  ><b-icon name="mdi mdi-camera" left></b-icon> Change</b-btn
                 >
+                  <b-icon name="mdi mdi-camera" left></b-icon>Change
+                </b-btn>
                 <b-input
                   v-model="userInfo.data.username"
                   placeholder="Username"
@@ -1073,12 +1077,9 @@
                   }}</small>
                 </div>
                 <b-spacer></b-spacer>
-                <b-btn
-                  color="secondary"
-                  @click="settings.likeEmojiModal = true"
+                <b-btn color="secondary" @click="settings.likeEmojiModal = true"
+                  >Change</b-btn
                 >
-                  Change
-                </b-btn>
               </b-flex>
               <p class="text-sm opacity-75 pl-2 block mb-0 w-11/12">
                 When you double click a message, we'll add this emoji as your
@@ -1088,7 +1089,8 @@
             <template v-slot:3>
               <div v-show="!settings.notificationGranted">
                 <span>We need your permission to send notifications</span>
-                <br /><br />
+                <br />
+                <br />
                 <b-btn
                   size="medium"
                   block
@@ -1200,14 +1202,15 @@
     <b-modal v-model="settings.likeEmojiModal">
       <Picker
         color="#286ef1"
-        autoFocus
+        autofocus
         size="15"
         title="Pick a Reaction…"
         emoji="point_up"
         :data="emojiIndex"
         set="apple"
         @select="setNewLikeEmoji"
-    /></b-modal>
+      />
+    </b-modal>
     <b-modal
       v-model="fileUpload.show"
       width="50vw"
@@ -1229,9 +1232,9 @@
           <b-flex>
             <h4 class="mt-0 mb-0">Group Info</h4>
             <b-spacer></b-spacer>
-            <b-btn @click="groupInfo.modal = false" icon ghost
-              ><b-icon name="mdi mdi-close"></b-icon
-            ></b-btn>
+            <b-btn @click="groupInfo.modal = false" icon ghost>
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
           </b-flex>
         </template>
         <div>
@@ -1246,8 +1249,9 @@
             icon
             class="center mt-2 mb-2"
             size="small"
-            ><b-icon name="mdi mdi-camera" left></b-icon> Change</b-btn
           >
+            <b-icon name="mdi mdi-camera" left></b-icon>Change
+          </b-btn>
           <b-input
             v-model="groupInfo.data.name"
             placeholder="My Awesome Group"
@@ -1268,9 +1272,8 @@
               color="primary"
               :loading="groupInfo.loading"
               @click="changeGroupInfo()"
+              >Update</b-btn
             >
-              Update
-            </b-btn>
           </b-flex>
         </template>
       </b-card>
@@ -1350,7 +1353,7 @@
               "
               class="shortImage"
               :src="short.src"
-              alt=""
+              alt
             />
             <h4 class="shortImageCaption">{{ shorts.short?.caption }}</h4>
           </figure>
@@ -1364,7 +1367,7 @@
               class="shortImage"
               :src="short.src"
               controls
-              alt=""
+              alt
             />
           </figure>
           <div :class="short.filter" v-else-if="short.type == 'poll'">
@@ -1377,9 +1380,8 @@
                       v-on:click="votePoll(option)"
                       block
                       style="margin-top: 5px; z-index: 0"
+                      >{{ option.name }}</b-btn
                     >
-                      {{ option.name }}
-                    </b-btn>
                   </template>
                 </div>
                 <div v-else>
@@ -1416,21 +1418,19 @@
         <template v-slot:header>
           <h4 class="mt-0 mb-0">Leave Group</h4>
         </template>
-        <br />
-        The messages you sent will not be deleted
+        <br />The messages you sent will not be deleted
         <p>Are you sure you want to leave this group?</p>
         <br />
         <template v-slot:float>
           <b-flex>
             <b-spacer></b-spacer>
-            <b-btn @click="leaveGroup = false"> Cancel </b-btn>
+            <b-btn @click="leaveGroup = false">Cancel</b-btn>
             <b-btn
               color="danger"
               :loading="leavingGroup"
               @click="leaveGroupFunction()"
+              >Leave</b-btn
             >
-              Leave
-            </b-btn>
           </b-flex>
         </template>
       </b-card>
@@ -1450,14 +1450,13 @@
         <template v-slot:float>
           <b-flex>
             <b-spacer></b-spacer>
-            <b-btn @click="archiveGroup = false"> Cancel </b-btn>
+            <b-btn @click="archiveGroup = false">Cancel</b-btn>
             <b-btn
               color="danger"
               :loading="leavingGroup"
               @click="archiveGroupFunction()"
+              >Archive</b-btn
             >
-              Archive
-            </b-btn>
           </b-flex>
         </template>
       </b-card>
@@ -1493,13 +1492,13 @@
           >
             {{ createTag.data.name }}
           </div>
-          <br
-        /></template>
+          <br />
+        </template>
         <template v-slot:footer>
           <b-flex>
             <b-spacer></b-spacer>
-            <b-btn @click="createTag.show = false"> Cancel </b-btn>
-            <b-btn color="primary" @click="createTagFunction()"> Create </b-btn>
+            <b-btn @click="createTag.show = false">Cancel</b-btn>
+            <b-btn color="primary" @click="createTagFunction()">Create</b-btn>
           </b-flex>
         </template>
       </b-card>
@@ -1510,9 +1509,9 @@
           <b-flex>
             <h4 class="mt-0 mb-0">New Chat</h4>
             <b-spacer></b-spacer>
-            <b-btn @click="newChat.modal = false" icon ghost
-              ><b-icon name="mdi mdi-close"></b-icon
-            ></b-btn>
+            <b-btn @click="newChat.modal = false" icon ghost>
+              <b-icon name="mdi mdi-close"></b-icon>
+            </b-btn>
           </b-flex>
         </template>
         <br />
@@ -1771,8 +1770,8 @@
                             ></b-avatar>
                             <h5 class="my-0">
                               Assign a tag to {{ usr.username }}
-                            </h5></b-flex
-                          >
+                            </h5>
+                          </b-flex>
                           <div style="margin-bottom: 5px">
                             <template v-for="(tag, i) in chat.tags" :key="i">
                               <div
