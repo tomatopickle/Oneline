@@ -5,8 +5,8 @@
   height: 100%;
   overflow: auto;
   --padding: 0;
-  width: 260px;
-  max-width: 25vw;
+  width: 300px;
+  max-width: 30vw;
 }
 h4 {
   margin: 0;
