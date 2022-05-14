@@ -3,7 +3,7 @@ node_modules
 /dist
 .gitignore
 typeofcommits.txt
-/gitpodextensions
+/.yarn
 # local env files
 .env.local
 .env.*.local
