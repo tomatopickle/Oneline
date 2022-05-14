@@ -75,13 +75,6 @@ html.dark body {
   display: block;
   transform: translate(-50%, 110%) scale(1);
 }
-a {
-  color: #6fa1ff;
-  text-decoration: none;
-}
-html:not(.dark) a {
-  color: var(--primary);
-}
 #splashScreen {
   background-image: url(./assets/logos/logo.png);
   background-position: center center;
@@ -118,6 +111,7 @@ html.dark .vue-skeletor:not(.vue-skeletor--shimmerless):after {
     rgba(37, 22, 22, 0)
   );
 }
+/* Some global Shoelace styles */
 /* To automatically add margin to consecutive inputs/textareas */
 sl-input + sl-input,
 sl-textarea + sl-input,
@@ -127,4 +121,9 @@ sl-input + sl-textarea {
 sl-input::part(form-control-label),
 sl-textarea::part(form-control-label) {
   font-size: var(--sl-input-label-font-size-small);
+}
+
+a {
+  color: var(--sl-color-primary-600);
+  text-decoration: none;
 }

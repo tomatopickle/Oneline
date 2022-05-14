@@ -76,53 +76,34 @@
               <b-flex class="pl-4 pr-1">
                 <h3 class="m-0">Chats</h3>
                 <b-spacer></b-spacer>
-                <Popper
-                  arrow
-                  :interactive="false"
-                  offsetDistance="15px"
-                  offsetSkid="-35px"
-                >
-                  <sl-button icon variant="primary" outline circle>
-                    <sl-icon name="plus-lg" label="Settings"></sl-icon>
+                <sl-dropdown style="max-width: 200px">
+                  <sl-button slot="trigger" variant="primary" outline circle>
+                    <sl-icon name="plus-lg" label="New"></sl-icon>
                   </sl-button>
-                  <template #content>
-                    <b-card class="contextMenu p-0 m-0">
-                      <b-list-item
-                        clickable
-                        @click="
-                          newChat.tabIndex = 0;
-                          newChat.modal = true;
-                        "
-                      >
-                        <b-flex>
-                          <span>New Chat</span>
-                        </b-flex>
-                      </b-list-item>
-                      <b-list-item
-                        clickable
-                        @click="
-                          newChat.modal = true;
-                          newChat.tabIndex = 1;
-                        "
-                      >
-                        <b-flex>
-                          <span>Join Group</span>
-                        </b-flex>
-                      </b-list-item>
-                      <b-list-item
-                        clickable
-                        @click="
-                          newChat.tabIndex = 2;
-                          newChat.modal = true;
-                        "
-                      >
-                        <b-flex>
-                          <span>New Group</span>
-                        </b-flex>
-                      </b-list-item>
-                    </b-card>
-                  </template>
-                </Popper>
+                  <sl-menu>
+                    <sl-menu-item
+                      @click="
+                        newChat.tabIndex = 0;
+                        newChat.modal = true;
+                      "
+                      ><span>New Chat</span></sl-menu-item
+                    >
+                    <sl-menu-item
+                      @click="
+                        newChat.modal = true;
+                        newChat.tabIndex = 1;
+                      "
+                      ><span>Join Group</span></sl-menu-item
+                    >
+                    <sl-menu-item
+                      @click="
+                        newChat.modal = true;
+                        newChat.tabIndex = 2;
+                      "
+                      ><span>New Group</span></sl-menu-item
+                    >
+                  </sl-menu>
+                </sl-dropdown>
               </b-flex>
             </div>
             <sl-input
@@ -896,321 +877,265 @@
     <b-modal v-model="short.poll.show" width="500px">
       <short-poll-wizard @close="short.poll.show = false" :user="user" />
     </b-modal>
-    <b-modal v-model="settings.modal" width="750px">
-      <b-card
-        height="440px"
-        width="750px"
-        glass-sidebar
-        id="settingsModal"
-        :loading="settings.loading"
-      >
-        <template #header>
-          <b-flex>
-            <h4 class="m-0">{{ this.settingsHeading[settings.index] }}</h4>
-            <b-spacer></b-spacer>
-            <b-btn @click="settings.modal = false" icon ghost>
-              <b-icon name="mdi mdi-close"></b-icon>
-            </b-btn>
-          </b-flex>
+    <sl-dialog
+      @sl-request-close="settings.modal = false"
+      :open="settings.modal"
+      :label="settingsHeading[settings.index]"
+      style="--width: 750px"
+    >
+      <sl-tab-group placement="start">
+        <template v-for="(heading, i) in settingsHeading" :key="heading">
+          <sl-tab
+            @click="settings.index = i"
+            slot="nav"
+            :panel="heading.toLowerCase()"
+            >{{ heading }}</sl-tab
+          >
         </template>
-        <template #prepend>
-          <b-nav-panel v-model="settings.index" style="min-width: 150px">
-            <template #header>
-              <h4>Settings</h4>
-            </template>
-            <template #1>Appearance</template>
-            <template #2>Account</template>
-            <template #3>Chat</template>
-            <template #4>Notifications</template>
-            <template #5>Sounds</template>
-            <template #6>About</template>
-          </b-nav-panel>
-        </template>
-        <b-card bare height="325px" width="100%">
-          <b-tab-content v-model="settings.index">
-            <template v-slot:0>
-              <div>
-                <b-flex>
-                  <span>Light Mode</span>
-                  <b-spacer></b-spacer>
-                  <b-switch
-                    @change="applySettings()"
-                    v-model="settings.data.lightMode"
-                  ></b-switch>
-                </b-flex>
-
-                <h4 class="ml-2 my-0">Chat UI</h4>
-                <b-flex class="m-auto w-max">
-                  <div>
-                    <div
-                      @click="
-                        settings.data.messagesSimpleMode = false;
-                        updateSettings();
-                      "
-                      :class="{
-                        chatWindowPreview: true,
-                        selected: !settings.data.messagesSimpleMode,
-                      }"
-                    >
-                      <svg
-                        width="373"
-                        height="149"
-                        viewBox="0 0 373 149"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <rect
-                          x="104"
-                          y="18"
-                          width="208"
-                          height="36"
-                          rx="18"
-                          fill="#242427"
-                        />
-                        <circle cx="67.5" cy="36.5" r="28.5" fill="#353535" />
-                        <rect
-                          x="104"
-                          y="97"
-                          width="208"
-                          height="36"
-                          rx="18"
-                          fill="#242427"
-                        />
-                        <circle cx="67.5" cy="115.5" r="28.5" fill="#353535" />
-                      </svg>
-                    </div>
-                    <h4 class="text-center my-1">Text</h4>
-                  </div>
-                  <div>
-                    <div
-                      @click="
-                        settings.data.messagesSimpleMode = true;
-                        updateSettings();
-                      "
-                      :class="{
-                        chatWindowPreview: true,
-                        selected: settings.data.messagesSimpleMode,
-                      }"
-                    >
-                      <svg
-                        width="416"
-                        height="151"
-                        viewBox="0 0 416 151"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M199 34C199 32.1429 199 31.2143 199.051 30.4303C199.839 18.4122 209.412 8.8391 221.43 8.05139C222.214 8 223.143 8 225 8H402.571C405.79 8 407.4 8 408.494 8.87267C408.728 9.05942 408.941 9.27187 409.127 9.50604C410 10.6003 410 12.2098 410 15.4286V15.4286C410 34.7415 410 44.398 404.764 50.9638C403.643 52.3688 402.369 53.6435 400.964 54.764C394.398 60 384.742 60 365.429 60H225C223.143 60 222.214 60 221.43 59.9486C209.412 59.1609 199.839 49.5878 199.051 37.5697C199 36.7857 199 35.8571 199 34V34Z"
-                          fill="#3958FC"
-                        />
-                        <path
-                          d="M6 97.4286C6 94.2098 6 92.6003 6.87267 91.506C7.05942 91.2719 7.27187 91.0594 7.50604 90.8727C8.60034 90 10.2098 90 13.4286 90H173C174.857 90 175.786 90 176.57 90.0514C188.588 90.8391 198.161 100.412 198.949 112.43C199 113.214 199 114.143 199 116V116C199 117.857 199 118.786 198.949 119.57C198.161 131.588 188.588 141.161 176.57 141.949C175.786 142 174.857 142 173 142H50.5714C31.2585 142 21.602 142 15.0362 136.764C13.6312 135.643 12.3565 134.369 11.236 132.964C6 126.398 6 116.741 6 97.4286V97.4286Z"
-                          fill="#1D1D20"
-                        />
-                      </svg>
-                    </div>
-                    <h4 class="text-center my-1">Simple</h4>
-                  </div>
-                </b-flex>
-                <b-flex v-if="settings.data.messagesSimpleMode">
-                  <span>Message Color</span>
-                  <b-spacer></b-spacer>
-                  <template v-for="color in settings.colors" :key="color">
-                    <swatch
-                      v-on:click="
-                        settings.data.messagesSimpleModeColor = color;
-                        applySettings();
-                      "
-                      :color="color"
-                    />
-                  </template>
-                </b-flex>
-              </div>
-            </template>
-            <template v-slot:1>
-              <b-card
-                bare
-                width="200px"
-                height="200px"
-                class="center relative bottom-9"
-              >
-                <b-avatar
-                  class="center"
-                  :src="userInfo.data.avatar"
-                  :username="userInfo.data.username || ''"
-                  :size="75"
-                ></b-avatar>
-                <b-btn
-                  @click="uploadAvatar()"
-                  icon
-                  class="center mt-2 mb-2"
-                  size="small"
-                >
-                  <b-icon name="mdi mdi-camera" left></b-icon>Change
-                </b-btn>
-                <b-input
-                  v-model="userInfo.data.username"
-                  placeholder="Username"
-                  label="User Name"
-                ></b-input>
-
-                <b-textarea
-                  v-model="userInfo.data.description"
-                  placeholder="Description"
-                  label="Description"
-                ></b-textarea>
-                <br />
-                <br />
-              </b-card>
-            </template>
-            <template v-slot:2>
-              <b-flex>
-                <span>Show Exact Time</span>
-                <b-spacer></b-spacer>
-                <b-switch v-model="settings.data.showExactTime"></b-switch>
-              </b-flex>
-              <b-flex>
-                <div class="flex flex-col">
-                  <span>Double click reaction</span>
-                  <small style="margin-left: 0">{{
-                    "Current emoji: " + settings.data.likeEmoji.native
-                  }}</small>
-                </div>
-                <b-spacer></b-spacer>
-                <b-btn color="secondary" @click="settings.likeEmojiModal = true"
-                  >Change</b-btn
-                >
-              </b-flex>
-              <p class="text-sm opacity-75 pl-2 block mb-0 w-11/12">
-                When you double click a message, we'll add this emoji as your
-                reaction
-              </p>
-            </template>
-            <template v-slot:3>
-              <div v-show="!settings.notificationGranted">
-                <span>We need your permission to send notifications</span>
-                <br />
-                <br />
-                <b-btn
-                  size="medium"
-                  block
-                  color="primary"
-                  @click="askNotificationPermission()"
-                  >Give Permission</b-btn
-                >
-              </div>
-              <div v-show="settings.notificationGranted">
-                <b-flex>
-                  <span>Enable Notifications</span>
-                  <b-spacer></b-spacer>
-                  <b-switch
-                    @change="applySettings()"
-                    v-model="settings.data.notification.enabled"
-                  ></b-switch>
-                </b-flex>
-                <b-flex v-show="settings.data.notification.enabled">
-                  <span>Notifications for a new message</span>
-                  <b-spacer></b-spacer>
-                  <b-switch
-                    @change="applySettings()"
-                    v-model="settings.data.notification.newMessage"
-                  ></b-switch>
-                </b-flex>
-                <b-flex v-show="settings.data.notification.enabled">
-                  <span>Enable Meeting Notifications</span>
-                  <b-spacer></b-spacer>
-                  <b-switch
-                    @change="applySettings()"
-                    v-model="settings.data.notification.meetingNotifcations"
-                  ></b-switch>
-                </b-flex>
-              </div>
-            </template>
-            <template v-slot:4>
-              <b-flex>
-                <span>Ringtones for Meeting Invites</span>
-                <b-spacer></b-spacer>
-                <b-switch
-                  @change="applySettings()"
-                  v-model="settings.data.ringtoneForMeetingInvite"
-                ></b-switch>
-              </b-flex>
-            </template>
-            <template v-slot:5>
-              <h4 class="my-0 pt-2">Cache</h4>
-              <p v-if="getLastUpdatedTime">{{ getLastUpdatedTime }}</p>
-              <!-- I had to wrap this in a p tag to get the perfect padding -->
-              <p>
-                <b-flex bare>
-                  <span>Force Update</span>
-                  <b-btn class="-my-9 ml-5" @click="clearCache()" size="small"
-                    >Clear Cache</b-btn
-                  >
-                </b-flex>
-              </p>
-              <h4 class="my-0 pt-2">Bugs</h4>
-              <p>
-                Found a bug? Great!, please report it at our
-                <a
-                  target="_blank"
-                  href="https://github.com/tomatopickle/Oneline/issues/new"
-                  title="Report Bug"
-                  >issues section</a
-                >
-              </p>
-              <h4 class="my-0 pt-2">Credits</h4>
-              <p>
-                Icons made by
-                <a
-                  target="_blank"
-                  href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
-                  title="Ilham Fitrotul Hayat"
-                  >Ilham Fitrotul Hayat</a
-                >
-                from
-                <a href="https://www.flaticon.com/" title="Flaticon"
-                  >www.flaticon.com</a
-                >
-              </p>
-            </template>
-          </b-tab-content>
-          <template v-slot:footer>
-            <b-flex
-              style="height: max-content"
-              v-if="settingsHeading[settings.index] != 'About'"
-            >
+        <sl-tab-panel name="appearance">
+          <div>
+            <b-flex>
+              <span>Light Mode</span>
               <b-spacer></b-spacer>
-              <b-btn
-                @click="updateSettings()"
-                :color="settings.button.color"
-                :loading="settings.button.loading"
-              >
-                <transition name="zoom" :duration="{ enter: 100, leave: 250 }">
-                  <b-icon
-                    name="mdi mdi-check"
-                    v-if="settings.button.check"
-                    left
-                  ></b-icon>
-                </transition>
-                <span>{{ settings.button.text }}</span>
-              </b-btn>
+              <sl-switch
+                :checked="settings.data.lightMode"
+                v-on:sl-change="
+                  ($event) => {
+                    settings.data.lightMode = $event.target.checked;
+                    updateSettings();
+                  }
+                "
+              ></sl-switch>
             </b-flex>
-          </template>
-        </b-card>
-      </b-card>
-    </b-modal>
-    <b-modal v-model="settings.likeEmojiModal">
-      <Picker
-        color="#286ef1"
-        autofocus
-        size="15"
-        title="Pick a Reaction…"
-        emoji="point_up"
-        :data="emojiIndex"
-        set="apple"
-        @select="setNewLikeEmoji"
-      />
-    </b-modal>
+            <b-flex>
+              <span>Message UI</span>
+              <b-spacer></b-spacer>
+              <sl-select
+                :value="settings.data.messagesSimpleMode ? 'simple' : 'text'"
+              >
+                <sl-menu-item
+                  @click="
+                    settings.data.messagesSimpleMode = true;
+                    updateSettings();
+                  "
+                  value="simple"
+                  >Simple</sl-menu-item
+                >
+                <sl-menu-item
+                  @click="
+                    settings.data.messagesSimpleMode = false;
+                    updateSettings();
+                  "
+                  value="text"
+                  >Text</sl-menu-item
+                >
+              </sl-select>
+            </b-flex>
+            <b-flex>
+              <span>Theme Color</span>
+              <b-spacer></b-spacer>
+              <template v-for="color in settings.colors" :key="color">
+                <swatch
+                  v-on:click="
+                    settings.data.messagesSimpleModeColor = color;
+                    updateSettings();
+                  "
+                  :color="color"
+                />
+              </template>
+            </b-flex></div
+        ></sl-tab-panel>
+        <sl-tab-panel name="account">
+          <div class="w-2/3 center">
+            <b-avatar
+              class="center"
+              :src="userInfo.data.avatar"
+              :username="userInfo.data.username || ''"
+              :size="75"
+            ></b-avatar>
+            <sl-button
+              @click="uploadAvatar()"
+              icon
+              class="center mt-2 mb-2 w-max block"
+              outline
+              size="small"
+            >
+              <sl-icon name="pencil-square"></sl-icon>
+              Change
+            </sl-button>
+            <sl-input
+              v-model="userInfo.data.username"
+              placeholder="Username"
+              label="User Name"
+            ></sl-input>
+
+            <sl-textarea
+              v-model="userInfo.data.description"
+              placeholder="Description"
+              label="Description"
+            ></sl-textarea>
+            <br />
+            <b-flex>
+              <b-spacer></b-spacer>
+              <sl-button
+                @click="updateSettings()"
+                :loading="settings.button.loading"
+                variant="primary"
+              >
+                {{ settings.button.text }}
+              </sl-button>
+            </b-flex>
+          </div> </sl-tab-panel
+        ><sl-tab-panel name="chat">
+          <b-flex>
+            <span>Show Exact Time</span>
+            <b-spacer></b-spacer>
+            <sl-switch
+              :checked="settings.data.showExactTime"
+              v-on:sl-change="
+                ($event) => {
+                  settings.data.showExactTime = $event.target.checked;
+                  updateSettings();
+                }
+              "
+            ></sl-switch>
+          </b-flex>
+          <b-flex>
+            <div class="flex flex-col">
+              <span>Double click reaction</span>
+              <small style="margin-left: 0">{{
+                "Current emoji: " + settings.data.likeEmoji.native
+              }}</small>
+            </div>
+            <b-spacer></b-spacer>
+            <sl-dropdown placement="left" skidding="90" ref="likeEmojiModal">
+              <sl-button slot="trigger">Change</sl-button>
+              <div>
+                <Picker
+                  id="likeEmojiPicker"
+                  color="#286ef1"
+                  autofocus
+                  size="15"
+                  title="Pick a Reaction…"
+                  emoji="point_up"
+                  :data="emojiIndex"
+                  set="apple"
+                  @select="setNewLikeEmoji"
+                />
+              </div>
+            </sl-dropdown>
+          </b-flex>
+          <p class="text-sm opacity-75 pl-2 block mb-0 w-11/12">
+            When you double click a message, we'll add this emoji as your
+            reaction
+          </p></sl-tab-panel
+        ><sl-tab-panel name="notifications">
+          <div v-show="!settings.notificationGranted">
+            <span>We need your permission to send notifications</span>
+            <br />
+            <br />
+            <sl-button
+              class="w-3/4 center"
+              variant="primary"
+              @click="askNotificationPermission()"
+              >Give Permission</sl-button
+            >
+          </div>
+          <div v-show="settings.notificationGranted">
+            <b-flex>
+              <span>Enable Notifications</span>
+              <b-spacer></b-spacer>
+              <sl-switch
+                :checked="settings.data.notification.enabled"
+                v-on:sl-change="
+                  ($event) => {
+                    settings.data.notification.enabled = $event.target.checked;
+                    updateSettings();
+                  }
+                "
+              ></sl-switch>
+            </b-flex>
+            <b-flex v-show="settings.data.notification.enabled">
+              <span>Notifications for a new message</span>
+              <b-spacer></b-spacer>
+              <sl-switch
+                :checked="settings.data.notification.newMessage"
+                v-on:sl-change="
+                  ($event) => {
+                    settings.data.notification.newMessage =
+                      $event.target.checked;
+                    updateSettings();
+                  }
+                "
+              ></sl-switch>
+            </b-flex>
+            <b-flex v-show="settings.data.notification.enabled">
+              <span>Enable Meeting Notifications</span>
+              <b-spacer></b-spacer>
+              <sl-switch
+                :checked="settings.data.notification.meetingNotifcations"
+                v-on:sl-change="
+                  ($event) => {
+                    settings.data.notification.meetingNotifcations =
+                      $event.target.checked;
+                    updateSettings();
+                  }
+                "
+              ></sl-switch>
+            </b-flex></div></sl-tab-panel
+        ><sl-tab-panel name="sounds">
+          <b-flex>
+            <span>Ringtones for Meeting Invites</span>
+            <b-spacer></b-spacer>
+            <sl-switch
+              :checked="settings.data.ringtoneForMeetingInvite"
+              v-on:sl-change="
+                ($event) => {
+                  settings.data.ringtoneForMeetingInvite =
+                    $event.target.checked;
+                  updateSettings();
+                }
+              "
+            ></sl-switch> </b-flex></sl-tab-panel
+        ><sl-tab-panel name="about">
+          <h4 class="my-0 pt-2">Cache</h4>
+          <p v-if="getLastUpdatedTime">{{ getLastUpdatedTime }}</p>
+          <p>
+            <b-flex bare>
+              <span>Force Update</span>
+              <sl-button class="-my-9 ml-5" @click="clearCache()" size="small"
+                >Clear Cache</sl-button
+              >
+            </b-flex>
+          </p>
+          <h4 class="my-0 pt-2">Bugs</h4>
+          <p>
+            Found a bug? Great!, please report it at our
+            <a
+              target="_blank"
+              href="https://github.com/tomatopickle/Oneline/issues/new"
+              title="Report Bug"
+              >issues section</a
+            >
+          </p>
+          <h4 class="my-0 pt-2">Credits</h4>
+          <p>
+            Icons made by
+            <a
+              target="_blank"
+              href="https://www.flaticon.com/authors/ilham-fitrotul-hayat"
+              title="Ilham Fitrotul Hayat"
+              >Ilham Fitrotul Hayat</a
+            >
+            from
+            <a href="https://www.flaticon.com/" title="Flaticon"
+              >www.flaticon.com</a
+            >
+          </p></sl-tab-panel
+        >
+      </sl-tab-group>
+    </sl-dialog>
+
     <b-modal
       v-model="fileUpload.show"
       width="50vw"
@@ -1503,105 +1428,90 @@
         </template>
       </b-card>
     </b-modal>
-    <b-modal width="510px" v-model="newChat.modal">
-      <b-card>
-        <template v-slot:header>
-          <b-flex>
-            <h4 class="mt-0 mb-0">New Chat</h4>
-            <b-spacer></b-spacer>
-            <b-btn @click="newChat.modal = false" icon ghost>
-              <b-icon name="mdi mdi-close"></b-icon>
-            </b-btn>
-          </b-flex>
-        </template>
-        <br />
-        <b-tab
-          class="center"
-          :tabs="newChat.tabs"
-          v-model="newChat.tabIndex"
-          style="width: 91%"
-        ></b-tab>
-        <b-tab-content
-          v-model="newChat.tabIndex"
-          :tabs="newChat.tabs"
-          style="margin-top: 10px"
+    <sl-dialog
+      :open="newChat.modal"
+      @sl-after-hide="newChat.modal = false"
+      label="New Chat"
+      class="dialog-overview"
+    >
+      <sl-tab-group class="centered">
+        <sl-tab slot="nav" panel="new-chat" :active="newChat.tabIndex == 0"
+          >New Chat</sl-tab
         >
-          <template v-slot:0>
-            <p>
-              <b-input
-                class="center"
-                label="Email ID"
-                type="email"
-                v-model="newChat.data.personal.email"
-                placeholder="Email of the user you want to chat with"
-              ></b-input>
-              <br />
-              <b-flex>
-                <b-spacer></b-spacer>
-                <b-btn
-                  :disabled="!newChat.data.personal.email"
-                  :loading="newChat.data.personal.loading"
-                  @click="createPersonalChat()"
-                  color="primary"
-                  >Create Chat</b-btn
-                >
-              </b-flex>
-            </p>
-          </template>
-          <template v-slot:1>
-            <p>
-              <b-input
-                class="center"
-                label="Group ID"
-                v-model="newChat.data.group.id"
-                placeholder="Enter the group ID you want to join"
-              ></b-input>
-              <br />
-              <b-flex>
-                <b-spacer></b-spacer>
-                <b-btn
-                  @click="joinGroup()"
-                  :disabled="!newChat.data.group.id"
-                  :loading="newChat.data.group.loading"
-                  color="primary"
-                  >Join Chat</b-btn
-                >
-              </b-flex>
-            </p>
-          </template>
-          <template v-slot:2>
-            <p>
-              <b-input
-                class="center"
-                label="Group Name"
-                v-model="newChat.data.newGroup.name"
-                placeholder="My Awesome Group"
-              ></b-input>
-              <b-textarea
-                class="center"
-                label="Group Description"
-                v-model="newChat.data.newGroup.description"
-                placeholder="This group is awesome"
-              ></b-textarea>
-              <br />
-              <b-flex>
-                <b-spacer></b-spacer>
-                <b-btn
-                  :disabled="
-                    !newChat.data.newGroup.name ||
-                    !newChat.data.newGroup.description
-                  "
-                  :loading="newChat.data.newGroup.loading"
-                  @click="createGroupChat()"
-                  color="primary"
-                  >Create Group</b-btn
-                >
-              </b-flex>
-            </p>
-          </template>
-        </b-tab-content>
-      </b-card>
-    </b-modal>
+        <sl-tab slot="nav" panel="join-group" :active="newChat.tabIndex == 1"
+          >Join Group</sl-tab
+        >
+        <sl-tab slot="nav" panel="new-group" :active="newChat.tabIndex == 2"
+          >Create Group</sl-tab
+        >
+
+        <sl-tab-panel name="new-chat" :active="newChat.tabIndex == 0">
+          <sl-input
+            class="center"
+            label="Email ID"
+            type="email"
+            v-model="newChat.data.personal.email"
+            placeholder="Email of the user you want to chat with"
+          ></sl-input>
+          <br />
+          <b-flex>
+            <b-spacer></b-spacer>
+            <sl-button
+              :disabled="!newChat.data.personal.email"
+              :loading="newChat.data.personal.loading"
+              @click="createPersonalChat()"
+              variant="primary"
+              >Create Chat</sl-button
+            >
+          </b-flex>
+        </sl-tab-panel>
+        <sl-tab-panel name="join-group" :active="newChat.tabIndex == 1">
+          <sl-input
+            class="center"
+            label="Group ID"
+            v-model="newChat.data.group.id"
+            placeholder="Enter the group ID you want to join"
+          ></sl-input>
+          <br />
+          <b-flex>
+            <b-spacer></b-spacer>
+            <sl-button
+              @click="joinGroup()"
+              :disabled="!newChat.data.group.id"
+              :loading="newChat.data.group.loading"
+              variant="primary"
+              >Join Chat</sl-button
+            >
+          </b-flex></sl-tab-panel
+        >
+        <sl-tab-panel name="new-group" :active="newChat.tabIndex == 2">
+          <sl-input
+            label="Group Name"
+            v-model="newChat.data.newGroup.name"
+            placeholder="My Awesome Group"
+          ></sl-input>
+          <sl-textarea
+            label="Group Description"
+            v-model="newChat.data.newGroup.description"
+            placeholder="This group is awesome"
+          ></sl-textarea>
+          <br />
+          <b-flex>
+            <b-spacer></b-spacer>
+            <sl-button
+              :disabled="
+                !newChat.data.newGroup.name ||
+                !newChat.data.newGroup.description
+              "
+              :loading="newChat.data.newGroup.loading"
+              @click="createGroupChat()"
+              variant="primary"
+              >Create Group</sl-button
+            >
+          </b-flex></sl-tab-panel
+        >
+      </sl-tab-group>
+    </sl-dialog>
     <template v-slot:append>
       <transition name="fade" :duration="{ enter: 0, leave: 50 }">
         <b-sidebar width="250px" v-show="chatInfo">

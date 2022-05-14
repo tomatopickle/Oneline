@@ -18,7 +18,7 @@
           <h4>Oneline</h4>
         </b-flex>
       </div>
-      <sl-tab-group>
+      <sl-tab-group class="centered">
         <sl-tab slot="nav" panel="login">Login</sl-tab>
         <sl-tab slot="nav" panel="signUp">Sign Up</sl-tab>
         <sl-tab-panel name="login">
@@ -182,12 +182,5 @@ sl-card {
 
 h4 {
   margin: 0;
-}
-sl-tab-group::part(nav) {
-  width: max-content;
-  margin: auto;
-}
-sl-tab-group::part(tabs) {
-  border-bottom-color: transparent;
 }
 </style>

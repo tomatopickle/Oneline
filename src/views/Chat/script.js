@@ -668,7 +668,7 @@ export default {
                 }
             });
             this.settings.data.likeEmoji = emoji;
-            this.settings.likeEmojiModal = false;
+            this.$refs.likeEmojiModal.hide();
         },
         addedEmoji(emoji) {
             if (!(typeof emoji == "object")) {
@@ -1425,25 +1425,25 @@ export default {
             set(ref(db, `users/${this.user.id}/settings`), this.settings.data);
             update(ref(db, `users/${this.user.id}`), this.userInfo.data);
             this.settings.button.text = "Saved";
-            this.settings.button.color = "success";
-            this.settings.button.check = true;
             setTimeout(() => {
                 this.settings.button.text = "Save";
-                this.settings.button.color = "primary";
-                this.settings.button.check = false;
             }, 1000);
             this.applySettings();
         },
         applySettings() {
+            console.log(this.settings.data.lightMode);
             const settingsData = this.settings.data;
+            console.log("changin settings....", this.settings)
             if (settingsData.messagesSimpleModeColor) {
                 document.documentElement.style.setProperty('--chat-me-color', settingsData.messagesSimpleModeColor);
             }
             if (settingsData?.lightMode) {
                 document.querySelector("html").classList.remove("dark");
+                document.querySelector("html").classList.remove("sl-theme-dark");
                 document.querySelector("meta[name='theme-color']").setAttribute("content", "#fff");
             } else {
                 document.querySelector("html").classList.add("dark");
+                document.querySelector("html").classList.add("sl-theme-dark");
                 document.querySelector("meta[name='theme-color']").setAttribute("content", "#242428");
             }
         },
