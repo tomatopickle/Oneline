@@ -641,36 +641,6 @@ section.emoji-mart.emoji-mart-static * {
   border: 1px solid var(--sl-panel-background-color);
   background-color: var(--sl-color-green-500);
 }
-
-#messageInp {
-  display: flex;
-  align-items: center;
-  left: 0;
-  font-size: 15px;
-  background-color: hsl(var(--bg-dark), 15%);
-  border-radius: var(--ui-radius);
-  width: 98%;
-  margin: auto;
-  margin-top: 2px;
-  margin-bottom: 5px;
-  position: relative;
-  max-height: 80vh;
-}
-html:not(.dark) #messageInp {
-  display: flex;
-  align-items: center;
-  left: 0;
-  font-size: 15px;
-  background-color: hsl(var(--bg), 100%);
-  border-radius: var(--ui-radius);
-  width: 98%;
-  margin: auto;
-  margin-top: 2px;
-  margin-bottom: 5px;
-  position: relative;
-  max-height: 80vh;
-  border: solid hsl(var(--bg), 93%) 1px;
-}
 html:not(.dark) .messageBtn {
   color: hsl(var(--bg), 40%);
 }

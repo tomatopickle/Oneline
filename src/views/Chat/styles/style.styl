@@ -16,26 +16,6 @@
     }
 }
 
-.chatWindowPreview {
-    background-color: lighten($bg-dark, 2%);
-    border-radius: var(--ui-radius);
-    cursor: pointer;
-    border: solid 2px lighten($bg-dark, 2%);
-    transition: border-color 0.2s;
-
-    &:hover {
-        border-color: lighten($bg-dark, 15%);
-    }
-
-    &:active {
-        border-color: lighten($bg-dark, 20%);
-    }
-
-    &.selected {
-        border-color: $primary;
-    }
-}
-
 .msg-text {
     blockquote {
         border-left: 3px solid $primary;
@@ -206,6 +186,25 @@ sl-tab-group.centered {
 
     &::part(tabs) {
         border-bottom-color: transparent;
+    }
+}
+
+#messageInp {
+    display: flex;
+    align-items: center;
+    left: 0;
+    font-size: 15px;
+    background-color: var(--sl-color-neutral-100);
+    border-radius: var(--sl-border-radius-x-large);
+    width: 98%;
+    margin: auto;
+    margin-top: 2px;
+    margin-bottom: 5px;
+    position: relative;
+    max-height: 80vh;
+
+    html.sl-theme-dark & {
+        background-color: var(--sl-color-neutral-50);
     }
 }
 

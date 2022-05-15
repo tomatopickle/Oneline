@@ -495,10 +495,14 @@
           </b-flex>
         </div>
         <template v-if="!recording.show">
-          <b-icon
-            name="mdi mdi-plus messageBtn"
-            @click="fileUpload.show = true"
-          ></b-icon>
+          <sl-tooltip content="Send File">
+            <sl-icon-button
+              @click="fileUpload.show = true"
+              style="font-size: 2rem"
+              name="plus"
+            >
+            </sl-icon-button>
+          </sl-tooltip>
           <content-editable-div
             ref="messageBar"
             @keypress="checkIfUserTyping($event)"
@@ -508,155 +512,86 @@
             data-placeholder="Message"
             class="editable"
           ></content-editable-div>
-          <b-icon
-            @click="startRecording()"
-            name="mdi mdi-microphone messageBtn"
-            size="23px"
-            class="mt-0.5"
-          ></b-icon>
-          <Popper
-            style="border: none !important"
-            position="top"
-            offsetSkid="25px"
-          >
-            <b-icon
-              name="mdi mdi-emoticon popperBtn messageBtn"
-              style="margin-right: 50px"
-            ></b-icon>
-            <template #content>
-              <div>
-                <Picker
-                  color="#286ef1"
-                  :autoFocus="true"
-                  title="Pick your emoji…"
-                  emoji="point_up"
-                  :data="emojiIndex"
-                  set="apple"
-                  @select="addedEmoji"
-                />
-              </div>
-            </template>
-          </Popper>
-          <Popper
-            style="border: none !important"
-            position="top"
-            offsetSkid="25px"
-          >
-            <b-icon @click="getGifs()">
-              <svg
-                width="100%"
-                class="messageBtn"
-                style="
-                  height: 29px;
-                  display: block;
-                  margin-right: 15px;
-                  margin-left: 10px;
-                  width: 40px;
-                "
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 30 30"
+          <sl-tooltip content="Send Recording">
+            <sl-icon-button
+              @click="startRecording()"
+              style="font-size: 1.5rem"
+              name="mic"
+            >
+            </sl-icon-button>
+          </sl-tooltip>
+
+          <sl-dropdown>
+            <sl-tooltip slot="trigger" content="Insert Emoji">
+              <sl-icon-button style="font-size: 1.5rem" name="emoji-smile">
+              </sl-icon-button>
+            </sl-tooltip>
+            <div>
+              <Picker
+                color="#286ef1"
+                :autoFocus="true"
+                title="Pick your emoji…"
+                emoji="point_up"
+                :data="emojiIndex"
+                set="apple"
+                @select="addedEmoji"
+              />
+            </div>
+          </sl-dropdown>
+          <sl-dropdown>
+            <sl-tooltip slot="trigger" content="Send GIF">
+              <sl-icon-button
+                @click="getGifs()"
+                style="font-size: 1.5rem"
+                name="filetype-gif"
               >
-                <path
-                  fill="currentColor"
-                  d="M 6 5 C 3.8034768 5 2 6.8034768 2 9 L 2 21 C 2 23.196523 3.8034768 25 6 25 L 24 25 C 26.196523 25 28 23.196523 28 21 L 28 9 C 28 6.8034768 26.196523 5 24 5 L 6 5 z M 9.8867188 11.046875 C 11.666719 11.046875 12.975312 12.075625 13.195312 13.640625 L 11.628906 13.640625 C 11.394906 12.878625 10.762719 12.435547 9.8867188 12.435547 C 8.6707187 12.435547 7.9238281 13.401422 7.9238281 14.982422 C 7.9238281 16.595422 8.7072188 17.576172 9.9492188 17.576172 C 10.982219 17.576172 11.697516 16.964641 11.728516 16.056641 L 11.732422 15.921875 L 10.099609 15.921875 L 10.099609 14.736328 L 13.261719 14.736328 L 13.261719 15.697266 C 13.261719 17.711266 11.977875 18.964844 9.921875 18.964844 C 7.683875 18.964844 6.3105469 17.461047 6.3105469 14.998047 C 6.3105469 12.571047 7.6947187 11.046875 9.8867188 11.046875 z M 14.779297 11.240234 L 16.355469 11.240234 L 16.355469 18.771484 L 14.779297 18.771484 L 14.779297 11.240234 z M 18.185547 11.240234 L 23 11.240234 L 23 12.587891 L 19.761719 12.587891 L 19.761719 14.548828 L 22.824219 14.548828 L 22.824219 15.837891 L 19.761719 15.837891 L 19.761719 18.771484 L 18.185547 18.771484 L 18.185547 11.240234 z"
-                />
-              </svg>
-            </b-icon>
-            <template #content="{ close }">
-              <div>
-                <b-card
-                  height="75vh"
-                  width="460px"
-                  style="overflow-y: auto"
-                  :loading="gif.loading"
-                  id="gifsPanel"
-                >
-                  <template #header>
-                    <b-input
-                      @keyup="searchGifs($event)"
-                      placeholder="Search"
-                      v-model="gif.search"
-                    ></b-input>
-                  </template>
-                  <div class="grid-3">
-                    <template v-if="!gif.searched && !gif.recent.notAvailable">
-                      <b-flex bare>
-                        <transition name="zoom">
-                          <b-btn
-                            v-if="gif.viewingRecent"
-                            ghost
-                            size="small"
-                            icon
-                            @click="getGifs()"
-                          >
-                            <b-icon name="mdi mdi-arrow-left"></b-icon>
-                          </b-btn>
-                        </transition>
-                        <h3 class="ml-1">Recent</h3>
-                        <b-spacer></b-spacer>
+              </sl-icon-button>
+            </sl-tooltip>
+            <div>
+              <b-card
+                height="75vh"
+                width="460px"
+                style="overflow-y: auto"
+                :loading="gif.loading"
+                id="gifsPanel"
+              >
+                <template #header>
+                  <b-input
+                    @keyup="searchGifs($event)"
+                    placeholder="Search"
+                    v-model="gif.search"
+                  ></b-input>
+                </template>
+                <div class="grid-3">
+                  <template v-if="!gif.searched && !gif.recent.notAvailable">
+                    <b-flex bare>
+                      <transition name="zoom">
                         <b-btn
-                          v-if="!gif.viewingRecent"
-                          @click="getAllRecentGifs()"
+                          v-if="gif.viewingRecent"
                           ghost
                           size="small"
-                          color="primary"
+                          icon
+                          @click="getGifs()"
                         >
-                          View All
-                          <b-icon right name="mdi mdi-chevron-right"></b-icon>
-                        </b-btn>
-                      </b-flex>
-                      <transition-group name="fadeUp" tag="div">
-                        <div
-                          v-for="(gif, i) in gif.recent"
-                          :key="i"
-                          class="gif col"
-                          v-on:click="
-                            sendGif(gif);
-                            close();
-                          "
-                        >
-                          <v-lazy-image
-                            width="100px"
-                            src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-                            :src="gif.images?.original.webp"
-                          />
-                        </div>
-                      </transition-group>
-                    </template>
-                    <transition name="fadeUp" mode="out-in">
-                      <h3
-                        class="ml-1"
-                        v-if="!gif.searched && !gif.viewingRecent"
-                      >
-                        Trending
-                      </h3>
-                      <b-flex bare v-else-if="!gif.viewingRecent">
-                        <b-btn ghost size="small" icon @click="getGifs()">
                           <b-icon name="mdi mdi-arrow-left"></b-icon>
                         </b-btn>
-                        <h3 class="ml-1">Results</h3>
-                      </b-flex>
-                    </transition>
-                    <template v-if="!gif.searched && !gif.viewingRecent">
-                      <transition-group name="fadeUp" tag="div">
-                        <div
-                          v-on:click="
-                            gif.search = text;
-                            searchGifs(null, text);
-                          "
-                          v-for="(text, i) in gif.chips"
-                          :key="i"
-                          class="chip"
-                          role="button"
-                          tabindex="1"
-                        >
-                          {{ text }}
-                        </div>
-                      </transition-group>
-                    </template>
+                      </transition>
+                      <h3 class="ml-1">Recent</h3>
+                      <b-spacer></b-spacer>
+                      <b-btn
+                        v-if="!gif.viewingRecent"
+                        @click="getAllRecentGifs()"
+                        ghost
+                        size="small"
+                        color="primary"
+                      >
+                        View All
+                        <b-icon right name="mdi mdi-chevron-right"></b-icon>
+                      </b-btn>
+                    </b-flex>
                     <transition-group name="fadeUp" tag="div">
                       <div
-                        v-for="(gif, i) in gif.gifs"
+                        v-for="(gif, i) in gif.recent"
                         :key="i"
                         class="gif col"
                         v-on:click="
@@ -667,15 +602,60 @@
                         <v-lazy-image
                           width="100px"
                           src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-                          :src="gif.images.original.webp"
+                          :src="gif.images?.original.webp"
                         />
                       </div>
                     </transition-group>
-                  </div>
-                </b-card>
-              </div>
-            </template>
-          </Popper>
+                  </template>
+                  <transition name="fadeUp" mode="out-in">
+                    <h3 class="ml-1" v-if="!gif.searched && !gif.viewingRecent">
+                      Trending
+                    </h3>
+                    <b-flex bare v-else-if="!gif.viewingRecent">
+                      <b-btn ghost size="small" icon @click="getGifs()">
+                        <b-icon name="mdi mdi-arrow-left"></b-icon>
+                      </b-btn>
+                      <h3 class="ml-1">Results</h3>
+                    </b-flex>
+                  </transition>
+                  <template v-if="!gif.searched && !gif.viewingRecent">
+                    <transition-group name="fadeUp" tag="div">
+                      <div
+                        v-on:click="
+                          gif.search = text;
+                          searchGifs(null, text);
+                        "
+                        v-for="(text, i) in gif.chips"
+                        :key="i"
+                        class="chip"
+                        role="button"
+                        tabindex="1"
+                      >
+                        {{ text }}
+                      </div>
+                    </transition-group>
+                  </template>
+                  <transition-group name="fadeUp" tag="div">
+                    <div
+                      v-for="(gif, i) in gif.gifs"
+                      :key="i"
+                      class="gif col"
+                      v-on:click="
+                        sendGif(gif);
+                        close();
+                      "
+                    >
+                      <v-lazy-image
+                        width="100px"
+                        src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                        :src="gif.images.original.webp"
+                      />
+                    </div>
+                  </transition-group>
+                </div>
+              </b-card>
+            </div>
+          </sl-dropdown>
         </template>
       </div>
     </div>

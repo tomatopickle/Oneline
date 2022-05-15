@@ -131,3 +131,11 @@ a {
   color: var(--sl-color-primary-600);
   text-decoration: none;
 }
+.msg img,
+.msg .reactions .reaction span {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;
+}

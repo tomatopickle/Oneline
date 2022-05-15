@@ -740,6 +740,8 @@ export default {
       return twemoji.parse(text, { className: "emojiImg" });
     },
     checkOnlyOneEmoji(text) {
+      console.log(text)
+      text = text.replace(/<\/?[^>]+(>|$)/g, "").trim();
       return (
         /\p{Emoji}/u.test(text) &&
         text.replace(
