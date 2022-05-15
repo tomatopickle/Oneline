@@ -8,7 +8,7 @@
     .msg .msg-text {
         font-weight: 500;
         border-radius: var(--sl-border-radius-x-large);
-        background-color: var(--sl-color-neutral-50);
+        background-color: var(--sl-color-neutral-100);
         min-width: 50px;
         font-size: 17px;
         word-break: break-word;
@@ -91,7 +91,7 @@
 
     .me .msg-text {
         background-color: var(--sl-color-primary-600);
-        color: var(--sl-color-neutral-50);
+        color: var(--sl-panel-background-color);
     }
 
     .me a {
@@ -271,7 +271,7 @@
         }
 
         .msg-reply {
-            background-color: var(--sl-color-neutral-50);
+            background-color: var(--sl-panel-background-color);
             border-radius: 30px;
             padding-inline: 5px;
             padding-block: 4px;
@@ -392,9 +392,10 @@
         margin: auto;
         display: block;
         width: max-content;
-        background-color: rgb(37, 37, 37);
-        border-radius: var(--ui-radius);
-        margin-bottom: 5px;
+        background-color: var(--sl-panel-background-color);
+        border-radius: var(--sl-border-radius-pill);
+        padding-inline: var(--sl-spacing-2x-small);
+        margin-block: var(--sl-spacing-medium);
     }
 
     .msg:not(.sub) {

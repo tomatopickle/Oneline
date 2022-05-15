@@ -366,15 +366,16 @@
           :enableScroll="enableScroll"
         ></chat-window>
         <transition name="fadeUp">
-          <b-btn
+          <sl-button
             v-if="scrollDownBtn"
             icon
+            circle
             @click="scrollDown()"
             color="secondary"
             id="scrollDownButton"
           >
-            <b-icon name="mdi mdi-chevron-down"></b-icon>
-          </b-btn>
+            <sl-icon name="chevron-down"></sl-icon>
+          </sl-button>
         </transition>
       </div>
       <div id="groupArchivedMessage" v-if="chat.archive">
