@@ -132,7 +132,7 @@ a {
   text-decoration: none;
 }
 .msg img,
-.msg .reactions .reaction span {
+.emoji-mart-emoji span {
   image-rendering: -moz-crisp-edges;
   image-rendering: -o-crisp-edges;
   image-rendering: -webkit-optimize-contrast;

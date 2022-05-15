@@ -289,3 +289,25 @@ sl-tab-group.centered {
     // Since there's no use of brightness selector, as color's brightness is set automaitcally, we're hiding this.
     display: none;
 }
+
+#emojiComplete {
+    position: absolute;
+    bottom: 60px;
+    background-color: var(--sl-panel-background-color);
+    left: 0;
+    right: 0;
+    border-radius: var(--ui-radius);
+    max-height: 75vh;
+    overflow-y: auto;
+    z-index: 6;
+}
+
+#emojiComplete div {
+    transition: background-color var(--sl-transition-fast);
+}
+
+#emojiComplete .selected {
+    font-weight: 500;
+    background-color: var(--sl-color-primary-500);
+    color: var(--sl-panel-background-color);
+}

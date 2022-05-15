@@ -648,15 +648,6 @@ html:not(.dark) .messageBtn.mdi-plus {
   color: var(--primary);
   opacity: 1 !important;
 }
-html:not(.dark) .emoji-mart-search input {
-  border: 1px solid #d9d9d9;
-}
-html:not(.dark) #emojiComplete {
-  background-color: hsl(var(--bg), 100%);
-}
-html:not(.dark) #emojiComplete .selected {
-  color: white;
-}
 html:not(.dark) #replyMessage {
   background-color: hsl(var(--bg), 100%);
   border: solid hsl(var(--bg), 93%) 1px;
@@ -721,21 +712,7 @@ html:not(.dark) #replyMessage {
   color: white;
   font-weight: 600;
 }
-#emojiComplete {
-  position: absolute;
-  bottom: 60px;
-  background-color: #242424;
-  left: 0;
-  right: 0;
-  border-radius: var(--ui-radius);
-  max-height: 75vh;
-  overflow-y: auto;
-  z-index: 6;
-}
 
-#emojiComplete .selected {
-  background-color: var(--primary);
-}
 #audioPlyr {
   position: absolute;
   top: -55px;
