@@ -916,6 +916,7 @@
               <b-spacer></b-spacer>
               <sl-color-picker
                 id="themeColorPicker"
+                hoist
                 :value="settings.data.themeColor"
                 @sl-change="
                   settings.data.themeColor = $event.target.value;
