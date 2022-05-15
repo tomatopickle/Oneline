@@ -208,16 +208,6 @@ html {
 #uploadShort:active:after {
   transform: scale(0.9);
 }
-.sameDay {
-  background-color: hsla(var(--bg-dark), 17%, 0.75);
-  width: max-content;
-  padding: 5px;
-  border-radius: var(--ui-radius);
-  padding-inline: 20px;
-  text-align: center;
-  margin: auto;
-  margin-block: 15px;
-}
 /* .b-list-item.item-clickable.contact {
   position: relative;
 } */
