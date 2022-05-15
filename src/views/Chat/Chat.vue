@@ -1039,6 +1039,7 @@
             <br />
             <br />
             <sl-button
+              style="margin-inline: 15%"
               class="w-3/4 center"
               variant="primary"
               @click="askNotificationPermission()"
