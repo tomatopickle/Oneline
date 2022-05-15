@@ -228,10 +228,11 @@ sl-tab-group.centered {
 }
 
 #contacts .contact .badge {
+    color: var(--sl-color-neutral-50);
     position: absolute;
     right: 10px;
     top: 14px;
-    background-color: var(--primary);
+    background-color: var(--sl-color-primary-500);
     padding: 5px;
     border-radius: 30px;
     font-size: 13px;
@@ -243,9 +244,15 @@ sl-tab-group.centered {
 
 #contacts .contact {
     cursor: pointer;
-    // background-color: var(--sl-color-neutral-50);
+    position: relative;
     transition: background-color var(--sl-transition-fast);
     padding-block: var(--sl-spacing-3x-small);
+
+    .badge span {
+        position: relative;
+        bottom: 4px;
+        font-weight: 700;
+    }
 
     &:hover {
         background-color: var(--sl-color-neutral-100);
@@ -254,11 +261,15 @@ sl-tab-group.centered {
     &:active {
         background-color: var(--sl-color-neutral-200);
     }
-}
 
-#contacts .contact .badge span {
-    position: relative;
-    bottom: 5px;
+    .chatMessagePreview {
+        transition: color var(--sl-transition-fast);
+    }
+
+    &.unreadMsgs .chatMessagePreview {
+        color: var(--sl-color-primary-700);
+        font-weight: 500;
+    }
 }
 
 .bar {

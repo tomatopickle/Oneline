@@ -166,7 +166,13 @@
             </template>
             <transition-group name="flip-list" tag="div">
               <template v-for="(chat, i) in chats" :key="i">
-                <div clickable v-on:click="openChat(chat)" class="contact">
+                <div
+                  clickable
+                  v-on:click="openChat(chat)"
+                  :class="
+                    'contact ' + (chat.unreadMessages > 0 ? 'unreadMsgs' : '')
+                  "
+                >
                   <div class="badge" v-show="chat.unreadMessages > 0">
                     <span>{{ chat.unreadMessages }}</span>
                   </div>
@@ -926,25 +932,25 @@
               ></sl-color-picker>
             </b-flex>
             <transition name="fade">
-            <b-flex
-              v-if="
-                user.settings?.themeColor &&
-                settings.data.themeColor != user.settings.themeColor
-              "
-            >
-              <span>You've changed a setting</span>
-              <b-spacer></b-spacer>
-              <sl-button
-                @click="
-                  settings.data.themeColor = user.settings.themeColor;
-                  applySettings();
+              <b-flex
+                v-if="
+                  user.settings?.themeColor &&
+                  settings.data.themeColor != user.settings.themeColor
                 "
-                >Cancel</sl-button
               >
-              <sl-button variant="primary" @click="updateSettings()"
-                >Save</sl-button
-              >
-            </b-flex>
+                <span>You've changed a setting</span>
+                <b-spacer></b-spacer>
+                <sl-button
+                  @click="
+                    settings.data.themeColor = user.settings.themeColor;
+                    applySettings();
+                  "
+                  >Cancel</sl-button
+                >
+                <sl-button variant="primary" @click="updateSettings()"
+                  >Save</sl-button
+                >
+              </b-flex>
             </transition>
 
             <b-flex>
