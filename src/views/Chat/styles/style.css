@@ -17,7 +17,7 @@ h4 {
 .no-border {
   --border-color: transparent;
 }
-.no-box-shadow{
+.no-box-shadow {
   --sl-shadow-x-small: none;
 }
 /* #contacts .b-list-item + #contacts .b-list-item {
@@ -648,7 +648,8 @@ section.emoji-mart.emoji-mart-static * {
   position: absolute;
   right: 0px;
   bottom: 0;
-  background-color: var(--success);
+  border: 1px solid var(--sl-panel-background-color);
+  background-color: var(--sl-color-green-500);
 }
 
 #messageInp {
@@ -754,7 +755,7 @@ html:not(.dark) #replyMessage {
   text-overflow: ellipsis;
   margin: 0;
   margin-right: -36px !important;
-  opacity: .85;
+  opacity: 0.85;
 }
 .dark .newMessage.chatMessagePreview {
   color: white;
