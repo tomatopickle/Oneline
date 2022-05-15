@@ -889,8 +889,10 @@
             @click="settings.index = i"
             slot="nav"
             :panel="heading.toLowerCase()"
-            >{{ heading }}</sl-tab
           >
+            <sl-icon :name="settingsIcons[i]" class="mr-5"></sl-icon>
+            {{ heading }}
+          </sl-tab>
         </template>
         <sl-tab-panel name="appearance">
           <div>
