@@ -912,6 +912,41 @@
               ></sl-switch>
             </b-flex>
             <b-flex>
+              <span>Theme Color</span>
+              <b-spacer></b-spacer>
+              <sl-color-picker
+                id="themeColorPicker"
+                :value="settings.data.themeColor"
+                @sl-change="
+                  settings.data.themeColor = $event.target.value;
+                  applySettings();
+                "
+                label="Select a color"
+              ></sl-color-picker>
+            </b-flex>
+            <transition name="fade">
+            <b-flex
+              v-if="
+                user.settings?.themeColor &&
+                settings.data.themeColor != user.settings.themeColor
+              "
+            >
+              <span>You've changed a setting</span>
+              <b-spacer></b-spacer>
+              <sl-button
+                @click="
+                  settings.data.themeColor = user.settings.themeColor;
+                  applySettings();
+                "
+                >Cancel</sl-button
+              >
+              <sl-button variant="primary" @click="updateSettings()"
+                >Save</sl-button
+              >
+            </b-flex>
+            </transition>
+
+            <b-flex>
               <span>Message UI</span>
               <b-spacer></b-spacer>
               <sl-select
@@ -935,20 +970,8 @@
                 >
               </sl-select>
             </b-flex>
-            <b-flex>
-              <span>Theme Color</span>
-              <b-spacer></b-spacer>
-              <template v-for="color in settings.colors" :key="color">
-                <swatch
-                  v-on:click="
-                    settings.data.messagesSimpleModeColor = color;
-                    updateSettings();
-                  "
-                  :color="color"
-                />
-              </template>
-            </b-flex></div
-        ></sl-tab-panel>
+          </div>
+        </sl-tab-panel>
         <sl-tab-panel name="account">
           <div class="w-2/3 center">
             <b-avatar

@@ -7,6 +7,7 @@ import { storage } from "@/fire.js";
 import { getFileFromPasteEvent } from "@/scripts/globalFunctions.js";
 import PubNub from "pubnub";
 import VueHorizontal from "vue-horizontal";
+import chroma from "chroma-js";
 import {
   ref,
   set,
@@ -281,7 +282,7 @@ export default {
             short_name: "+1",
           },
           messagesSimpleMode: false,
-          messagesSimpleModeColor: "var(--primary)",
+          themeColor: "#119ee2",
           notification: {
             granted: false,
             enabled: true,
@@ -448,6 +449,35 @@ export default {
   methods: {
     log(e) {
       console.log(e);
+    },
+    getPalette(variable, value) {
+      // Returns a pallete of colors in a json format
+      let styles = {};
+      const hex = chroma(value).hex();
+      const numbers = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+      let scale = chroma
+        .scale([
+          chroma(hex).luminance(0.95), // 50
+          chroma(hex).luminance(0.84), // 100
+          chroma(hex).luminance(0.73), // 200
+          chroma(hex).luminance(0.62), // 300
+          chroma(hex).luminance(0.49), // 400
+          chroma(hex).luminance(0.35), // 500
+          chroma(hex).luminance(0.23), // 600
+          chroma(hex).luminance(0.15), // 700
+          chroma(hex).luminance(0.1), // 800
+          chroma(hex).luminance(0.05), // 900
+          chroma(hex).luminance(0.02), // 950
+        ])
+        .colors(numbers.length);
+      if (document.documentElement.classList.contains("sl-theme-dark")) {
+        scale = scale.reverse();
+      }
+      scale.map((color, index) => {
+        const rgb = chroma(color).rgb();
+        styles[`${variable}-${numbers[index]}`] = `rgb(${rgb})`;
+      });
+      return styles;
     },
     createTagFunction() {
       set(
@@ -1986,15 +2016,7 @@ export default {
       this.applySettings();
     },
     applySettings() {
-      console.log(this.settings.data.lightMode);
       const settingsData = this.settings.data;
-      console.log("changin settings....", this.settings);
-      if (settingsData.messagesSimpleModeColor) {
-        document.documentElement.style.setProperty(
-          "--chat-me-color",
-          settingsData.messagesSimpleModeColor
-        );
-      }
       if (settingsData?.lightMode) {
         document.querySelector("html").classList.remove("dark");
         document.querySelector("html").classList.remove("sl-theme-dark");
@@ -2007,6 +2029,17 @@ export default {
         document
           .querySelector("meta[name='theme-color']")
           .setAttribute("content", "#242428");
+      }
+      if (settingsData.themeColor) {
+        const styles = this.getPalette(
+          "--sl-color-primary",
+          settingsData.themeColor
+        );
+        // Clear out pervious styles to prevent overlapping
+        document.body.style = "";
+        Object.keys(styles).forEach((variable) => {
+          document.body.style.setProperty(variable, styles[variable]);
+        });
       }
     },
     scrollDown() {

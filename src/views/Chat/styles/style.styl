@@ -274,3 +274,8 @@ sl-tab-group.centered {
     opacity: 0.7;
     font-size: 12px;
 }
+
+#themeColorPicker::part(grid) {
+    // Since there's no use of brightness selector, as color's brightness is set automaitcally, we're hiding this.
+    display: none;
+}
