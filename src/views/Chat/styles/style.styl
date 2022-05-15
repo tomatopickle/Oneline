@@ -224,7 +224,7 @@ sl-tab-group.centered {
 #contacts::part(footer) {
     position: sticky;
     bottom: 0;
-    background: var(--sl-color-neutral-50);
+    background: var(--sl-panel-background-color);
 }
 
 #contacts .contact .badge {
@@ -243,7 +243,7 @@ sl-tab-group.centered {
 
 #contacts .contact {
     cursor: pointer;
-    background-color: var(--sl-color-neutral-50);
+    // background-color: var(--sl-color-neutral-50);
     transition: background-color var(--sl-transition-fast);
     padding-block: var(--sl-spacing-3x-small);
 
@@ -259,4 +259,18 @@ sl-tab-group.centered {
 #contacts .contact .badge span {
     position: relative;
     bottom: 5px;
+}
+
+.bar {
+    background-color: var(--sl-panel-background-color);
+    z-index: 5;
+    top: 0;
+}
+
+#lastOnline {
+    position: absolute;
+    bottom: 7.5px;
+    left: 57px;
+    opacity: 0.7;
+    font-size: 12px;
 }

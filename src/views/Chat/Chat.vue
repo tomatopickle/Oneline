@@ -218,8 +218,8 @@
         class="flex-grow overflow-y-scroll overflow-x-hidden"
         id="msgs"
       >
-        <b-nav sticky v-if="chat.id">
-          <template v-slot:branding>
+        <div v-if="chat.id" class="bar sticky">
+          <b-flex>
             <b-flex class="m-0 p-0 w-full">
               <b-avatar
                 :username="chat?.name || ''"
@@ -241,23 +241,25 @@
                 >Online</small
               >
             </transition>
-          </template>
-          <template v-slot:actions>
+            <b-spacer> </b-spacer>
             <b-flex bare>
-              <b-btn
-                v-if="!chat.archive"
+              <sl-button
                 icon
+                circle
+                v-if="!chat.archive"
                 @click="startMeeting()"
                 :loading="newMeetingBtnDisabled"
+                variant="primary"
+                outline
               >
-                <b-icon name="mdi mdi-video"></b-icon>
-              </b-btn>
-              <b-btn color="secondary" icon @click="chatInfo = !chatInfo">
-                <b-icon name="mdi mdi-information-outline"></b-icon>
-              </b-btn>
+                <sl-icon name="camera-video-fill"></sl-icon>
+              </sl-button>
+              <sl-button circle icon @click="chatInfo = !chatInfo">
+                <sl-icon name="info-circle-fill"></sl-icon>
+              </sl-button>
             </b-flex>
-          </template>
-        </b-nav>
+          </b-flex>
+        </div>
         <br />
         <br />
         <br />

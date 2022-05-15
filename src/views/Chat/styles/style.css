@@ -218,13 +218,6 @@ html {
   margin: auto;
   margin-block: 15px;
 }
-#lastOnline {
-  position: absolute;
-  bottom: 10px;
-  left: 61px;
-  opacity: 0.7;
-  font-size: 12px;
-}
 /* .b-list-item.item-clickable.contact {
   position: relative;
 } */
