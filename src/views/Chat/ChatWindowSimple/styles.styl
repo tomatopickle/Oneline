@@ -6,9 +6,9 @@
 
 .chatWindowSimple {
     .msg .msg-text {
-        padding: 8px;
-        border-radius: 1.125rem 1.125rem 1.125rem 0.15rem;
-        background-color: lighten($bg-dark, 5);
+        font-weight: 500;
+        border-radius: var(--sl-border-radius-x-large);
+        background-color: var(--sl-color-neutral-50);
         min-width: 50px;
         font-size: 17px;
         word-break: break-word;
@@ -16,6 +16,8 @@
         align-items: center;
         white-space: break-spaces;
         max-width: 50vw;
+        padding: var(--sl-spacing-x-small);
+        padding-inline: var(--sl-spacing-small);
     }
 
     .msg:not(.sub):not(.sub.last) {
@@ -29,7 +31,12 @@
         opacity: 0;
         transition: opacity 0.2s;
 
-        .icon {
+        .addReactionBtn svg {
+            height: 18px;
+            width: 100%;
+        }
+
+        sl-icon, .addReactionBtn {
             transition: all 0.2s;
             margin-inline: 3px;
             opacity: 0.5;
@@ -47,14 +54,6 @@
         &:hover {
             opacity: 1;
         }
-    }
-
-    .msg:not(.me) + .messageActions {
-        margin-left: 45px;
-    }
-
-    .msg.me + .messageActions {
-        margin-right: 10px;
     }
 
     .msg:hover .messageActions {
@@ -91,41 +90,24 @@
     }
 
     .me .msg-text {
-        background-color: var(--chat-me-color);
-        border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
+        background-color: var(--sl-color-primary-600);
+        color: var(--sl-color-neutral-50);
     }
 
-    :not(.me) {
-        &.sub, &.sub.last {
-            margin-left: 30px;
-            // .msg-text, .fileMsg , .msg-image, .msg-short-comment, .msg-short-liked {
-            // margin-left: 30px;
-            // }
-        }
+    .me a {
+        text-decoration: underline;
     }
 
-    .sub .msg-text {
-        border-radius: 0.25rem 1.125rem 1.125rem 0.25rem;
+    .sub, .sub.last {
+        margin-left: 30px;
     }
 
-    .me.sub .msg-text {
-        border-radius: 1.125rem 0.25rem 0.25rem 1.125rem;
-    }
-
-    .last .msg-text {
-        border-radius: 0.15rem 1.125rem 1.125rem 1.125rem;
-    }
-
-    .me.last .msg-text {
-        border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
-    }
-
-    :not(.me) .link-preview-wrapper {
+    .link-preview-wrapper {
         margin-left: 50px;
     }
 
     .fileMsg {
-        background-color: lighten($bg-dark, 5);
+        background-color: var(--sl-color-neutral-100);
         position: relative;
         margin-bottom: 5px;
         width: max-content;
@@ -278,20 +260,8 @@
         margin-right: 5px;
     }
 
-    .msg:not(.me):not(.sub):not(.sub.last) div.msg-text {
+    .msg:not(.sub):not(.sub.last) div.msg-text {
         margin-top: 10px;
-    }
-
-    .me {
-        .msg-reply-parent {
-            .msg-text {
-                float: right;
-            }
-
-            .msg-reply {
-                margin-right: -5px;
-            }
-        }
     }
 
     .msg-reply-parent {
@@ -301,7 +271,7 @@
         }
 
         .msg-reply {
-            background-color: lighten($bg-dark, 5);
+            background-color: var(--sl-color-neutral-50);
             border-radius: 30px;
             padding-inline: 5px;
             padding-block: 4px;
@@ -320,25 +290,27 @@
     .reactions {
         position: absolute;
         bottom: -15px;
-        background-color: lighten($bg-dark, 7);
+        background-color: var(--sl-color-neutral-100);
         border-radius: 35px;
         height: max-content;
         left: 20px;
         display: flex;
+        border: var(--sl-color-neutral-200) 1px solid;
+        box-shadow: var(--sl-shadow-small);
     }
 
-    .msg:not(.sub):not(.me) .reactions {
+    .msg:not(.sub) .reactions {
         left: 50px;
     }
 
     .reaction:hover {
-        background-color: lighten($bg-dark, 9);
+        background-color: var(--sl-color-neutral-200);
         cursor: pointer;
     }
 
-    .me .reactions {
-        left: unset;
-        right: 10px;
+    .reaction:active {
+        background-color: var(--sl-color-neutral-300);
+        cursor: pointer;
     }
 
     .messageActionBtn {
@@ -371,11 +343,6 @@
         top: -10px;
     }
 
-    .me .messageActionBtn {
-        right: 5px;
-        left: unset;
-    }
-
     .inline-block {
         display: block !important;
     }
@@ -389,31 +356,25 @@
         font-size: 13px;
     }
 
-    html:not(.dark) .msg-text {
-        color: white;
-    }
+    // html:not(.dark) .msg-text {
+    // color: white;
+    // }
 
-    html:not(.dark) .time {
-        color: #000 a8;
-    }
+    // html:not(.dark) .time {
+    // color: #000 a8;
+    // }
 
-    html:not(.dark) .msg:not(.me) .msg-text {
-        background-color: #e1e1e1;
-        color: black;
-    }
+    // html:not(.dark) .reactions {
+    // background-color: #fff;
+    // }
 
-    html:not(.dark) .reactions {
-        background-color: #fff;
-    }
+    // html:not(.dark) .reaction:hover {
+    // background-color: #e5e5e5;
+    // }
 
-    html:not(.dark) .reaction:hover {
-        background-color: #e5e5e5;
-    }
-
-    html:not(.dark) #emojiBtn {
-        color: #565656;
-    }
-
+    // html:not(.dark) #emojiBtn {
+    // color: #565656;
+    // }
     textarea {
         min-height: 50px;
     }
@@ -436,57 +397,28 @@
         margin-bottom: 5px;
     }
 
-    .me a {
-        text-decoration: underline;
-        color: white;
-    }
-
     .msg:not(.sub) {
-        .msg-reply-parent {
-            &:not(.me) {
-                .msg-text {
-                    margin-top: 0 !important;
-                }
+        // Or the usernames collide
+        margin-top: var(--sl-spacing-small);
 
-                .msg-reply {
-                    margin-top: 10px;
-                    margin-bottom: 2px;
-                }
+        .messageActions {
+            // The first ones always have their messageactions higher than the other messages
+            margin-top: var(--sl-spacing-x-small);
+        }
+
+        .msg-reply-parent {
+            .msg-text {
+                margin-top: 0 !important;
+            }
+
+            .msg-reply {
+                margin-top: 10px;
+                margin-bottom: 2px;
             }
         }
 
         .msg-image {
             margin-top: 10px;
         }
-    }
-}
-
-html:not(.dark) .chatWindowSimple {
-    .info-message, .sameDay {
-        background-color: white;
-        border: 1px solid darken($bg, 5%);
-    }
-
-    .reactions {
-        background-color: #fff;
-        border: 1px solid darken($bg, 7%);
-    }
-
-    .reaction:hover {
-        background-color: #e5e5e5;
-    }
-
-    .msg.me .msg-text {
-        color: white;
-    }
-
-    .msg:not(.me) .msg-text {
-        background-color: white;
-        color: $bg-dark;
-    }
-
-    .msg:not(.me) .msg-reply {
-        background-color: white;
-        color: $bg-dark;
     }
 }

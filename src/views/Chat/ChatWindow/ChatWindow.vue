@@ -28,24 +28,26 @@
         <div>
           <div class="messageActions">
             <b-flex>
-              <b-icon
-                v-if="!chat.archive"
-                style="height: 22px"
+              <sl-tooltip
+                content="Add reaction"
                 v-on:click="
                   reaction.message = i;
                   reaction.show = true;
                 "
               >
-                <AddReaction />
-              </b-icon>
-              <b-icon
-                size="18px"
-                v-if="!chat.archive"
-                name="mdi mdi-reply"
+                <sl-icon-button library="oneline" name="addReaction">
+                </sl-icon-button>
+              </sl-tooltip>
+
+              <sl-tooltip content="Reply" v-on:click="$emit('reply', message)">
+                <sl-icon-button name="reply-fill"> </sl-icon-button>
+              </sl-tooltip>
+              <sl-tooltip
+                content="Copy Message"
                 v-on:click="$emit('reply', message)"
               >
-              </b-icon>
-              <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
+                <sl-icon-button name="clipboard2-fill"> </sl-icon-button>
+              </sl-tooltip>
             </b-flex>
           </div>
           <div>
@@ -325,7 +327,10 @@
             </b-flex>
           </span>
         </div>
-        <div class="reactions seenUsersIndicator" v-if="!!message.seen && i == lastMessage">
+        <div
+          class="reactions seenUsersIndicator"
+          v-if="!!message.seen && i == lastMessage"
+        >
           <template v-for="(usr, key) in message.seen" :key="key">
             <span v-if="usr.id != user.id">
               <b-flex style="padding: 0">
@@ -433,7 +438,6 @@
 <script>
 /* eslint-disable */
 import db from "../../../fire.js";
-import AddReaction from "@/assets/addReaction.svg?inline";
 
 import { storage } from "../../../fire.js";
 import VueHorizontal from "vue-horizontal";
@@ -480,7 +484,6 @@ export default {
     Emoji,
     LinkPreview,
     ShortPreview,
-    AddReaction,
     VueHorizontal,
     ZoomImage,
   },

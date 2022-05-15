@@ -40,12 +40,11 @@
             <small
               class="username flex"
               v-if="
-                message.sender != user.id &&
-                (checkTimeDifference(message, i) ||
-                  !(
-                    checkMsgFromSameUser(message, i) &&
-                    !checkTimeDifference(message, i)
-                  ))
+                checkTimeDifference(message, i) ||
+                !(
+                  checkMsgFromSameUser(message, i) &&
+                  !checkTimeDifference(message, i)
+                )
               "
             >
               <span>{{ users[message.sender]?.username }}</span>
@@ -61,43 +60,16 @@
               </div>
             </small>
             <b-flex>
-              <b-spacer v-if="message.sender == user.id"></b-spacer>
-              <b-flex
-                v-if="message.sender == user.id"
-                bare
-                class="messageActions"
-              >
-                <b-spacer v-if="message.sender == user.id"></b-spacer>
-                <b-icon
-                  style="height: 22px"
-                  v-if="!chat.archive"
-                  v-on:click="
-                    reaction.message = i;
-                    reaction.show = true;
-                  "
-                >
-                  <AddReaction />
-                </b-icon>
-                <b-icon
-                  size="18px"
-                  name="mdi mdi-reply"
-                  v-if="!chat.archive"
-                  v-on:click="$emit('reply', message)"
-                >
-                </b-icon>
-                <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
-              </b-flex>
               <Popper arrow :interactive="true" placement="right">
                 <b-avatar
                   :size="30"
                   class="senderAvatarEl"
                   v-if="
-                    message.sender != user.id &&
-                    (checkTimeDifference(message, i) ||
-                      !(
-                        checkMsgFromSameUser(message, i) &&
-                        !checkTimeDifference(message, i)
-                      ))
+                    checkTimeDifference(message, i) ||
+                    !(
+                      checkMsgFromSameUser(message, i) &&
+                      !checkTimeDifference(message, i)
+                    )
                   "
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
@@ -137,7 +109,7 @@
                       </div>
                     </b-flex>
                     <b-flex style="width: 107%; padding-block: 5px">
-                      <b-spacer v-if="message.sender != user.id"></b-spacer>
+                      <b-spacer></b-spacer>
                       <b-btn
                         v-if="message.sender != user.id"
                         style="margin-right: -15px"
@@ -228,7 +200,6 @@
                 class="msg-short-like"
               >
                 <b-flex bare>
-                  <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <div>
                     <short-preview
                       v-on:click="
@@ -246,7 +217,6 @@
                   </div>
                 </b-flex>
                 <b-flex bare>
-                  <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <span class="msg-text">{{
                     (message.username || "ERROR") + " liked your Short"
                   }}</span>
@@ -257,7 +227,6 @@
                 class="msg-short-comment"
               >
                 <b-flex bare>
-                  <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <!-- <div> -->
                   <short-preview
                     v-on:click="
@@ -275,13 +244,11 @@
                   <!-- </div> -->
                 </b-flex>
                 <b-flex bare>
-                  <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <span class="msg-text">{{ message.text }}</span>
                 </b-flex>
               </div>
               <div v-else-if="message.type == 'reply'" class="msg-reply-parent">
                 <div class="flex">
-                  <b-spacer v-if="message.sender == user.id"></b-spacer>
                   <div :class="`msg-reply`">
                     <b-avatar
                       :size="22"
@@ -324,32 +291,33 @@
                   "
                 ></div>
               </div>
-              <b-flex
-                v-if="message.sender != user.id"
-                bare
-                class="messageActions"
-              >
-                <b-spacer v-if="message.sender == user.id"></b-spacer>
-                <b-icon
-                  style="height: 22px"
+              <b-flex bare class="messageActions">
+                <sl-tooltip
+                  content="Add reaction"
                   v-on:click="
                     reaction.message = i;
                     reaction.show = true;
                   "
                 >
-                  <AddReaction />
-                </b-icon>
-                <b-icon
-                  size="18px"
-                  name="mdi mdi-reply"
+                  <sl-icon-button library="oneline" name="addReaction">
+                  </sl-icon-button>
+                </sl-tooltip>
+
+                <sl-tooltip
+                  content="Reply"
                   v-on:click="$emit('reply', message)"
                 >
-                </b-icon>
-                <b-icon size="18px" name="mdi mdi-content-copy"> </b-icon>
+                  <sl-icon-button name="reply-fill"> </sl-icon-button>
+                </sl-tooltip>
+                <sl-tooltip
+                  content="Copy Message"
+                  v-on:click="$emit('reply', message)"
+                >
+                  <sl-icon-button name="clipboard2-fill"> </sl-icon-button>
+                </sl-tooltip>
               </b-flex>
             </b-flex>
             <b-flex bare>
-              <b-spacer v-if="message.sender == user.id"></b-spacer>
               <link-preview
                 v-if="findLink(message?.text) != false"
                 :url="findLink(message?.text)"
@@ -373,7 +341,6 @@
             </span>
           </div>
           <b-flex v-if="!!message.seen && i == lastMessage" class="seenUsers">
-            <b-spacer v-if="message.sender == user.id"></b-spacer>
             <template v-for="(usr, key) in message.seen" :key="key">
               <span v-if="usr.id != user.id">
                 <b-flex style="padding: 0">
@@ -516,12 +483,10 @@ import { find } from "linkifyjs";
 import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 import ZoomImage from "../../../components/ZoomImage/ZoomImage.vue";
-import AddReaction from "@/assets/addReaction.svg?inline";
 export default {
   name: "ChatWindowSimple",
   components: {
     Picker,
-    AddReaction,
     Emoji,
     LinkPreview,
     ShortPreview,
