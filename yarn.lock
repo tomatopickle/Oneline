@@ -10164,10 +10164,10 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-masonry@^0.14.0:
-  version "0.14.1"
-  resolved "https://registry.yarnpkg.com/vue-masonry/-/vue-masonry-0.14.1.tgz#d6eefd2e6a44400cc25fa5ccdc58f7ab3f89aadb"
-  integrity sha512-FFihoFv0du7dQIEIRYd+3kpHQb3apdQLw0PAJvgH6uBpr4xJ0z9g4EY4O3gBECq6gn2DSVSbPqSquZOqYVZIVw==
+vue-masonry@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/vue-masonry/-/vue-masonry-0.15.0.tgz#2d9ab6b670ed0423da331bb59b84bdedd5d9f96c"
+  integrity sha512-qkASx9msOAjLhpl9as7KFPrB8wtbSuFTOPb6u8BRhtNEEGelXHEizn9GUxuyR651LvrDWdAkvEczh7CEdiN7SA==
   dependencies:
     imagesloaded "4.1.4"
     masonry-layout "^4.2.2"
