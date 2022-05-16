@@ -80,5 +80,8 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "resolutions": {
+    "glob": "7.2.0"
+  }
 }
