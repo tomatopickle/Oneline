@@ -1658,8 +1658,10 @@
                 <div
                   v-if="
                     chat?.assignedTags &&
-                    chat?.assignedTags[i] &&
-                    chat?.tags[chat.assignedTags[i]]?.name
+                    chat?.tags &&
+                    chat?.assignedTags[userId] &&
+                    chat?.tags[chat.assignedTags[userId]] &&
+                    chat?.tags[chat.assignedTags[userId]]?.name
                   "
                   class="memberLabel"
                   :style="{

@@ -574,7 +574,9 @@ export default {
     checkIfUserHasTag(userId) {
       if (
         this.chat?.assignedTags &&
+        this.chat?.tags &&
         this.chat?.assignedTags[userId] &&
+        this.chat?.tags[this.chat.assignedTags[userId]] &&
         this.chat?.tags[this.chat.assignedTags[userId]]?.name
       ) {
         return this.chat?.tags[this.chat.assignedTags[userId]]?.name;
@@ -740,7 +742,6 @@ export default {
       return twemoji.parse(text, { className: "emojiImg" });
     },
     checkOnlyOneEmoji(text) {
-      console.log(text)
       text = text.replace(/<\/?[^>]+(>|$)/g, "").trim();
       return (
         /\p{Emoji}/u.test(text) &&
