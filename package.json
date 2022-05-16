@@ -35,7 +35,7 @@
     "pubnub": "^5.0.0",
     "register-service-worker": "^1.7.1",
     "sort-json": "^2.0.0",
-    "stylus": "0.55.0",
+    "stylus": "0.57.0",
     "stylus-loader": "3.0.2",
     "v-lazy-image": "^2.0.1",
     "vue": "^3.0.0",
