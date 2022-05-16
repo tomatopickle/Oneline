@@ -17,7 +17,7 @@
     "@shoelace-style/vue-sl-model": "^2.0.0",
     "@vime/vue-next": "^5.3.1",
     "@vueuse/head": "^0.7.5",
-    "axios": "^0.24.0",
+    "axios": "^0.27.2",
     "bootbox": "^5.5.2",
     "bounce-ui-vue": "^0.5.0",
     "chroma-js": "^2.4.2",
