@@ -20,6 +20,13 @@
         padding-inline: var(--sl-spacing-small);
     }
 
+    .msg:not(.sub) {
+        .msg-gif {
+            // Or else the username overlaps the GIF
+            margin-top: var(--sl-spacing-x-small);
+        }
+    }
+
     .sameDay {
         background-color: var(--sl-color-neutral-200);
         width: max-content;

@@ -1015,6 +1015,7 @@ export default {
       if (!this.gif.search) {
         this.getGifs();
       }
+      console.log(this.gif.search);
       // Restting the gif list will prevent the mix up of trending and searched gifs
       this.gif.gifs = [];
       this.gif.viewingRecent = false;
@@ -1591,6 +1592,8 @@ export default {
         return `${chat.lastMessage.senderInfo.username}: (Image) ${chat.lastMessage.file.name}`;
       } else if (chat.lastMessage.type == "audio") {
         return `${chat.lastMessage.senderInfo.username}: (Audio) ${chat.lastMessage.duration}`;
+      } else if (chat.lastMessage.type == "gif") {
+        return `${chat.lastMessage.senderInfo.username}: GIF`;
       }
       return `${chat.lastMessage.senderInfo.username}: ${chat.lastMessage.text}`;
     },

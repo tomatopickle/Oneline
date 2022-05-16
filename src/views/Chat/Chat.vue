@@ -538,7 +538,7 @@
               />
             </div>
           </sl-dropdown>
-          <sl-dropdown>
+          <sl-dropdown ref="gifsPanelDropdown">
             <sl-tooltip slot="trigger" content="Send GIF">
               <sl-icon-button
                 @click="getGifs()"
@@ -548,46 +548,40 @@
               </sl-icon-button>
             </sl-tooltip>
             <div>
-              <b-card
-                height="75vh"
-                width="460px"
-                style="overflow-y: auto"
-                :loading="gif.loading"
-                id="gifsPanel"
-              >
-                <template #header>
-                  <b-input
+              <sl-card :loading="gif.loading" id="gifsPanel">
+                <div slot="header">
+                  <sl-input
                     @keyup="searchGifs($event)"
                     placeholder="Search"
                     v-model="gif.search"
-                  ></b-input>
-                </template>
-                <div class="grid-3">
+                  >
+                    <sl-icon name="search" slot="prefix"></sl-icon>
+                  </sl-input>
+                </div>
+                <div class="grid-3" style="width: 45vw; height: 75vh">
                   <template v-if="!gif.searched && !gif.recent.notAvailable">
                     <b-flex bare>
                       <transition name="zoom">
-                        <b-btn
+                        <sl-button
                           v-if="gif.viewingRecent"
-                          ghost
-                          size="small"
+                          circle
                           icon
                           @click="getGifs()"
                         >
-                          <b-icon name="mdi mdi-arrow-left"></b-icon>
-                        </b-btn>
+                          <sl-icon name="chevron-left"></sl-icon>
+                        </sl-button>
                       </transition>
-                      <h3 class="ml-1">Recent</h3>
+                      <h2 class="ml-3 mt-4">Recent</h2>
                       <b-spacer></b-spacer>
-                      <b-btn
+                      <sl-button
                         v-if="!gif.viewingRecent"
                         @click="getAllRecentGifs()"
-                        ghost
                         size="small"
                         color="primary"
                       >
                         View All
-                        <b-icon right name="mdi mdi-chevron-right"></b-icon>
-                      </b-btn>
+                        <sl-icon right name="chevron-right"></sl-icon>
+                      </sl-button>
                     </b-flex>
                     <transition-group name="fadeUp" tag="div">
                       <div
@@ -596,7 +590,7 @@
                         class="gif col"
                         v-on:click="
                           sendGif(gif);
-                          close();
+                          $refs.gifsPanelDropdown.hide();
                         "
                       >
                         <v-lazy-image
@@ -608,31 +602,31 @@
                     </transition-group>
                   </template>
                   <transition name="fadeUp" mode="out-in">
-                    <h3 class="ml-1" v-if="!gif.searched && !gif.viewingRecent">
+                    <h2 class="ml-1" v-if="!gif.searched && !gif.viewingRecent">
                       Trending
-                    </h3>
+                    </h2>
                     <b-flex bare v-else-if="!gif.viewingRecent">
-                      <b-btn ghost size="small" icon @click="getGifs()">
-                        <b-icon name="mdi mdi-arrow-left"></b-icon>
-                      </b-btn>
-                      <h3 class="ml-1">Results</h3>
+                      <sl-button icon circle @click="getGifs()">
+                        <sl-icon name="chevron-left"></sl-icon>
+                      </sl-button>
+                      <h2 class="ml-3 mt-4">Results</h2>
                     </b-flex>
                   </transition>
                   <template v-if="!gif.searched && !gif.viewingRecent">
                     <transition-group name="fadeUp" tag="div">
-                      <div
+                      <sl-button
+                        class="m-1 my-0.5"
+                        pill
                         v-on:click="
                           gif.search = text;
                           searchGifs(null, text);
                         "
                         v-for="(text, i) in gif.chips"
                         :key="i"
-                        class="chip"
-                        role="button"
-                        tabindex="1"
+                        size="small"
                       >
                         {{ text }}
-                      </div>
+                      </sl-button>
                     </transition-group>
                   </template>
                   <transition-group name="fadeUp" tag="div">
@@ -642,7 +636,7 @@
                       class="gif col"
                       v-on:click="
                         sendGif(gif);
-                        close();
+                        $refs.gifsPanelDropdown.hide();
                       "
                     >
                       <v-lazy-image
@@ -653,7 +647,7 @@
                     </div>
                   </transition-group>
                 </div>
-              </b-card>
+              </sl-card>
             </div>
           </sl-dropdown>
         </template>

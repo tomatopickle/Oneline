@@ -606,24 +606,6 @@ section.emoji-mart.emoji-mart-static * {
   transition: transform 0.2s ease;
 }
 
-.chip {
-  background-color: #282828;
-  border-radius: 35px;
-  display: inline-block;
-  padding-inline: 5px;
-  margin: 5px;
-  font-size: 15px;
-  user-select: none;
-}
-
-.chip:hover {
-  background-color: #2c2c2c;
-  cursor: pointer;
-}
-
-.chip:focus {
-  background-color: var(--primary);
-}
 
 .vue-avatar--wrapper {
   position: relative;
