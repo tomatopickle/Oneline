@@ -943,10 +943,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@daily-co/daily-js@^0.22.0":
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/@daily-co/daily-js/-/daily-js-0.22.0.tgz#2a01322f09102cb637bb4aaf7c958041e9b9d7fc"
-  integrity sha512-BGe38I95wx+5EXZnUH3mq9ShJc2xz9U6NHTnbMhuB6G/1JgIOf3OemDBv01gm8Mn34COvrFU+lE+HGBQMtno0w==
+"@daily-co/daily-js@^0.25.0":
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/@daily-co/daily-js/-/daily-js-0.25.0.tgz#b5121d104700d00dce651103c95e3ed9a63c92f6"
+  integrity sha512-6kDYavLN7A3YimCGKgAU9qCtJj/Hqha4oSkhID7SJKTMoQRtBbt18f+KEiQc+GFm4r2sFvDtWNjh++u8Dhr1AA==
   dependencies:
     "@babel/runtime" "^7.12.5"
     bowser "^2.8.1"

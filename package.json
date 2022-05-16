@@ -11,7 +11,7 @@
     "publish": "npm run build && npm run deploy"
   },
   "dependencies": {
-    "@daily-co/daily-js": "^0.22.0",
+    "@daily-co/daily-js": "^0.25.0",
     "@kyvg/vue3-notification": "^2.3.4",
     "@shoelace-style/shoelace": "^2.0.0-beta.73",
     "@shoelace-style/vue-sl-model": "^2.0.0",
