@@ -6,9 +6,10 @@
     "serve": "vue-cli-service serve --port 4000",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "deploy": "surge --domain oneline.surge.sh --project C:/Users/mohammed/Abaan/oneline/dist",
+    "deploy": "mv ./dist/index.html ./dist/200.html && surge --domain oneline.surge.sh --project ./dist",
     "tunnel": "lt --port 4000 --subdomain oneline",
-    "publish": "npm run build && npm run deploy"
+    "publish": "npm run build && npm run deploy",
+    "production": "vue-cli-service serve --mode production"
   },
   "dependencies": {
     "@daily-co/daily-js": "^0.25.0",
