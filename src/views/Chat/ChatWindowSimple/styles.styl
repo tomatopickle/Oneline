@@ -50,8 +50,7 @@
 
     .messageActions {
         padding: 5px;
-        transition: opacity 0.2s;
-        opacity: 0;
+        visibility: hidden;
 
         .addReactionBtn svg {
             height: 18px;
@@ -59,19 +58,14 @@
         }
 
         sl-icon, .addReactionBtn {
-            transition: all 0.2s;
             margin-inline: 3px;
             visibility: visible;
             cursor: pointer;
         }
-
-        &:hover {
-            opacity: 1;
-        }
     }
 
     .msg:hover .messageActions {
-        opacity: 1;
+       visibility: visible;
     }
 
     .link-preview-parent {
