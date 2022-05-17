@@ -278,7 +278,7 @@
         margin-right: 5px;
     }
 
-    .msg:not(.sub):not(.sub.last) div.msg-text {
+    .msg:not(.reply):not(.sub):not(.sub.last) div.msg-text {
         margin-top: 10px;
     }
 
@@ -403,6 +403,34 @@
 
     .msg .senderAvatar {
         align-self: baseline;
+    }
+
+    .msg.reply {
+        position: relative;
+
+        .replyingToMessage {
+            opacity: 0.5;
+        }
+
+        small {
+            display: block;
+            margin-left: 55px;
+            margin-block: 7px;
+
+            b {
+                font-weight: 600;
+            }
+        }
+
+        &:after {
+            content: '';
+            width: 3px;
+            background-color: var(--sl-color-neutral-200);
+            position: absolute;
+            top: 48px;
+            bottom: 45px;
+            left: 21.815px;
+        }
     }
 
     .info-message {

@@ -2,10 +2,17 @@
   <div class="chatWindowSimple">
     <transition-group name="messageAnimation" tag="div">
       <template v-for="(message, i) in messages" :key="message.time">
+        <div v-if="!settings.data.showExactTime">
+          <div
+            class="sameDay"
+            v-if="checkDayDifference(message, i)"
+            v-html="formatToDay(message.time)"
+          ></div>
+        </div>
         <div
           :class="{
             msg: true,
-            me: message.sender == user.id,
+            reply: message.type == 'reply',
             sub:
               checkMsgFromSameUser(message, i) &&
               !checkTimeDifference(message, i),
@@ -20,13 +27,6 @@
             addReaction(settings.data.likeEmoji);
           "
         >
-          <div v-if="!settings.data.showExactTime">
-            <div
-              class="sameDay"
-              v-if="checkDayDifference(message, i)"
-              v-html="formatToDay(message.time)"
-            ></div>
-          </div>
           <div
             class="time"
             v-if="checkTimeDifference(message, i)"
@@ -36,15 +36,154 @@
                 : formatTimeToAMPM(message.time)
             "
           ></div>
-          <div class="relative">
+          <div
+            :class="{
+              me: message.replyingTo.sender == user.id,
+              relative: true,
+              replyingToMessage: true,
+            }"
+            v-if="message.type == 'reply'"
+          >
             <small
               class="username flex"
               v-if="
-                checkTimeDifference(message, i) ||
-                !(
-                  checkMsgFromSameUser(message, i) &&
-                  !checkTimeDifference(message, i)
-                )
+                message.type != 'reply' &&
+                (checkTimeDifference(message, i) ||
+                  !(
+                    checkMsgFromSameUser(message, i) &&
+                    !checkTimeDifference(message, i)
+                  ))
+              "
+            >
+              <span>{{ users[message.replyingTo.sender]?.username }}</span>
+              <div
+                v-if="checkIfUserHasTag(message.sender)"
+                class="userTag"
+                :style="{
+                  '--tagColor':
+                    this.chat.tags[checkIfUserHasTag(message.sender)].color,
+                }"
+              >
+                {{ checkIfUserHasTag(message.sender) }}
+              </div>
+            </small>
+            <b-flex>
+              <Popper arrow :interactive="true" placement="right">
+                <b-avatar
+                  :size="30"
+                  class="senderAvatarEl"
+                  v-if="
+                    checkTimeDifference(message, i) ||
+                    !(
+                      checkMsgFromSameUser(message, i) &&
+                      !checkTimeDifference(message, i)
+                    )
+                  "
+                  :username="
+                    users[message.replyingTo.sender]
+                      ? users[message.replyingTo.sender].username
+                      : ''
+                  "
+                  :src="users[message.replyingTo.sender]?.avatar"
+                >
+                </b-avatar>
+                <template #content>
+                  <b-card
+                    glass
+                    class="p-0"
+                    style="
+                      max-width: 310px;
+                      padding-right: 35px;
+                      padding-bottom: 5px;
+                    "
+                  >
+                    <b-flex>
+                      <div>
+                        <b-avatar
+                          :size="45"
+                          :username="
+                            users[message.replyingTo.sender]
+                              ? users[message.replyingTo.sender].username
+                              : ''
+                          "
+                          :src="users[message.replyingTo.sender]?.avatar"
+                        ></b-avatar>
+                      </div>
+                      <div>
+                        <h4 class="m-0 mt-3 ml-2">
+                          {{ users[message.replyingTo.sender]?.username }}
+                        </h4>
+                        <p class="userInfoPara">
+                          {{ users[message.replyingTo.sender]?.description }}
+                        </p>
+                      </div>
+                    </b-flex>
+                    <b-flex style="width: 107%; padding-block: 5px">
+                      <b-spacer></b-spacer>
+                      <b-btn
+                        v-if="message.replyingTo != user.id"
+                        style="margin-right: -15px"
+                        size="small"
+                        color="primary"
+                        v-on:click="
+                          $emit('startMeetingWithUser', users[message.replyingTo.sender])
+                        "
+                      >
+                        <b-icon name="mdi mdi-video" left class="pr-1"></b-icon>
+                        Meet
+                      </b-btn>
+                      <router-link :to="`/user/${message.replyingTo.sender}`">
+                        <b-btn size="small">
+                          <b-icon
+                            name="mdi mdi-account"
+                            left
+                            class="pr-1"
+                          ></b-icon>
+                          View Profile
+                        </b-btn></router-link
+                      >
+                    </b-flex>
+                  </b-card>
+                </template>
+              </Popper>
+              <div
+                :class="{
+                  'msg-text': true,
+                  oneEmoji: checkOnlyOneEmoji(message.replyingTo.text),
+                }"
+                v-html="
+                  message.replyingTo?.text
+                    ? convertMessageToHTML(message.replyingTo?.text)
+                    : ''
+                "
+              ></div>
+            </b-flex>
+            <small
+              v-if="
+                users &&
+                users[message.sender]?.username &&
+                users[message.replyingTo.sender]?.username
+              "
+            >
+              <b>{{ users[message.sender]?.username }}</b> replying to
+              <b> {{ users[message.replyingTo.sender]?.username }}</b>
+            </small>
+          </div>
+          <div
+            :class="{
+              relative: true,
+              me: message.sender == user.id,
+            }"
+          >
+            <small
+              class="username flex"
+              v-if="
+                message.type != 'reply' &&
+                (checkTimeDifference(message, i) ||
+                  !(
+                    checkMsgFromSameUser(message, i) &&
+                    !checkTimeDifference(message, i)
+                  ))
               "
             >
               <span>{{ users[message.sender]?.username }}</span>
@@ -247,7 +386,7 @@
                   <span class="msg-text">{{ message.text }}</span>
                 </b-flex>
               </div>
-              <div v-else-if="message.type == 'reply'" class="msg-reply-parent">
+              <!-- <div v-else-if="message.type == 'reply'" class="msg-reply-parent">
                 <div class="flex">
                   <div :class="`msg-reply`">
                     <b-avatar
@@ -279,7 +418,7 @@
                     message?.text ? convertMessageToHTML(message?.text) : ''
                   "
                 ></div>
-              </div>
+              </div> -->
               <div v-else>
                 <div
                   :class="{
