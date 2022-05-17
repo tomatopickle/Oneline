@@ -416,7 +416,7 @@ export default {
           this.windowHidden = document.visibilityState === "hidden";
           const lastMessage =
             this.messages[
-              Object.keys(this.messages)[Object.keys(this.messages).length - 1]
+            Object.keys(this.messages)[Object.keys(this.messages).length - 1]
             ];
           if (!this.windowHidden && this.chat.id) {
             this.userSeenLastMessage();
@@ -441,8 +441,8 @@ export default {
     getLastUpdatedTime() {
       return localStorage.getItem("lastUpdateTime")
         ? `Last Updated On: ${new Date(
-            parseInt(localStorage.getItem("lastUpdateTime"))
-          ).toLocaleString()}`
+          parseInt(localStorage.getItem("lastUpdateTime"))
+        ).toLocaleString()}`
         : false;
     },
   },
@@ -657,7 +657,7 @@ export default {
       }
       if (
         Object.keys(this.shorts.shorts)[
-          Object.keys(this.shorts.shorts).length - 1
+        Object.keys(this.shorts.shorts).length - 1
         ] == this.shorts.short.time
       ) {
         delete this.shortsAvatars[this.shorts.user.id];
@@ -1489,7 +1489,7 @@ export default {
           this.user.lastSeenShort[user.id] != undefined
             ? this.user.lastSeenShort[user.id]
             : time;
-      } catch (err) {}
+      } catch (err) { }
       onValue(
         query(
           ref(db, `shorts/${user.id}`),
@@ -1864,6 +1864,7 @@ export default {
             this.emojiComplete.emojis[
               this.emojiComplete.selectedIndex
             ]?.short_name.replace(emojiQuery, "") + ": ";
+          if (!text) return
           let selection = window.getSelection();
           let range = selection.getRangeAt(0);
           range.deleteContents();
@@ -1924,7 +1925,7 @@ export default {
           e.preventDefault();
           this.emojiComplete.selectedIndex =
             this.emojiComplete.selectedIndex ==
-            this.emojiComplete.emojis.length - 1
+              this.emojiComplete.emojis.length - 1
               ? 0
               : this.emojiComplete.selectedIndex + 1;
         }
