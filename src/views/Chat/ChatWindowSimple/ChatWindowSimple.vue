@@ -126,7 +126,10 @@
                         size="small"
                         color="primary"
                         v-on:click="
-                          $emit('startMeetingWithUser', users[message.replyingTo.sender])
+                          $emit(
+                            'startMeetingWithUser',
+                            users[message.replyingTo.sender]
+                          )
                         "
                       >
                         <b-icon name="mdi mdi-video" left class="pr-1"></b-icon>
@@ -438,7 +441,11 @@
                     reaction.show = true;
                   "
                 >
-                  <sl-icon-button library="oneline" name="addReaction">
+                  <sl-icon-button
+                    label="Add reaction"
+                    library="oneline"
+                    name="addReaction"
+                  >
                   </sl-icon-button>
                 </sl-tooltip>
 
@@ -446,13 +453,14 @@
                   content="Reply"
                   v-on:click="$emit('reply', message)"
                 >
-                  <sl-icon-button name="reply-fill"> </sl-icon-button>
+                  <sl-icon-button label="Reply" name="reply-fill">
+                  </sl-icon-button>
                 </sl-tooltip>
                 <sl-tooltip
                   content="Copy Message"
                   v-on:click="$emit('reply', message)"
                 >
-                  <sl-icon-button name="clipboard2-fill"> </sl-icon-button>
+                  <sl-icon-button label="Copy Message" name="clipboard2-fill"> </sl-icon-button>
                 </sl-tooltip>
               </b-flex>
             </b-flex>
