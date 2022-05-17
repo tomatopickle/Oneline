@@ -43,6 +43,10 @@ if (
   document.querySelector("html").classList.add("dark");
   document.querySelector("html").classList.add("sl-theme-dark");
 }
+registerIconLibrary("default", {
+  resolver: (name) => `https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/assets/icons/${name}.svg`,
+  mutator: (svg) => svg.setAttribute("fill", "currentColor"),
+});
 
 registerIconLibrary("oneline", {
   resolver: (name) => `./svgs/${name}.svg`,
