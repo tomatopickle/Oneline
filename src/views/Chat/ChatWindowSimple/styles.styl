@@ -112,7 +112,7 @@
         text-decoration: underline;
     }
 
-    .sub, .sub.last {
+    :not(.reply).sub, :not(.reply).sub.last {
         margin-left: 30px;
     }
 
@@ -363,7 +363,7 @@
     }
 
     .reacted {
-        margin-bottom: 15px;
+        margin-bottom: 25px;
     }
 
     .user-reacted {
@@ -402,10 +402,9 @@
     }
 
     .msg.reply {
-        position: relative;
-
         .replyingToMessage {
             opacity: 0.5;
+            position: relative;
         }
 
         small {
@@ -418,13 +417,13 @@
             }
         }
 
-        &:after {
+        .replyingToMessage:after {
             content: '';
             width: 3px;
             background-color: var(--sl-color-neutral-200);
             position: absolute;
-            top: 48px;
-            bottom: 45px;
+            top: 37px;
+            bottom: 0;
             left: 21.815px;
         }
     }

@@ -72,13 +72,6 @@
                 <b-avatar
                   :size="30"
                   class="senderAvatarEl"
-                  v-if="
-                    checkTimeDifference(message, i) ||
-                    !(
-                      checkMsgFromSameUser(message, i) &&
-                      !checkTimeDifference(message, i)
-                    )
-                  "
                   :username="
                     users[message.replyingTo.sender]
                       ? users[message.replyingTo.sender].username
@@ -207,11 +200,12 @@
                   :size="30"
                   class="senderAvatarEl"
                   v-if="
-                    checkTimeDifference(message, i) ||
-                    !(
-                      checkMsgFromSameUser(message, i) &&
-                      !checkTimeDifference(message, i)
-                    )
+                    message.type == 'reply' ||
+                    (checkTimeDifference(message, i) ||
+                      !(
+                        checkMsgFromSameUser(message, i) &&
+                        !checkTimeDifference(message, i)
+                      ))
                   "
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
