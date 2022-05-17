@@ -22,6 +22,12 @@ setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/"
 );
 
+const url = location.href;
+const oldUrl = "oneline-web.netlify.app";
+if (url.includes(oldUrl)) {
+  location.replace(url.replace(oldUrl, "oneline.surge.sh"));
+}
+
 const app = createApp(App);
 const head = createHead();
 app.use(ShoelaceModelDirective);
@@ -36,6 +42,7 @@ app.component("Head", Head);
 app.component(Skeletor.name, Skeletor);
 app.component("Popper", Popper);
 app.mount("#app");
+
 if (
   window.matchMedia &&
   window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -43,8 +50,10 @@ if (
   document.querySelector("html").classList.add("dark");
   document.querySelector("html").classList.add("sl-theme-dark");
 }
+
 registerIconLibrary("default", {
-  resolver: (name) => `https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/assets/icons/${name}.svg`,
+  resolver: (name) =>
+    `https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/assets/icons/${name}.svg`,
   mutator: (svg) => svg.setAttribute("fill", "currentColor"),
 });
 
