@@ -460,10 +460,27 @@
                   content="Copy Message"
                   v-on:click="$emit('reply', message)"
                 >
-                  <sl-icon-button label="Copy Message" name="clipboard2-fill"> </sl-icon-button>
+                  <sl-icon-button label="Copy Message" name="clipboard2-fill">
+                  </sl-icon-button>
                 </sl-tooltip>
               </b-flex>
             </b-flex>
+            <div class="reactions">
+              <span
+                v-for="(users, key) in message.reactions"
+                :key="key"
+                class="reaction"
+                v-on:click="reactionClicked(i, key)"
+              >
+                <b-flex style="padding: 0" v-if="key != 'undefined'">
+                  <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
+                  <span
+                    :class="'reactionNumber ' + checkIfUserReacted(users)"
+                    >{{ getNumberOfReactions(users) }}</span
+                  >
+                </b-flex>
+              </span>
+            </div>
             <b-flex bare>
               <link-preview
                 v-if="findLink(message?.text) != false"
@@ -471,21 +488,6 @@
               >
               </link-preview>
             </b-flex>
-          </div>
-          <div class="reactions">
-            <span
-              v-for="(users, key) in message.reactions"
-              :key="key"
-              class="reaction"
-              v-on:click="reactionClicked(i, key)"
-            >
-              <b-flex style="padding: 0" v-if="key != 'undefined'">
-                <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
-                <span :class="'reactionNumber ' + checkIfUserReacted(users)">{{
-                  getNumberOfReactions(users)
-                }}</span>
-              </b-flex>
-            </span>
           </div>
           <b-flex v-if="!!message.seen && i == lastMessage" class="seenUsers">
             <template v-for="(usr, key) in message.seen" :key="key">
