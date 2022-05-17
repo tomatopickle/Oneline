@@ -201,11 +201,11 @@
                   class="senderAvatarEl"
                   v-if="
                     message.type == 'reply' ||
-                    (checkTimeDifference(message, i) ||
-                      !(
-                        checkMsgFromSameUser(message, i) &&
-                        !checkTimeDifference(message, i)
-                      ))
+                    checkTimeDifference(message, i) ||
+                    !(
+                      checkMsgFromSameUser(message, i) &&
+                      !checkTimeDifference(message, i)
+                    )
                   "
                   :username="
                     users[message.sender] ? users[message.sender].username : ''
@@ -428,35 +428,29 @@
                 ></div>
               </div>
               <b-flex bare class="messageActions">
-                <sl-tooltip
-                  content="Add reaction"
+                <sl-icon-button
                   v-on:click="
                     reaction.message = i;
                     reaction.show = true;
                   "
+                  name="addReaction"
+                  label="Add reaction"
+                  library="oneline"
                 >
-                  <sl-icon-button
-                    label="Add reaction"
-                    library="oneline"
-                    name="addReaction"
-                  >
-                  </sl-icon-button>
-                </sl-tooltip>
+                </sl-icon-button>
+                <sl-icon-button
+                  v-on:click="$emit('reply', message)"
+                  name="reply-fill"
+                  label="Reply"
+                >
+                </sl-icon-button>
 
-                <sl-tooltip
-                  content="Reply"
+                <sl-icon-button
                   v-on:click="$emit('reply', message)"
+                  name="clipboard2-fill"
+                  label="Copy Message"
                 >
-                  <sl-icon-button label="Reply" name="reply-fill">
-                  </sl-icon-button>
-                </sl-tooltip>
-                <sl-tooltip
-                  content="Copy Message"
-                  v-on:click="$emit('reply', message)"
-                >
-                  <sl-icon-button label="Copy Message" name="clipboard2-fill">
-                  </sl-icon-button>
-                </sl-tooltip>
+                </sl-icon-button>
               </b-flex>
             </b-flex>
             <div class="reactions">

@@ -28,26 +28,29 @@
         <div>
           <div class="messageActions">
             <b-flex>
-              <sl-tooltip
-                content="Add reaction"
+              <sl-icon-button
                 v-on:click="
                   reaction.message = i;
                   reaction.show = true;
                 "
+                name="addReaction"
+                label="Add reaction"
+                library="oneline"
               >
-                <sl-icon-button library="oneline" name="addReaction">
-                </sl-icon-button>
-              </sl-tooltip>
-
-              <sl-tooltip content="Reply" v-on:click="$emit('reply', message)">
-                <sl-icon-button name="reply-fill"> </sl-icon-button>
-              </sl-tooltip>
-              <sl-tooltip
-                content="Copy Message"
+              </sl-icon-button>
+              <sl-icon-button
                 v-on:click="$emit('reply', message)"
+                name="reply-fill"
+                label="Reply"
               >
-                <sl-icon-button name="clipboard2-fill"> </sl-icon-button>
-              </sl-tooltip>
+              </sl-icon-button>
+
+              <sl-icon-button
+                v-on:click="$emit('reply', message)"
+                name="clipboard2-fill"
+                label="Copy Message"
+              >
+              </sl-icon-button>
             </b-flex>
           </div>
           <div>
@@ -734,7 +737,6 @@ export default {
       return twemoji.parse(text, { className: "emojiImg" });
     },
     checkOnlyOneEmoji(text) {
-      console.log(text);
       text = text.replace(/<\/?[^>]+(>|$)/g, "").trim();
       return (
         /\p{Emoji}/u.test(text) &&
