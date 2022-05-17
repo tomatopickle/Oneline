@@ -216,18 +216,10 @@
         color: grey;
     }
 
-    .reacted {
-        margin-bottom: 15px;
-    }
-
     .time {
         text-align: center;
         color: lighten($bg-dark, 50);
         font-size: 11px;
-    }
-
-    .user-reacted {
-        color: #3e81ff;
     }
 
     @keyframes messageAnimation {
@@ -368,6 +360,14 @@
     .reactions .reactionNumber {
         padding-right: 5px;
         font-size: 13px;
+    }
+
+    .reacted {
+        margin-bottom: 15px;
+    }
+
+    .user-reacted {
+        color: var(--sl-color-primary-600);
     }
 
     // html:not(.dark) .msg-text {
