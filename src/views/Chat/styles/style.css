@@ -311,27 +311,6 @@ figure.filterPreview::before {
 .b-list h3 {
   margin: 0;
 }
-#recordingLight {
-  background-color: var(--danger);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-left: 5px;
-  margin-right: 15px;
-  animation: blink 2s infinite;
-  opacity: 0;
-}
-@keyframes blink {
-  0% {
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 .b-sidebar .card-footer {
   margin: 0;
   padding: 0;

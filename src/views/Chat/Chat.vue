@@ -487,12 +487,12 @@
               `${recording.time.minutes}:${recording.time.seconds}`
             }}</span>
             <b-spacer></b-spacer>
-            <b-btn icon color="danger" @click="stopRecording()">
-              <b-icon name="mdi mdi-close"></b-icon>
-            </b-btn>
-            <b-btn icon color="success" @click="sendRecording()">
-              <b-icon name="mdi mdi-check"></b-icon>
-            </b-btn>
+            <sl-button icon circle variant="danger" @click="stopRecording()">
+              <sl-icon name="x-lg"></sl-icon>
+            </sl-button>
+            <sl-button icon circle variant="success" @click="sendRecording()">
+              <sl-icon name="check-lg"></sl-icon>
+            </sl-button>
           </b-flex>
           <b-flex v-else>
             <b-spinner style="transform: scale(0.5)"></b-spinner>
