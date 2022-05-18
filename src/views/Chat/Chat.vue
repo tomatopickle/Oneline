@@ -388,23 +388,28 @@
       <div id="messageInp" v-if="chat?.id && !chat.archive">
         <div v-show="reply.show">
           <div id="replyMessage">
-            <span class="text-blue-600">{{
-              members[reply.message.sender]?.username
-            }}</span
-            >:&nbsp;
+            <div>
+              <b-avatar
+                v-if="members[reply.message.sender]?.username"
+                :size="30"
+                :username="members[reply.message.sender]?.username"
+                :src="members[reply.message.sender]?.avatar"
+              ></b-avatar>
+            </div>
             <span
-              class="w-full flex-grow"
-              v-html="getReplyPreview(reply.message)"
+              :class="
+                'msg-text ' + (reply.message.sender == user.id ? 'me' : '')
+              "
+              v-html="getReplyPreview"
             ></span>
-            <b-spacer></b-spacer>
-            <b-btn
-              icon
-              ghost
-              style="padding: 0"
+            <sl-button
+              circle
+              id="replyCloseButton"
+              class="center ml-1"
               @click="reply = { show: false, message: {} }"
             >
-              <b-icon name="mdi mdi-close"></b-icon>
-            </b-btn>
+              <sl-icon name="x-lg"></sl-icon>
+            </sl-button>
           </div>
         </div>
         <div v-show="instantUpload.show">

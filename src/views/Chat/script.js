@@ -429,6 +429,21 @@ export default {
     );
   },
   computed: {
+    getReplyPreview() {
+      const message = this.reply.message;
+      if (message.type == "file") {
+        return `(File) ${message.file.name}`;
+      } else if (message.type == "likeShort") {
+        return `Liked your Short`;
+      } else if (message.type == "image") {
+        return `(Image) ${message.file.name}`;
+      } else if (message.type == "audio") {
+        return `(Audio) ${message.duration}`;
+      } else if (message.type == "gif") {
+        return `GIF`;
+      }
+      return `${message.text}`;
+    },
     emojiDataAll() {
       return EmojiAllData;
     },
@@ -1648,16 +1663,6 @@ export default {
       return (
         Math.floor(seconds) + " second" + (Math.floor(interval) == 1 ? "" : "s")
       );
-    },
-    getReplyPreview(message) {
-      if (message.type == "file") {
-        return `(File) ${message.file.name}`;
-      } else if (message.type == "image") {
-        return `(Image) ${message.file.name}`;
-      } else if (message.type == "audio") {
-        return `(Audio) ${message.duration}`;
-      }
-      return `${message.text}`;
     },
     sendReplyMessage() {
       if (this.message.text.trim().length < 1) return;

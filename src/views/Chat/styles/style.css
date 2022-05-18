@@ -277,23 +277,6 @@ figure.filterPreview::before {
 #shortPhotoUploadParent::before {
   border-radius: var(--ui-radius) !important;
 }
-#replyMessage {
-  z-index: 6;
-  display: flex;
-  position: absolute;
-  top: -38px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background-color: hsl(var(--bg-dark), 12%);
-  border-radius: var(--ui-radius);
-  padding-inline: 10px;
-  font-size: 18px;
-  padding-block: 5px;
-  height: 37px;
-  text-overflow: clip;
-  overflow-y: auto;
-}
 #instantUpload {
   z-index: 6;
   display: flex;
@@ -629,10 +612,6 @@ html:not(.dark) .messageBtn {
 html:not(.dark) .messageBtn.mdi-plus {
   color: var(--primary);
   opacity: 1 !important;
-}
-html:not(.dark) #replyMessage {
-  background-color: hsl(var(--bg), 100%);
-  border: solid hsl(var(--bg), 93%) 1px;
 }
 #messageInp .editable {
   width: 80%;
