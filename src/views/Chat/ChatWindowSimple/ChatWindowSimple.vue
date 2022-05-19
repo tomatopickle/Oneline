@@ -363,7 +363,6 @@
                 class="msg-short-comment"
               >
                 <b-flex bare>
-                  <!-- <div> -->
                   <short-preview
                     v-on:click="
                       Object.keys(this.users).forEach((usr) => {
@@ -377,45 +376,11 @@
                     "
                     :short="message.short"
                   ></short-preview>
-                  <!-- </div> -->
                 </b-flex>
                 <b-flex bare>
                   <span class="msg-text">{{ message.text }}</span>
                 </b-flex>
               </div>
-              <!-- <div v-else-if="message.type == 'reply'" class="msg-reply-parent">
-                <div class="flex">
-                  <div :class="`msg-reply`">
-                    <b-avatar
-                      :size="22"
-                      :username="
-                        users[message.replyingTo.sender]
-                          ? users[message.replyingTo.sender].username
-                          : ''
-                      "
-                      :src="users[message.replyingTo.sender]?.avatar"
-                    ></b-avatar>
-                    <div
-                      class="pr-2"
-                      v-html="
-                        convertMessageToHTML(
-                          message.replyingTo?.text ||
-                            getMessagePreview(message.replyingTo)
-                        )
-                      "
-                    ></div>
-                  </div>
-                </div>
-                <div
-                  :class="{
-                    'msg-text': true,
-                    oneEmoji: checkOnlyOneEmoji(message.text),
-                  }"
-                  v-html="
-                    message?.text ? convertMessageToHTML(message?.text) : ''
-                  "
-                ></div>
-              </div> -->
               <div v-else>
                 <div
                   :class="{
