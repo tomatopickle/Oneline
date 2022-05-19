@@ -1300,8 +1300,8 @@ export default {
             // If there's a past record of an unread message
             if (this.chats[chatId] && this.chat.id != chatId) {
               unreadMessages = this.chats[chatId].unreadMessages;
-            } else {
-              unreadMessages = 0;
+            } else if (this.chat.id == chatId) {
+              unreadMessages = 0
             }
             this.chats[chatId] = {
               name: chat.name,
@@ -1439,8 +1439,8 @@ export default {
                         // If there's a past record of an unread message
                         if (this.chats[chatId] && this.chat.id != chatId) {
                           unreadMessages = this.chats[chatId].unreadMessages;
-                        } else {
-                          unreadMessages = 0;
+                        } else if (this.chat.id == chatId) {
+                          unreadMessages = 0
                         }
                         console.log(unreadMessages);
                         this.chats[chatId] = {
