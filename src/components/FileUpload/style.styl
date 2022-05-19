@@ -3,10 +3,16 @@
 
 .fileUpload {
     transition: background-color 0.2s;
+    height: 65vh;
+
+    &.me {
+        background-color: var(--sl-color-primary-600);
+        color: var(--sl-panel-background-color);
+    }
 }
 
 .file {
-    background-color: lighten($bg-dark, 13);
+    background-color: var(--sl-color-neutral-200);
     border-radius: 5px;
     position: relative;
     margin-bottom: 5px;
@@ -18,7 +24,7 @@
     bottom: 1px;
     left: 0;
     height: 5px;
-    background-color: var(--primary);
+    background-color: var(--sl-color-primary-600);
     border-radius: 5px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -35,4 +41,9 @@
 
 html:not(.dark) .file {
     background-color: white;
+}
+
+.fileUploadScreen{
+    position: relative;
+    top: 15vh;
 }

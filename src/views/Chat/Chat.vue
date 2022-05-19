@@ -1151,7 +1151,7 @@
       </sl-tab-group>
     </sl-dialog>
 
-    <b-modal
+    <!-- <b-modal
       v-model="fileUpload.show"
       width="50vw"
       @dragover.prevent
@@ -1165,7 +1165,16 @@
           message.text = ``;
         "
       ></file-upload>
-    </b-modal>
+    </b-modal> -->
+    <file-upload
+      :user="user"
+      :chat="chat"
+      @uploaded="
+        fileUpload.show = false;
+        message.text = ``;
+      "
+      :open="fileUpload.show"
+    ></file-upload>
     <b-modal v-model="groupInfo.modal" width="400px">
       <b-card height="100%" :loading="groupInfo.modalLoading">
         <template #header>

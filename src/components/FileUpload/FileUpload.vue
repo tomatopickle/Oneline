@@ -1,83 +1,84 @@
 <template>
-  <b-card
-    glass
-    class="fileUpload"
+  <sl-dialog
     height="65vh"
     @drop.prevent="dragFile"
     @dragover="dragging = true"
     @dragleave="dragging = false"
-    :style="dragging ? `background-color :  var(--primary)` : ``"
+    :class="{ me: dragging }"
+    style="--width: 750px"
+    :label="Object.keys(files).length != 0 ? 'Upload Files' : ''"
   >
-    <input
-      ref="fileInp"
-      type="file"
-      multiple
-      @change="addFile($event)"
-      hidden
-    />
-    <div class="mt-32" v-show="Object.keys(files).length == 0">
-      <h2 class="text-center">Drop a file or click to Upload</h2>
-      <b-btn color="primary center" @click="$refs.fileInp.click()"
-        >Upload</b-btn
-      >
-    </div>
-    <div class="files" v-show="Object.keys(files).length != 0">
-      <h4>Uploaded Files</h4>
-      <div></div>
-      <transition-group name="flip-list" tag="div">
-        <div v-for="(file, i) in files" :key="i">
-          <div class="file">
-            <b-flex>
-              <b-icon name="mdi mdi-file" size="20px"></b-icon>
-              <span class="text-lg">{{ file.name }}</span>
-              <b-spacer></b-spacer>
-              <transition name="zoom" mode="out-in">
-                <b-btn
-                  icon
-                  v-on:click="deleteFile(file)"
-                  ghost
-                  v-if="file.done"
-                  class="p-0.5"
-                >
-                  <b-icon name="mdi mdi-close"></b-icon
-                ></b-btn>
-                <b-spinner v-else></b-spinner>
-              </transition>
-            </b-flex>
-            <div
-              class="progress"
-              :style="`width: ${file.done ? `0` : file.progress}%`"
-            ></div>
+    <div class="fileUpload">
+      <input
+        ref="fileInp"
+        type="file"
+        multiple
+        @change="addFile($event)"
+        hidden
+      />
+      <div v-show="Object.keys(files).length == 0" class="fileUploadScreen">
+        <h2 class="text-center">Drop a file or click to Upload</h2>
+        <sl-button
+          variant="primary"
+          class="center block w-max"
+          @click="$refs.fileInp.click()"
+        >
+          <sl-icon slot="prefix" name="plus-lg"></sl-icon>
+          Upload
+        </sl-button>
+      </div>
+      <div class="files" v-show="Object.keys(files).length != 0">
+        <transition-group name="flip-list" tag="div">
+          <div v-for="(file, i) in files" :key="i">
+            <div class="file">
+              <b-flex>
+                <b-icon name="mdi mdi-file" size="20px"></b-icon>
+                <span class="text-lg">{{ file.name }}</span>
+                <b-spacer></b-spacer>
+                <transition name="zoom" mode="out-in">
+                  <sl-tooltip hoist content="Remove File" v-if="file.done">
+                    <sl-icon-button
+                      v-on:click="deleteFile(file)"
+                      name="dash-lg"
+                    ></sl-icon-button>
+                  </sl-tooltip>
+                  <sl-spinner v-else style="font-size: 1.5rem"></sl-spinner>
+                </transition>
+              </b-flex>
+              <div
+                class="progress"
+                :style="`width: ${file.done ? `0` : file.progress}%`"
+              ></div>
+            </div>
           </div>
-        </div>
-      </transition-group>
-      <b-btn
-        block
-        @click="$refs.fileInp.click()"
-        style="margin: 0; width: 100%"
-      >
-        <b-icon name="mdi mdi-plus" left></b-icon> Upload More
-      </b-btn>
-    </div>
-    <template #footer>
-      <div v-show="allFilesLoaded">
-        <br />
-        <b-flex style="height: max-content">
-          <b-input
-            ghost
-            style="height: '50px'"
-            placeholder="Message (Optional)"
-            v-model="message"
-          ></b-input>
+        </transition-group>
+        <b-flex bare>
           <b-spacer></b-spacer>
-          <b-btn color="primary" @click="sendFiles()" class="flex">
-            Send <b-icon name="mdi mdi-send" right class="pl-3"></b-icon>
-          </b-btn>
+          <sl-button @click="$refs.fileInp.click()" variant="primary" outline>
+            <sl-icon slot="prefix" name="plus-lg"></sl-icon> Upload More
+          </sl-button>
         </b-flex>
       </div>
-    </template>
-  </b-card>
-</template> 
+    </div>
+
+    <div slot="footer" v-show="allFilesLoaded">
+      <br />
+      <b-flex style="height: max-content">
+        <sl-textarea
+          class="w-full"
+          resize="auto"
+          placeholder="Message (Optional)"
+          v-model="message"
+          rows="1"
+        ></sl-textarea>
+        <b-spacer></b-spacer>
+        <sl-button @click="sendFiles()" variant="primary">
+          Send <sl-icon library="oneline" slot="suffix" name="send"></sl-icon>
+        </sl-button>
+      </b-flex>
+    </div>
+  </sl-dialog>
+</template>
 <script>
 /* eslint-disable */
 import { BCard, BBtn, BFlex } from "bounce-ui-vue";
@@ -226,7 +227,7 @@ export default {
     },
   },
 };
-</script> 
+</script>
 <style lang="stylus" scoped>
 @import './style.styl';
-</style> 
+</style>
