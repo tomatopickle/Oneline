@@ -421,21 +421,12 @@
             </span>
             <b-spacer></b-spacer>
             <transition name="zoom" mode="out-in">
-              <!-- <b-spinner
-                class="primary"
-                v-if="instantUpload.loading"
-                style="transform: scale(0.5); margin: -15px"
-              ></b-spinner> -->
               <sl-spinner
                 v-if="instantUpload.loading"
                 style="font-size: 1.5rem"
               ></sl-spinner>
 
               <div v-else class="flex">
-                <!-- <sl-icon-button
-                  name="trash"
-                  @click="deleteInstantUpload()"
-                ></sl-icon-button> -->
                 <sl-button @click="deleteInstantUpload()" class="mr-2"
                   >Delete</sl-button
                 >
@@ -1026,7 +1017,7 @@
               }}</small>
             </div>
             <b-spacer></b-spacer>
-            <sl-dropdown placement="left" skidding="90" ref="likeEmojiModal">
+            <sl-dropdown placement="left" skidding="90" hoist ref="likeEmojiModal">
               <sl-button slot="trigger">Change</sl-button>
               <div>
                 <Picker

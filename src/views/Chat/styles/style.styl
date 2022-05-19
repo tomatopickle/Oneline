@@ -1,10 +1,5 @@
 @import '../../../variables.styl';
 
-#likeEmojiPicker {
-    height: 350px;
-    overflow-y: scroll;
-}
-
 #groupArchivedMessage {
     padding: 15px;
     background-color: lighten($bg-dark, 9%);
@@ -18,7 +13,7 @@
 
 .msg-text {
     blockquote {
-        border-left: 3px solid $primary;
+        border-left: 3px solid var(--sl-color-primary-500);
         padding-left: 10px;
         margin: 0;
         opacity: 0.7;
@@ -410,4 +405,80 @@ sl-tab-group.centered {
     padding-block: 5px;
     align-items: center;
     min-height: 54px;
+}
+
+// Just for more specificity
+body {
+    .emoji-mart {
+        font-family: inherit;
+    }
+
+    .emoji-mart-search input {
+        border: none;
+        border-radius: 7px;
+        padding: 6px;
+        padding-left: 10px;
+    }
+
+    .emoji-mart {
+        background-color: var(--sl-color-neutral-50);
+        color: var(--sl-color-neutral-1000);
+        border: none;
+    }
+
+    .emoji-mart-search input {
+        background-color: var(--sl-color-neutral-100);
+        color: var(--sl-color-neutral-1000);
+    }
+
+    .emoji-mart-category .emoji-mart-emoji:hover:before, .emoji-mart-emoji-selected:before {
+        background: transparent;
+    }
+
+    .emoji-mart .emoji-mart-emoji {
+        transition: transform 0.15s cubic-bezier(0.2, 0, 0.13, 2);
+    }
+
+    .emoji-mart-emoji-selected {
+        transform: scale(1.5);
+    }
+
+    .emoji-mart .emoji-mart-emoji:hover {
+        transform: scale(1.5);
+        background-color: none;
+    }
+
+    .emoji-mart-anchor-bar {
+        width: 15px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--sl-color-primary-600) !important;
+    }
+
+    .emoji-mart-anchor-selected .emoji-mart-anchor-bar {
+        bottom: 7px;
+        transition: all 0.5s;
+    }
+
+   .emoji-mart-anchor-selected {
+        color: var(--sl-color-primary-600) !important;
+    }
+
+    .emoji-mart-category-label h3 {
+        background-color: transparent;
+    }
+}
+
+.sl-theme-dark {
+    .emoji-mart-bar {
+        border-color: transparent;
+    }
+
+    .emoji-mart-anchor:hover svg {
+        fill: white;
+    }
+
+    .emoji-mart-anchors svg {
+        fill: #dbdbdb;
+    }
 }

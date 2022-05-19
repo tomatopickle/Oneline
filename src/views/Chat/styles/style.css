@@ -1,6 +1,7 @@
 #contacts .card-text header .flex-box {
   padding: 0;
 }
+
 #contacts {
   height: 100%;
   overflow: auto;
@@ -8,18 +9,23 @@
   width: 300px;
   max-width: 30vw;
 }
+
 h4 {
   margin: 0;
 }
+
 .no-padding {
   --padding: 0;
 }
+
 .no-border {
   --border-color: transparent;
 }
+
 .no-box-shadow {
   --sl-shadow-x-small: none;
 }
+
 /* #contacts .b-list-item + #contacts .b-list-item {
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 } */
@@ -38,7 +44,7 @@ h4 {
   z-index: 1;
   background-color: white;
 }
-.dark #contacts > div > div > div > div.card-text > main > div > div > h3 {
+.sl-theme-dark #contacts > div > div > div > div.card-text > main > div > div > h3 {
   background-color: #242428;
 } */
 /* #contacts > div > div > div > div.card-footer {
@@ -46,7 +52,7 @@ h4 {
   bottom: -5px;
   background-color: #242428;
 }
-html:not(.dark) #contacts > div > div > div > div.card-footer {
+html:not(.sl-theme-dark) #contacts > div > div > div > div.card-footer {
   background-color: white;
 }
 #contacts > div > div > div > div.card-text {
@@ -56,13 +62,16 @@ html:not(.dark) #contacts > div > div > div > div.card-footer {
   gap: 5px;
   background-color: transparent !important;
 }
+
 p {
   margin: 0;
 }
+
 .chatWindowPreview svg {
   height: 100px;
   width: 200px;
 }
+
 #chatImage {
   max-width: 100%;
   object-fit: contain;
@@ -73,6 +82,7 @@ p {
   padding: 20px;
   max-height: 70vh;
 }
+
 #imageThumbnails {
   display: flex;
   justify-content: center;
@@ -80,9 +90,11 @@ p {
   background-color: rgb(30 30 30 / 75%);
   padding-block: 15px;
 }
-html:not(.dark) #imageThumbnails {
+
+html:not(.sl-theme-dark) #imageThumbnails {
   background-color: rgb(255 255 255 / 75%);
 }
+
 img.thumbnailImage {
   object-fit: contain;
   max-height: 10vh;
@@ -91,46 +103,57 @@ img.thumbnailImage {
   border-radius: var(--ui-radius);
   cursor: pointer;
 }
+
 img.thumbnailImage.selected {
   border-color: var(--primary);
 }
+
 #imagePreParent {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
+
 #fullScreenImageModal .modal {
   padding: 0;
   margin: 0;
 }
+
 #fullScreenImageModal .modal-backdrop {
   background-color: rgb(30 30 30 / 75%);
 }
+
 #fullScreenImageModal .modal-content {
   margin-block: 0;
   height: 100%;
   padding-left: 0;
   backdrop-filter: blur(15px);
 }
+
 .userInfoPara {
   opacity: 0.9;
   font-size: 12px;
   margin: 0 !important;
 }
+
 .senderAvatarEl {
   cursor: pointer;
   transition: transform 0.2s;
 }
+
 .senderAvatarEl:active {
   transform: scale(0.9);
 }
+
 body,
 html {
   font-family: Inter, sans-serif;
 }
+
 #shorts .modal-backdrop {
   backdrop-filter: blur(10px);
 }
+
 .shortImageCaption {
   position: absolute;
   bottom: 0px;
@@ -146,19 +169,23 @@ html {
   transition: opacity 0.2s;
   opacity: 1;
 }
+
 #shorts figure:hover .shortImageCaption {
   opacity: 0;
 }
+
 #shorts figure {
   width: max-content;
   margin: auto;
   position: relative;
   max-width: 100%;
 }
+
 #shorts figure::after,
 #shorts figure::before {
   border-radius: var(--ui-radius);
 }
+
 #shorts .shortImage {
   border-radius: var(--ui-radius);
   max-height: 55vh;
@@ -166,6 +193,7 @@ html {
   width: 100%;
   object-fit: contain;
 }
+
 #meetingInvite {
   position: fixed;
   bottom: 85px;
@@ -173,6 +201,7 @@ html {
   z-index: 555;
   text-align: center;
 }
+
 [data-badge]::after {
   content: attr(data-badge);
   width: 20px;
@@ -189,25 +218,31 @@ html {
   user-select: none;
   line-height: 2;
 }
+
 #shortsControl {
   position: fixed;
   top: 9vh;
   z-index: 50;
   left: 50px;
 }
+
 .vue-avatar--wrapper.shortThumbnail.selected {
   transform: scale(1.35);
 }
+
 .shortThumbnail {
   cursor: pointer;
   transition: transform 0.2s;
 }
+
 .shortThumbnail:active {
   transform: scale(0.9);
 }
+
 #uploadShort:active:after {
   transform: scale(0.9);
 }
+
 /* .b-list-item.item-clickable.contact {
   position: relative;
 } */
@@ -217,10 +252,12 @@ html {
   max-height: 200px;
   object-fit: contain;
 }
+
 #shortPhotoUploadParent {
   width: max-content;
   margin: auto;
 }
+
 .short {
   max-width: 100%;
   max-height: 100%;
@@ -229,12 +266,15 @@ html {
   margin: auto;
   min-width: 490px;
 }
-html:not(.dark) #shorts .modal {
+
+html:not(.sl-theme-dark) #shorts .modal {
   background-color: #ffffff4a;
 }
+
 #shorts .modal {
   overflow: hidden;
 }
+
 #shortPhotoFilters {
   width: 42vw;
   display: inline-flex;
@@ -244,23 +284,28 @@ html:not(.dark) #shorts .modal {
   padding-bottom: 5px;
   margin-bottom: 15px;
 }
+
 .filterPreview img {
   height: 100px;
 }
+
 .filterPreview:hover {
   transform: scale(1.25);
   z-index: 555;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
 .filterPreview:active {
   transform: scale(0.9);
 }
+
 figure.filterPreview img {
   height: 50px;
   border-radius: 5px;
   width: max-content;
   -webkit-user-drag: none;
 }
+
 figure.filterPreview {
   margin: 0;
   margin-right: 1px;
@@ -269,31 +314,39 @@ figure.filterPreview {
   margin-block: 7px;
   cursor: pointer;
 }
+
 figure.filterPreview::after,
 figure.filterPreview::before {
   border-radius: 5px !important;
 }
+
 #shortPhotoUploadParent::after,
 #shortPhotoUploadParent::before {
   border-radius: var(--ui-radius) !important;
 }
+
 .card-text {
   flex-grow: 1;
 }
-.dark .card.storyMode {
-  background-color: hsl(var(--bg-dark), 20%);
+
+.sl-theme-dark .card.storyMode {
+  background-color: hsl(var(--bg-sl-theme-dark), 20%);
   box-shadow: none;
   cursor: pointer;
 }
-.dark .card.storyMode:hover {
-  background-color: hsl(var(--bg-dark), 25%);
+
+.sl-theme-dark .card.storyMode:hover {
+  background-color: hsl(var(--bg-sl-theme-dark), 25%);
 }
+
 .storyModeBtn {
   width: 25%;
 }
+
 .b-list h3 {
   margin: 0;
 }
+
 .b-sidebar .card-footer {
   margin: 0;
   padding: 0;
@@ -383,72 +436,6 @@ figure.filterPreview::before {
   right: 10px;
 }
 
-.emoji-mart {
-  font-family: inherit;
-}
-
-.emoji-mart-search input {
-  border: none;
-  border-radius: 7px;
-  padding: 6px;
-  padding-left: 10px;
-}
-
-.dark .emoji-mart {
-  background-color: #222226c4;
-  color: white;
-  border: none;
-  backdrop-filter: blur(20px);
-}
-
-.dark .emoji-mart-category-label h3 {
-  background-color: transparent;
-}
-
-.dark .emoji-mart-search input {
-  background-color: #161616;
-  color: white;
-}
-
-.dark .emoji-mart-anchors svg {
-  fill: #dbdbdb;
-}
-
-.dark .emoji-mart-anchor:hover svg {
-  fill: white;
-}
-
-.dark .emoji-mart-bar {
-  border-color: transparent;
-}
-
-.emoji-mart-category .emoji-mart-emoji:hover:before,
-.emoji-mart-emoji-selected:before {
-  background: transparent;
-}
-
-.emoji-mart .emoji-mart-emoji {
-  transition: transform 0.15s cubic-bezier(0.2, 0, 0.13, 2);
-}
-
-.emoji-mart-emoji-selected {
-  transform: scale(1.5);
-}
-
-.emoji-mart .emoji-mart-emoji:hover {
-  transform: scale(1.5);
-}
-
-.emoji-mart-anchor-bar {
-  width: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.emoji-mart-anchor-selected .emoji-mart-anchor-bar {
-  bottom: 7px;
-  transition: all 0.5s;
-}
 
 /* Or else the flexbox margin style messes things up */
 section.emoji-mart.emoji-mart-static * {
@@ -507,15 +494,15 @@ section.emoji-mart.emoji-mart-static * {
   margin: 0;
 }
 
-.dark .card.contextMenu {
+.sl-theme-dark .card.contextMenu {
   background-color: #222226;
 }
 
-.dark .card.contextMenu .b-list-item:not(.item-last) {
+.sl-theme-dark .card.contextMenu .b-list-item:not(.item-last) {
   border-bottom: 1px solid #454548;
 }
 
-/* .dark .card.contextMenu{
+/* .sl-theme-dark .card.contextMenu{
     --popper-theme-background-color: #222226;
     --popper-theme-background-color-hover: #222226;
     --popper-theme-text-color: white;
@@ -568,13 +555,16 @@ section.emoji-mart.emoji-mart-static * {
   border: 1px solid var(--sl-panel-background-color);
   background-color: var(--sl-color-green-500);
 }
-html:not(.dark) .messageBtn {
+
+html:not(.sl-theme-dark) .messageBtn {
   color: hsl(var(--bg), 40%);
 }
-html:not(.dark) .messageBtn.mdi-plus {
+
+html:not(.sl-theme-dark) .messageBtn.mdi-plus {
   color: var(--primary);
   opacity: 1 !important;
 }
+
 #messageInp .editable {
   width: 80%;
   flex-grow: 1;
@@ -631,7 +621,8 @@ html:not(.dark) .messageBtn.mdi-plus {
   margin-right: -36px !important;
   opacity: 0.85;
 }
-.dark .newMessage.chatMessagePreview {
+
+.sl-theme-dark .newMessage.chatMessagePreview {
   color: white;
   font-weight: 600;
 }
@@ -644,6 +635,7 @@ html:not(.dark) .messageBtn.mdi-plus {
   width: 100%;
   display: flex;
 }
+
 audio.sc-vm-file,
 video.sc-vm-file {
   display: none;
