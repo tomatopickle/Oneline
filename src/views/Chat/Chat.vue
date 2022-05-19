@@ -421,28 +421,32 @@
             </span>
             <b-spacer></b-spacer>
             <transition name="zoom" mode="out-in">
-              <b-spinner
+              <!-- <b-spinner
                 class="primary"
                 v-if="instantUpload.loading"
                 style="transform: scale(0.5); margin: -15px"
-              ></b-spinner>
+              ></b-spinner> -->
+              <sl-spinner
+                v-if="instantUpload.loading"
+                style="font-size: 1.5rem"
+              ></sl-spinner>
+
               <div v-else class="flex">
-                <b-btn
+                <!-- <sl-icon-button
+                  name="trash"
                   @click="deleteInstantUpload()"
-                  size="small"
-                  icon
-                  class="mr-1"
+                ></sl-icon-button> -->
+                <sl-button @click="deleteInstantUpload()" class="mr-2"
+                  >Delete</sl-button
                 >
-                  <b-icon name="mdi mdi-delete"></b-icon>
-                </b-btn>
-                <b-btn
-                  @click="sendInstantUpload()"
-                  size="small"
-                  icon
-                  color="primary"
-                >
-                  <b-icon name="mdi mdi-send"></b-icon>
-                </b-btn>
+                <sl-button @click="sendInstantUpload()" variant="primary"
+                  >Send
+                  <sl-icon
+                    library="oneline"
+                    slot="suffix"
+                    name="send"
+                  ></sl-icon>
+                </sl-button>
               </div>
             </transition>
           </div>
@@ -1150,22 +1154,6 @@
         >
       </sl-tab-group>
     </sl-dialog>
-
-    <!-- <b-modal
-      v-model="fileUpload.show"
-      width="50vw"
-      @dragover.prevent
-      @drop.prevent
-    >
-      <file-upload
-        :user="user"
-        :chat="chat"
-        @uploaded="
-          fileUpload.show = false;
-          message.text = ``;
-        "
-      ></file-upload>
-    </b-modal> -->
     <file-upload
       :user="user"
       :chat="chat"

@@ -277,23 +277,6 @@ figure.filterPreview::before {
 #shortPhotoUploadParent::before {
   border-radius: var(--ui-radius) !important;
 }
-#instantUpload {
-  z-index: 6;
-  display: flex;
-  position: absolute;
-  top: -56px;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background-color: hsla(var(--bg-dark), 12%, 0.75);
-  border-radius: var(--ui-radius);
-  padding-inline: 10px;
-  font-size: 18px;
-  padding-block: 5px;
-  align-items: center;
-  backdrop-filter: blur(20px);
-  min-height: 54px;
-}
 .card-text {
   flex-grow: 1;
 }
