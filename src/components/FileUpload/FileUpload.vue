@@ -4,6 +4,7 @@
     @drop.prevent="dragFile"
     @dragover="dragging = true"
     @dragleave="dragging = false"
+    @sl-request-close="$emit('closed')"
     :class="{ me: dragging }"
     style="--width: 750px"
     :label="Object.keys(files).length != 0 ? 'Upload Files' : ''"
@@ -99,6 +100,7 @@ import db from "../../fire.js";
 export default {
   components: { BCard, BBtn, BFlex },
   props: { chat: Object, user: Object },
+  emits: ["closed"],
   data: () => {
     return { dragging: false, files: {}, allFilesLoaded: false, message: "" };
   },

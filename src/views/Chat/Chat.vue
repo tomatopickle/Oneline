@@ -1174,6 +1174,7 @@
         message.text = ``;
       "
       :open="fileUpload.show"
+      @closed="fileUpload.show = false"
     ></file-upload>
     <b-modal v-model="groupInfo.modal" width="400px">
       <b-card height="100%" :loading="groupInfo.modalLoading">
