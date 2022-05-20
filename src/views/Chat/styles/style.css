@@ -571,6 +571,7 @@ html:not(.sl-theme-dark) .messageBtn.mdi-plus {
   padding-block: 15px;
   padding-inline: 5px;
   cursor: text;
+  caret-color: var(--sl-color-primary-500);
 }
 
 .msg-text * {
