@@ -17,6 +17,7 @@ import "@shoelace-style/shoelace/dist/themes/dark.css";
 import ShoelaceModelDirective from "@shoelace-style/vue-sl-model";
 import { setBasePath } from "@shoelace-style/shoelace/dist/utilities/base-path";
 import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/icon-library.js";
+import vClickOutside from "click-outside-vue3"
 
 setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/"
@@ -31,6 +32,7 @@ if (url.includes(oldUrl)) {
 const app = createApp(App);
 const head = createHead();
 app.use(ShoelaceModelDirective);
+app.use(vClickOutside)
 app.use(head);
 app.use(bounce_ui);
 app.use(router);

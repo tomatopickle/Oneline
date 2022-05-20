@@ -1,5 +1,30 @@
 <template>
   <div class="chatWindowSimple">
+    <context-menu ref="menu" @closed="selectedMessage = ''">
+      <sl-menu>
+        <sl-menu-item
+          value="react"
+          v-on:click="
+            reaction.message = selectedMessage;
+            reaction.show = true;
+          "
+        >
+          <sl-icon slot="prefix" library="oneline" name="addReaction"></sl-icon>
+          React
+        </sl-menu-item>
+        <sl-menu-item
+          value="reply"
+          v-on:click="$emit('reply', messages[selectedMessage])"
+        >
+          <sl-icon slot="prefix" name="reply-fill"></sl-icon>
+          Reply
+        </sl-menu-item>
+        <sl-menu-item value="copy">
+          <sl-icon slot="prefix" name="clipboard-fill"></sl-icon>
+          Copy
+        </sl-menu-item>
+      </sl-menu>
+    </context-menu>
     <transition-group name="messageAnimation" tag="div">
       <template v-for="(message, i) in messages" :key="message.time">
         <div v-if="!settings.data.showExactTime">
@@ -10,6 +35,10 @@
           ></div>
         </div>
         <div
+          @click.right.prevent="
+            selectedMessage = i;
+            $refs.menu.open($event);
+          "
           :class="{
             msg: true,
             reply: message.type == 'reply',
@@ -20,6 +49,7 @@
               checkLastMsgFromSameUser(message, i) ||
               checkLastTimeForSameUser(message, i),
             reacted: !!message.reactions,
+            selected: i == selectedMessage,
           }"
           v-if="message.type != 'info'"
           v-on:dblclick="
@@ -412,7 +442,7 @@
 
                 <sl-icon-button
                   v-on:click="$emit('reply', message)"
-                  name="clipboard2-fill"
+                  name="clipboard-fill"
                   label="Copy Message"
                 >
                 </sl-icon-button>
@@ -585,6 +615,8 @@ import { find } from "linkifyjs";
 import LinkPreview from "../../../components/LinkPreview/LinkPreview.vue";
 import ShortPreview from "../../../components/ShortPreview/ShortPreview.vue";
 import ZoomImage from "../../../components/ZoomImage/ZoomImage.vue";
+import ContextMenu from "@/components/ContextMenu/ContextMenu.vue";
+
 export default {
   name: "ChatWindowSimple",
   components: {
@@ -594,6 +626,7 @@ export default {
     ShortPreview,
     VueHorizontal,
     ZoomImage,
+    ContextMenu,
   },
   emits: ["playAudio", "reply", "startMeetingWithUser", "openShort"],
   props: {
@@ -606,6 +639,8 @@ export default {
   },
   data: () => {
     return {
+      contextMenu: false,
+      selectedMessage: '',
       image: {
         show: false,
         message: {},
