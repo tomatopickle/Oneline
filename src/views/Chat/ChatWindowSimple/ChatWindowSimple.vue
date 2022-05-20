@@ -56,6 +56,8 @@
             reaction.message = i;
             addReaction(settings.data.likeEmoji);
           "
+          tabindex="0"
+          @focus="selectedMessage = i"
         >
           <div
             class="time"
@@ -98,80 +100,70 @@
               </div>
             </small>
             <b-flex>
-              <Popper arrow :interactive="true" placement="right">
+              <sl-dropdown hoist placement="right">
                 <b-avatar
+                  slot="trigger"
+                  tabindex="0"
                   :size="30"
                   class="senderAvatarEl"
-                  :username="
-                    users[message.replyingTo.sender]
-                      ? users[message.replyingTo.sender].username
-                      : ''
+                  v-if="
+                    message.type == 'reply' ||
+                    checkTimeDifference(message, i) ||
+                    !(
+                      checkMsgFromSameUser(message, i) &&
+                      !checkTimeDifference(message, i)
+                    )
                   "
-                  :src="users[message.replyingTo.sender]?.avatar"
+                  :username="
+                    users[message.sender] ? users[message.sender].username : ''
+                  "
+                  :src="users[message.sender]?.avatar"
                 >
                 </b-avatar>
-                <template #content>
-                  <b-card
-                    glass
-                    class="p-0"
-                    style="
-                      max-width: 310px;
-                      padding-right: 35px;
-                      padding-bottom: 5px;
-                    "
-                  >
-                    <b-flex>
-                      <div>
-                        <b-avatar
-                          :size="45"
-                          :username="
-                            users[message.replyingTo.sender]
-                              ? users[message.replyingTo.sender].username
-                              : ''
-                          "
-                          :src="users[message.replyingTo.sender]?.avatar"
-                        ></b-avatar>
-                      </div>
-                      <div>
-                        <h4 class="m-0 mt-3 ml-2">
-                          {{ users[message.replyingTo.sender]?.username }}
-                        </h4>
-                        <p class="userInfoPara">
-                          {{ users[message.replyingTo.sender]?.description }}
-                        </p>
-                      </div>
-                    </b-flex>
-                    <b-flex style="width: 107%; padding-block: 5px">
-                      <b-spacer></b-spacer>
-                      <b-btn
-                        v-if="message.replyingTo != user.id"
-                        style="margin-right: -15px"
-                        size="small"
-                        color="primary"
-                        v-on:click="
-                          $emit(
-                            'startMeetingWithUser',
-                            users[message.replyingTo.sender]
-                          )
+                <sl-card class="userInfo">
+                  <b-flex>
+                    <div>
+                      <b-avatar
+                        :size="45"
+                        :username="
+                          users[message.sender]
+                            ? users[message.sender].username
+                            : ''
                         "
-                      >
-                        <b-icon name="mdi mdi-video" left class="pr-1"></b-icon>
-                        Meet
-                      </b-btn>
-                      <router-link :to="`/user/${message.replyingTo.sender}`">
-                        <b-btn size="small">
-                          <b-icon
-                            name="mdi mdi-account"
-                            left
-                            class="pr-1"
-                          ></b-icon>
-                          View Profile
-                        </b-btn></router-link
-                      >
-                    </b-flex>
-                  </b-card>
-                </template>
-              </Popper>
+                        :src="users[message.sender]?.avatar"
+                      ></b-avatar>
+                    </div>
+                    <div>
+                      <h3 class="my-0 pl-1">
+                        {{ users[message.sender]?.username }}
+                      </h3>
+                      <p>
+                        {{ users[message.sender]?.description }}
+                      </p>
+                    </div>
+                  </b-flex>
+                  <b-flex slot="footer">
+                    <b-spacer></b-spacer>
+                    <sl-button
+                      size="medium"
+                      v-if="message.sender != user.id"
+                      variant="primary"
+                      v-on:click="
+                        $emit('startMeetingWithUser', users[message.sender])
+                      "
+                    >
+                      <sl-icon slot="prefix" name="camera-video-fill"></sl-icon>
+                      Meet
+                    </sl-button>
+                    <router-link :to="`/user/${message.sender}`">
+                      <sl-button size="medium">
+                        <sl-icon slot="prefix" name="person-fill"></sl-icon>
+                        View Profile
+                      </sl-button>
+                    </router-link>
+                  </b-flex>
+                </sl-card>
+              </sl-dropdown>
               <div
                 :class="{
                   'msg-text': true,
@@ -225,8 +217,10 @@
               </div>
             </small>
             <b-flex>
-              <Popper arrow :interactive="true" placement="right">
+              <sl-dropdown hoist placement="right">
                 <b-avatar
+                  slot="trigger"
+                  tabindex="0"
                   :size="30"
                   class="senderAvatarEl"
                   v-if="
@@ -243,81 +237,67 @@
                   :src="users[message.sender]?.avatar"
                 >
                 </b-avatar>
-                <template #content>
-                  <b-card
-                    glass
-                    class="p-0"
-                    style="
-                      max-width: 310px;
-                      padding-right: 35px;
-                      padding-bottom: 5px;
-                    "
-                  >
-                    <b-flex>
-                      <div>
-                        <b-avatar
-                          :size="45"
-                          :username="
-                            users[message.sender]
-                              ? users[message.sender].username
-                              : ''
-                          "
-                          :src="users[message.sender]?.avatar"
-                        ></b-avatar>
-                      </div>
-                      <div>
-                        <h4 class="m-0 mt-3 ml-2">
-                          {{ users[message.sender]?.username }}
-                        </h4>
-                        <p class="userInfoPara">
-                          {{ users[message.sender]?.description }}
-                        </p>
-                      </div>
-                    </b-flex>
-                    <b-flex style="width: 107%; padding-block: 5px">
-                      <b-spacer></b-spacer>
-                      <b-btn
-                        v-if="message.sender != user.id"
-                        style="margin-right: -15px"
-                        size="small"
-                        color="primary"
-                        v-on:click="
-                          $emit('startMeetingWithUser', users[message.sender])
-                        "
-                      >
-                        <b-icon name="mdi mdi-video" left class="pr-1"></b-icon>
-                        Meet
-                      </b-btn>
-                      <router-link :to="`/user/${message.sender}`">
-                        <b-btn size="small">
-                          <b-icon
-                            name="mdi mdi-account"
-                            left
-                            class="pr-1"
-                          ></b-icon>
-                          View Profile
-                        </b-btn></router-link
-                      >
-                    </b-flex>
-                  </b-card>
-                </template>
-              </Popper>
-              <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
-              <div v-if="message.type == 'gif'" class="msg-gif">
-                <v-lazy-image
-                  src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-                  height="200"
-                  :src="message.src"
-                  :alt="message.title"
-                />
-              </div>
-              <div v-else-if="message.type == 'file'">
-                <div class="fileMsg">
+                <sl-card class="userInfo">
                   <b-flex>
-                    <span>
-                      {{ message.file.name }}
-                    </span>
+                    <div>
+                      <b-avatar
+                        :size="45"
+                        :username="
+                          users[message.sender]
+                            ? users[message.sender].username
+                            : ''
+                        "
+                        :src="users[message.sender]?.avatar"
+                      ></b-avatar>
+                    </div>
+                    <div>
+                      <h3 class="my-0 pl-1">
+                        {{ users[message.sender]?.username }}
+                      </h3>
+                      <p>
+                        {{ users[message.sender]?.description }}
+                      </p>
+                    </div>
+                  </b-flex>
+                  <b-flex slot="footer">
                     <b-spacer></b-spacer>
+                    <sl-button
+                      size="medium"
+                      v-if="message.sender != user.id"
+                      variant="primary"
+                      v-on:click="
+                        $emit('startMeetingWithUser', users[message.sender])
+                      "
+                    >
+                      <sl-icon slot="prefix" name="camera-video-fill"></sl-icon>
+                      Meet
+                    </sl-button>
+                    <router-link :to="`/user/${message.sender}`">
+                      <sl-button size="medium">
+                        <sl-icon slot="prefix" name="person-fill"></sl-icon>
+                        View Profile
+                      </sl-button>
+                    </router-link>
+                  </b-flex>
+                </sl-card>
+              </sl-dropdown>
+              <div class="msg-content">
+                <!-- Down there we're checking if the text contains emojis, as in only one emoji. Browsers act weird with this don't know why-->
+                <div v-if="message.type == 'gif'" class="msg-gif">
+                  <v-lazy-image
+                    src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                    height="200"
+                    :src="message.src"
+                    :alt="message.title"
+                  />
+                </div>
+                <div v-else-if="message.type == 'file'">
+                  <div class="fileMsg">
+                    <b-flex>
+                      <span>
+                        {{ message.file.name }}
+                      </span>
+                      <b-spacer></b-spacer>
                       <sl-icon-button
                         name="download"
                         v-if="
@@ -330,45 +310,71 @@
                       >
                       </sl-icon-button>
                       <sl-spinner v-else style="font-size: 33px"></sl-spinner>
+                    </b-flex>
+                  </div>
+                </div>
+                <div v-else-if="message.type == 'image'" class="msg-image">
+                  <div class="controls">
+                    <b-btn
+                      icon
+                      class="mr-1"
+                      glass
+                      color="primary"
+                      v-on:click="downloadFile(message.file)"
+                      :loading="
+                        download.loading && message.file.time == download.time
+                      "
+                    >
+                      <b-icon name="mdi mdi-download"></b-icon>
+                    </b-btn>
+                    <b-btn
+                      v-on:click="openImage(message)"
+                      icon
+                      glass
+                      color="primary"
+                    >
+                      <b-icon name="mdi mdi-fullscreen"></b-icon>
+                    </b-btn>
+                  </div>
+                  <v-lazy-image
+                    src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
+                    height="200"
+                    :src="message.file.url"
+                    :alt="message.file.name"
+                  />
+                </div>
+                <div
+                  v-else-if="message.type == 'likeShort'"
+                  class="msg-short-like"
+                >
+                  <b-flex bare>
+                    <div>
+                      <short-preview
+                        v-on:click="
+                          Object.keys(this.users).forEach((usr) => {
+                            if (message.sender != usr) {
+                              $emit('openShort', {
+                                short: message.short,
+                                sender: usr,
+                              });
+                            }
+                          })
+                        "
+                        :short="message.short"
+                      ></short-preview>
+                    </div>
+                  </b-flex>
+                  <b-flex bare>
+                    <span class="msg-text">{{
+                      (message.username || "ERROR") + " liked your Short"
+                    }}</span>
                   </b-flex>
                 </div>
-              </div>
-              <div v-else-if="message.type == 'image'" class="msg-image">
-                <div class="controls">
-                  <b-btn
-                    icon
-                    class="mr-1"
-                    glass
-                    color="primary"
-                    v-on:click="downloadFile(message.file)"
-                    :loading="
-                      download.loading && message.file.time == download.time
-                    "
-                  >
-                    <b-icon name="mdi mdi-download"></b-icon>
-                  </b-btn>
-                  <b-btn
-                    v-on:click="openImage(message)"
-                    icon
-                    glass
-                    color="primary"
-                  >
-                    <b-icon name="mdi mdi-fullscreen"></b-icon>
-                  </b-btn>
-                </div>
-                <v-lazy-image
-                  src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
-                  height="200"
-                  :src="message.file.url"
-                  :alt="message.file.name"
-                />
-              </div>
-              <div
-                v-else-if="message.type == 'likeShort'"
-                class="msg-short-like"
-              >
-                <b-flex bare>
-                  <div>
+                <div
+                  v-else-if="message.type == 'commentShort'"
+                  class="msg-short-comment"
+                >
+                  <b-flex bare>
                     <short-preview
                       v-on:click="
                         Object.keys(this.users).forEach((usr) => {
@@ -382,47 +388,22 @@
                       "
                       :short="message.short"
                     ></short-preview>
-                  </div>
-                </b-flex>
-                <b-flex bare>
-                  <span class="msg-text">{{
-                    (message.username || "ERROR") + " liked your Short"
-                  }}</span>
-                </b-flex>
-              </div>
-              <div
-                v-else-if="message.type == 'commentShort'"
-                class="msg-short-comment"
-              >
-                <b-flex bare>
-                  <short-preview
-                    v-on:click="
-                      Object.keys(this.users).forEach((usr) => {
-                        if (message.sender != usr) {
-                          $emit('openShort', {
-                            short: message.short,
-                            sender: usr,
-                          });
-                        }
-                      })
+                  </b-flex>
+                  <b-flex bare>
+                    <span class="msg-text">{{ message.text }}</span>
+                  </b-flex>
+                </div>
+                <div v-else>
+                  <div
+                    :class="{
+                      'msg-text': true,
+                      oneEmoji: checkOnlyOneEmoji(message.text),
+                    }"
+                    v-html="
+                      message?.text ? convertMessageToHTML(message?.text) : ''
                     "
-                    :short="message.short"
-                  ></short-preview>
-                </b-flex>
-                <b-flex bare>
-                  <span class="msg-text">{{ message.text }}</span>
-                </b-flex>
-              </div>
-              <div v-else>
-                <div
-                  :class="{
-                    'msg-text': true,
-                    oneEmoji: checkOnlyOneEmoji(message.text),
-                  }"
-                  v-html="
-                    message?.text ? convertMessageToHTML(message?.text) : ''
-                  "
-                ></div>
+                  ></div>
+                </div>
               </div>
               <b-flex bare class="messageActions">
                 <sl-icon-button
@@ -450,22 +431,24 @@
                 </sl-icon-button>
               </b-flex>
             </b-flex>
-            <div class="reactions">
-              <span
-                v-for="(users, key) in message.reactions"
-                :key="key"
-                class="reaction"
-                v-on:click="reactionClicked(i, key)"
-              >
-                <b-flex style="padding: 0" v-if="key != 'undefined'">
-                  <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
-                  <span
-                    :class="'reactionNumber ' + checkIfUserReacted(users)"
-                    >{{ getNumberOfReactions(users) }}</span
-                  >
-                </b-flex>
-              </span>
-            </div>
+            <transition name="fadeUp">
+              <div class="reactions" v-if="!!message.reactions">
+                <span
+                  v-for="(users, key) in message.reactions"
+                  :key="key"
+                  class="reaction"
+                  v-on:click="reactionClicked(i, key)"
+                >
+                  <b-flex style="padding: 0" v-if="key != 'undefined'">
+                    <emoji :size="15" :data="emojiIndex" :emoji="key"></emoji>
+                    <span
+                      :class="'reactionNumber ' + checkIfUserReacted(users)"
+                      >{{ getNumberOfReactions(users) }}</span
+                    >
+                  </b-flex>
+                </span>
+              </div>
+            </transition>
             <b-flex bare>
               <link-preview
                 v-if="findLink(message?.text) != false"

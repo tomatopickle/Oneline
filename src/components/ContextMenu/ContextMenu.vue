@@ -27,14 +27,11 @@ export default {
       // updates position of context menu
       this.left = mouseX(evt) + "px";
       this.top = mouseY(evt) + "px";
-      console.log(evt);
       this.display = true;
-      console.log("opened");
     },
     close() {
       this.display = false;
       this.$emit("closed");
-      console.log("closed");
     },
   },
 };

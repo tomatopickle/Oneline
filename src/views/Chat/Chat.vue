@@ -167,6 +167,7 @@
             <transition-group name="flip-list" tag="div">
               <template v-for="(chat, i) in chats" :key="i">
                 <div
+                  tabindex="0"
                   clickable
                   v-on:click="openChat(chat)"
                   :class="
@@ -1017,7 +1018,12 @@
               }}</small>
             </div>
             <b-spacer></b-spacer>
-            <sl-dropdown placement="left" skidding="90" hoist ref="likeEmojiModal">
+            <sl-dropdown
+              placement="left"
+              skidding="90"
+              hoist
+              ref="likeEmojiModal"
+            >
               <sl-button slot="trigger">Change</sl-button>
               <div>
                 <Picker

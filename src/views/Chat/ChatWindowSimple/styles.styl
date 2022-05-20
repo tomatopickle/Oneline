@@ -23,6 +23,10 @@
     .selected.msg {
         background-color: var(--sl-color-neutral-50);
         border-radius: 7px;
+
+        .messageActions {
+            opacity: 1;
+        }
     }
 
     .msg:not(.sub) {
@@ -425,6 +429,11 @@
     .msg:not(.sub) {
         // Or the usernames collide
         margin-top: var(--sl-spacing-small);
+
+        .msg-content {
+            position: relative;
+            left: -3px;
+        }
 
         .fileMsg {
             margin-top: var(--sl-spacing-x-small);

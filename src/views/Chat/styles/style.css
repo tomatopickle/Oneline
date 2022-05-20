@@ -130,20 +130,8 @@ img.thumbnailImage.selected {
   backdrop-filter: blur(15px);
 }
 
-.userInfoPara {
-  opacity: 0.9;
-  font-size: 12px;
-  margin: 0 !important;
-}
 
-.senderAvatarEl {
-  cursor: pointer;
-  transition: transform 0.2s;
-}
 
-.senderAvatarEl:active {
-  transform: scale(0.9);
-}
 
 body,
 html {

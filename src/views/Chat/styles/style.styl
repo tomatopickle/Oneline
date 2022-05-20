@@ -242,6 +242,10 @@ sl-tab-group.centered {
     transition: background-color var(--sl-transition-fast);
     padding-block: var(--sl-spacing-3x-small);
 
+    &:focus-visible {
+        box-shadow: var(--sl-focus-ring);
+    }
+
     .badge span {
         position: relative;
         bottom: 4px;
@@ -460,7 +464,7 @@ body {
         transition: all 0.5s;
     }
 
-   .emoji-mart-anchor-selected {
+    .emoji-mart-anchor-selected {
         color: var(--sl-color-primary-600) !important;
     }
 
@@ -480,5 +484,25 @@ body {
 
     .emoji-mart-anchors svg {
         fill: #dbdbdb;
+    }
+}
+
+.userInfo {
+    width: 350px;
+    overflow: hidden;
+    margin: 0;
+    --padding: var(--sl-spacing-small);
+}
+
+.senderAvatarEl {
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:active {
+        transform: scale(0.9);
+    }
+
+    &:focus-visible {
+        box-shadow: var(--sl-focus-ring);
     }
 }
