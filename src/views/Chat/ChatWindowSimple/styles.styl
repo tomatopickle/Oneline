@@ -7,10 +7,10 @@
 .chatWindowSimple {
     .msg .msg-text {
         font-weight: 500;
+        font-size: 17px;
         border-radius: var(--sl-border-radius-x-large);
         background-color: var(--sl-color-neutral-100);
         min-width: 50px;
-        font-size: 17px;
         word-break: break-word;
         transition: border-radius 0.5s;
         align-items: center;
@@ -124,52 +124,34 @@
     .fileMsg {
         background-color: var(--sl-color-neutral-100);
         position: relative;
-        margin-bottom: 5px;
         width: max-content;
         margin-left: 30px;
-        padding: 7px;
-        padding-inline: 12px;
+        padding: var(--sl-spacing-x-small);
+        padding-inline: var(--sl-spacing-small);
+        border-radius: var(--sl-border-radius-x-large);
+        font-weight: 500;
         font-size: 17px;
-        border-radius: var(--ui-radius);
 
-        .btn {
-            height: max-content;
+        & span {
             margin: auto;
-            margin-bottom: 0px;
-            padding: 4px;
-            box-shadow: none !important;
-
-            &.loading {
-                height: 32px;
-                position: relative;
-                top: -4px;
-            }
-
-            .spinner_parent {
-                height: max-content;
-            }
         }
     }
 
     .me .fileMsg {
-        background-color: var(--primary);
-        border-radius: 1.125rem 1.125rem 0.15rem 1.125rem;
-    }
+        background-color: var(--sl-color-primary-600);
+        color: var(--sl-panel-background-color);
 
-    .sub .fileMsg {
-        border-radius: 1.125rem;
-    }
+        sl-icon-button::part(base) {
+            color: var(--sl-panel-background-color);
 
-    .me.sub .fileMsg {
-        border-radius: 1.125rem;
-    }
+            &:hover, &:focus {
+                color: var(--sl-color-neutral-300);
+            }
 
-    .last .fileMsg {
-        border-radius: 0.15rem 1.125rem 1.125rem 1.125rem;
-    }
-
-    .me.last .fileMsg {
-        border-radius: 1.125rem 0.15rem 1.125rem 1.125rem;
+            &:active {
+                color: var(--sl-color-neutral-100);
+            }
+        }
     }
 
     .msg .fileMsg .flex-box {
@@ -443,6 +425,10 @@
     .msg:not(.sub) {
         // Or the usernames collide
         margin-top: var(--sl-spacing-small);
+
+        .fileMsg {
+            margin-top: var(--sl-spacing-x-small);
+        }
 
         .messageActions {
             // The first ones always have their messageactions higher than the other messages

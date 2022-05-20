@@ -318,16 +318,18 @@
                       {{ message.file.name }}
                     </span>
                     <b-spacer></b-spacer>
-                    <b-btn
-                      icon
-                      ghost
-                      v-on:click="downloadFile(message.file)"
-                      :loading="
-                        download.loading && message.file.time == download.time
-                      "
-                    >
-                      <b-icon ghost name="mdi mdi-download"></b-icon>
-                    </b-btn>
+                      <sl-icon-button
+                        name="download"
+                        v-if="
+                          !(
+                            download.loading &&
+                            message.file.time == download.time
+                          )
+                        "
+                        v-on:click="downloadFile(message.file)"
+                      >
+                      </sl-icon-button>
+                      <sl-spinner v-else style="font-size: 33px"></sl-spinner>
                   </b-flex>
                 </div>
               </div>
@@ -640,7 +642,7 @@ export default {
   data: () => {
     return {
       contextMenu: false,
-      selectedMessage: '',
+      selectedMessage: "",
       image: {
         show: false,
         message: {},
