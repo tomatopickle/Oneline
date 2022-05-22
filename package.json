@@ -14,7 +14,7 @@
     "production": "vue-cli-service serve --mode production"
   },
   "dependencies": {
-    "@daily-co/daily-js": "^0.25.0",
+    "@daily-co/daily-js": "^0.26.0",
     "@kyvg/vue3-notification": "^2.3.4",
     "@shoelace-style/shoelace": "^2.0.0-beta.73",
     "@shoelace-style/vue-sl-model": "^2.0.0",
@@ -39,12 +39,12 @@
     "pubnub": "^5.0.0",
     "register-service-worker": "^1.7.1",
     "sort-json": "^2.0.0",
-    "stylus": "0.55.0",
+    "stylus": "0.57.0",
     "stylus-loader": "3.0.2",
     "v-lazy-image": "^2.0.1",
     "vue": "^3.0.0",
     "vue-horizontal": "^1.0.2",
-    "vue-masonry": "^0.14.0",
+    "vue-masonry": "^0.15.0",
     "vue-router": "^4.0.12",
     "vue-skeletor": "^1.0.6",
     "vue3-popper": "^1.4.0",

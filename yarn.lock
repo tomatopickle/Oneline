@@ -943,10 +943,10 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
-"@daily-co/daily-js@^0.25.0":
-  version "0.25.0"
-  resolved "https://registry.yarnpkg.com/@daily-co/daily-js/-/daily-js-0.25.0.tgz#b5121d104700d00dce651103c95e3ed9a63c92f6"
-  integrity sha512-6kDYavLN7A3YimCGKgAU9qCtJj/Hqha4oSkhID7SJKTMoQRtBbt18f+KEiQc+GFm4r2sFvDtWNjh++u8Dhr1AA==
+"@daily-co/daily-js@^0.26.0":
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/@daily-co/daily-js/-/daily-js-0.26.0.tgz#f90828b80e7d7ceaa29e5bb3a7e666c96a37c3b0"
+  integrity sha512-JLKiTQs4HFKSzR5ES8GANPSbbs8Ri8HbJXSx54bYO6Y9bR5jr46cP0YlOwfxZIrPEXT3g3Jvt/Q1yRWqljZYVQ==
   dependencies:
     "@babel/runtime" "^7.12.5"
     bowser "^2.8.1"
@@ -9517,7 +9517,19 @@ stylus-loader@3.0.2, stylus-loader@^3.0.2:
     lodash.clonedeep "^4.5.0"
     when "~3.6.x"
 
-stylus@0.55.0, stylus@^0.55.0:
+stylus@0.57.0:
+  version "0.57.0"
+  resolved "https://registry.yarnpkg.com/stylus/-/stylus-0.57.0.tgz#a46f04f426c19ceef54abb1a9d189fd4e886df41"
+  integrity sha512-yOI6G8WYfr0q8v8rRvE91wbxFU+rJPo760Va4MF6K0I6BZjO4r+xSynkvyPBP9tV1CIEUeRsiidjIs2rzb1CnQ==
+  dependencies:
+    css "^3.0.0"
+    debug "^4.3.2"
+    glob "^7.1.6"
+    safer-buffer "^2.1.2"
+    sax "~1.2.4"
+    source-map "^0.7.3"
+
+stylus@^0.55.0:
   version "0.55.0"
   resolved "https://registry.yarnpkg.com/stylus/-/stylus-0.55.0.tgz#bd404a36dd93fa87744a9dd2d2b1b8450345e5fc"
   integrity sha512-MuzIIVRSbc8XxHH7FjkvWqkIcr1BvoMZoR/oFuAJDlh7VSaNJzrB4uJ38GRQa+mWjLXODAMzeDe0xi9GYbGwnw==
@@ -10169,10 +10181,10 @@ vue-loader@^15.9.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-masonry@^0.14.0:
-  version "0.14.1"
-  resolved "https://registry.yarnpkg.com/vue-masonry/-/vue-masonry-0.14.1.tgz#d6eefd2e6a44400cc25fa5ccdc58f7ab3f89aadb"
-  integrity sha512-FFihoFv0du7dQIEIRYd+3kpHQb3apdQLw0PAJvgH6uBpr4xJ0z9g4EY4O3gBECq6gn2DSVSbPqSquZOqYVZIVw==
+vue-masonry@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/vue-masonry/-/vue-masonry-0.15.0.tgz#2d9ab6b670ed0423da331bb59b84bdedd5d9f96c"
+  integrity sha512-qkASx9msOAjLhpl9as7KFPrB8wtbSuFTOPb6u8BRhtNEEGelXHEizn9GUxuyR651LvrDWdAkvEczh7CEdiN7SA==
   dependencies:
     imagesloaded "4.1.4"
     masonry-layout "^4.2.2"
