@@ -1396,48 +1396,66 @@
         </template>
       </b-card>
     </b-modal>
-    <b-modal width="500px" v-model="createTag.show">
-      <b-card glass>
-        <template v-slot:header>
-          <h4 class="mt-0 mb-0">Create Tag</h4>
-        </template>
-        <h5 class="my-2">Tag Name</h5>
+    <sl-dialog
+      width="500px"
+      :open="createTag.show"
+      @sl-request-close="createTag.show = false"
+      label="New Tag"
+    >
+      <h4 class="mb-2">Tag Name</h4>
+      <sl-input
+        v-model="createTag.data.name"
+        placeholder="Something cool... what about a 'Ghost' tag"
+      ></sl-input>
+      <br />
+      <b-flex>
+        <h4>Tag Font Color</h4>
+        <b-spacer></b-spacer>
+        <sl-color-picker
+          hoist
+          :value="createTag.data.color"
+          @sl-change="createTag.data.color = $event.target.value"
+          label="Select a color"
+        ></sl-color-picker>
+      </b-flex>
+      <b-flex>
+        <h4>Tag Background Color</h4>
+        <b-spacer></b-spacer>
+        <sl-color-picker
+          hoist
+          :value="createTag.data.backgroundColor"
+          @sl-change="createTag.data.backgroundColor = $event.target.value"
+          label="Select a color"
+        ></sl-color-picker>
+      </b-flex>
+      <br />
+      <template v-if="createTag.data.name">
+        <h4 class="my-2">Tag Preview</h4>
+        <sl-tag
+          id="tagPreview"
+          class="tag"
+          :style="{
+            '--backgroundColor': this.createTag.data.backgroundColor,
+            '--color': this.createTag.data.color,
+          }"
+          size="large"
+          pill
+        >
+          {{ createTag.data.name }}</sl-tag
+        >
 
-        <b-input
-          v-model="createTag.data.name"
-          placeholder="Something cool... what about a 'Ghost' tag"
-        ></b-input>
-        <h5 class="my-2">Tag Color</h5>
-        <div class="w-max flex center">
-          <template v-for="color in createTag.colors" :key="color">
-            <swatch
-              class="mx-1"
-              v-on:click="createTag.data.color = color"
-              :color="color"
-            />
-          </template>
-        </div>
         <br />
-        <template v-if="createTag.data.name">
-          <h5 class="my-2">Tag Preview</h5>
-
-          <div
-            id="tagPreview"
-            :style="{ backgroundColor: this.createTag.data.color }"
+      </template>
+      <div slot="footer">
+        <b-flex>
+          <b-spacer></b-spacer>
+          <sl-button @click="createTag.show = false">Cancel</sl-button>
+          <sl-button variant="primary" @click="createTagFunction()"
+            >Create</sl-button
           >
-            {{ createTag.data.name }}
-          </div>
-          <br />
-        </template>
-        <template v-slot:footer>
-          <b-flex>
-            <b-spacer></b-spacer>
-            <b-btn @click="createTag.show = false">Cancel</b-btn>
-            <b-btn color="primary" @click="createTagFunction()">Create</b-btn>
-          </b-flex>
-        </template>
-      </b-card>
-    </b-modal>
+        </b-flex>
+      </div>
+    </sl-dialog>
     <sl-dialog
       :open="newChat.modal"
       @sl-after-hide="newChat.modal = false"
@@ -1524,16 +1542,18 @@
     </sl-dialog>
     <template v-slot:append>
       <transition name="fade" :duration="{ enter: 0, leave: 50 }">
-        <b-sidebar width="250px" v-show="chatInfo">
-          <template v-slot:header>
+        <sl-card id="chatInfoBar" width="250px" v-show="chatInfo">
+          <div slot="header">
             <b-flex class="m-0 p-0">
               <h4>Chat Info</h4>
               <b-spacer></b-spacer>
-              <b-btn @click="chatInfo = false" icon ghost>
-                <b-icon name="mdi mdi-close"></b-icon>
-              </b-btn>
+              <sl-icon-button
+                name="x-lg"
+                label="Close"
+                @click="chatInfo = false"
+              ></sl-icon-button>
             </b-flex>
-          </template>
+          </div>
           <div>
             <b-avatar
               :src="chat?.src"
@@ -1567,7 +1587,7 @@
                 <b-btn
                   icon
                   circle
-                  v-if="user.id != chat.admin"
+                  v-if="user.id == chat.admin"
                   @click="createTag.show = true"
                   outline
                   data-tooltip="Create tag"
@@ -1617,53 +1637,60 @@
               <h3 class="mb-1">Tags</h3>
               <div class="px-2" id="totTags">
                 <template v-for="(tag, i) in chat.tags" :key="i">
-                  <div
-                    class="tag"
+                  <sl-tag
+                    class="tag m-1"
                     :style="{
-                      backgroundColor: tag.color,
-                      '--tagColor': tag.color,
+                      '--color': tag.color,
+                      '--backgroundColor': tag.backgroundColor,
                     }"
+                    pill
+                    removable
+                    v-on:sl-remove="removeTag(i)"
                   >
-                    {{ tag.name }}
-                    <div
-                      v-if="chat.admin == user.id"
-                      data-tooltip="Remove tag"
-                      v-on:click="removeTag(i)"
-                      class="tagCloseButton"
-                    >
-                      &#215;
-                    </div>
-                  </div>
+                    {{ tag.name }}</sl-tag
+                  >
                 </template>
               </div>
             </template>
             <h3>Members</h3>
             <template v-for="(usr, i) in members" :key="i">
               <b-list-item
+                @mouseover="hoveredContact = i"
+                @mouseleave="hoveredContact = -1"
                 :class="{
                   relative: true,
                   memberInfo: true,
                   isAdmin: i == chat?.admin,
                 }"
               >
-                <div v-if="i == chat?.admin" class="memberLabel adminLabel">
+                <sl-tag
+                  size="small"
+                  pill
+                  v-if="i == chat?.admin && hoveredContact != i"
+                  class="memberLabel adminLabel"
+                  variant="primary"
+                >
                   Admin
-                </div>
-                <div
+                </sl-tag>
+                <sl-tag
                   v-if="
+                    hoveredContact != i &&
                     chat?.assignedTags &&
                     chat?.tags &&
-                    chat?.assignedTags[userId] &&
-                    chat?.tags[chat.assignedTags[userId]] &&
-                    chat?.tags[chat.assignedTags[userId]]?.name
+                    chat?.assignedTags[i] &&
+                    chat?.tags[chat.assignedTags[i]] &&
+                    chat?.tags[chat.assignedTags[i]]?.name
                   "
-                  class="memberLabel"
+                  class="tag memberLabel"
+                  size="small"
                   :style="{
-                    backgroundColor: chat.tags[chat.assignedTags[i]].color,
+                    '--color': chat.tags[chat.assignedTags[i]].color,
+                    '--backgroundColor':
+                      chat.tags[chat.assignedTags[i]].backgroundColor,
                   }"
                 >
                   {{ chat.tags[chat.assignedTags[i]].name }}
-                </div>
+                </sl-tag>
                 <b-flex>
                   <b-avatar
                     :size="35"
@@ -1671,55 +1698,57 @@
                     :src="usr?.avatar"
                   ></b-avatar>
                   <span>{{ usr.username }}</span>
-                  <div class="memberActionButtons" v-if="chat.admin == user.id">
-                    <Popper arrow :interactive="false" placement="top">
-                      <b-btn icon>
-                        <b-icon name="mdi mdi-tag"></b-icon>
-                      </b-btn>
-                      <template #content>
-                        <div glass class="tagSelectDialog">
-                          <b-flex
-                            style="
-                              margin-left: 5px;
-                              margin-bottom: 5px;
-                              margin-top: 2px;
-                            "
-                          >
+                  <div
+                    class="memberActionButtons"
+                    v-if="chat.admin == user.id && hoveredContact == i"
+                  >
+                    <sl-dropdown placement="left">
+                      <sl-button variant="primary" icon circle slot="trigger">
+                        <sl-icon name="tag"></sl-icon>
+                      </sl-button>
+                      <sl-card class="tagSelectDialog">
+                        <div slot="header">
+                          <b-flex>
                             <b-avatar
                               :size="25"
                               :username="usr.username"
                               :src="usr?.avatar"
                             ></b-avatar>
-                            <h5 class="my-0">
+                            <span class="my-0">
                               Assign a tag to {{ usr.username }}
-                            </h5>
+                            </span>
                           </b-flex>
-                          <div style="margin-bottom: 5px">
-                            <template v-for="(tag, i) in chat.tags" :key="i">
-                              <div
-                                v-on:click="assignTag(i, usr.id)"
-                                class="tag"
-                                :style="{ backgroundColor: tag.color }"
-                              >
-                                {{ tag.name }}
-                              </div>
-                            </template>
-                          </div>
-                          <b-btn
-                            style="font-size: 15px; padding-block: 2px"
-                            block
-                            v-on:click="assignTag(i, usr.id)"
-                            >Remove tag</b-btn
-                          >
                         </div>
-                      </template>
-                    </Popper>
+                        <div style="margin-bottom: 5px">
+                          <template v-for="(tag, i) in chat.tags" :key="i">
+                            <sl-tag
+                              v-on:click="assignTag(i, usr.id)"
+                              class="tag"
+                              pill
+                              :style="{
+                                '--backgroundColor': tag.backgroundColor,
+                                '--color': tag.color,
+                              }"
+                            >
+                              {{ tag.name }}
+                            </sl-tag>
+                          </template>
+                        </div>
+                        <sl-button
+                          slot="footer"
+                          size="small"
+                          class="block"
+                          v-on:click="assignTag(i, usr.id)"
+                          >Remove tag</sl-button
+                        >
+                      </sl-card>
+                    </sl-dropdown>
                   </div>
                 </b-flex>
               </b-list-item>
             </template>
           </div>
-        </b-sidebar>
+        </sl-card>
       </transition>
     </template>
   </b-app>

@@ -88,36 +88,34 @@
               "
             >
               <span>{{ users[message.replyingTo.sender]?.username }}</span>
-              <div
-                v-if="checkIfUserHasTag(message.sender)"
-                class="userTag"
+              <sl-tag
+                v-if="checkIfUserHasTag(message.replyingTo.sender)"
+                class="tag my-1"
+                size="small"
                 :style="{
-                  '--tagColor':
-                    this.chat.tags[checkIfUserHasTag(message.sender)].color,
+                  '--color':
+                    this.chat.tags[checkIfUserHasTag(message.replyingTo.sender)]
+                      ?.color,
+                  '--backgroundColor':
+                    this.chat.tags[checkIfUserHasTag(message.replyingTo.sender)]
+                      ?.backgroundColor,
                 }"
+                pill
               >
-                {{ checkIfUserHasTag(message.sender) }}
-              </div>
+                {{ checkIfUserHasTag(message.replyingTo.sender) }}</sl-tag
+              >
             </small>
-            <b-flex>
+            <b-flex bare>
               <sl-dropdown hoist placement="right">
                 <b-avatar
                   slot="trigger"
                   tabindex="0"
                   :size="30"
                   class="senderAvatarEl"
-                  v-if="
-                    message.type == 'reply' ||
-                    checkTimeDifference(message, i) ||
-                    !(
-                      checkMsgFromSameUser(message, i) &&
-                      !checkTimeDifference(message, i)
-                    )
-                  "
                   :username="
-                    users[message.sender] ? users[message.sender].username : ''
+                    users[message.replyingTo.sender] ? users[message.replyingTo.sender].username : ''
                   "
-                  :src="users[message.sender]?.avatar"
+                  :src="users[message.replyingTo.sender]?.avatar"
                 >
                 </b-avatar>
                 <sl-card class="userInfo">
@@ -126,19 +124,19 @@
                       <b-avatar
                         :size="45"
                         :username="
-                          users[message.sender]
-                            ? users[message.sender].username
+                          users[message.replyingTo.sender]
+                            ? users[message.replyingTo.sender].username
                             : ''
                         "
-                        :src="users[message.sender]?.avatar"
+                        :src="users[message.replyingTo.sender]?.avatar"
                       ></b-avatar>
                     </div>
                     <div>
                       <h3 class="my-0 pl-1">
-                        {{ users[message.sender]?.username }}
+                        {{ users[message.replyingTo.sender]?.username }}
                       </h3>
                       <p>
-                        {{ users[message.sender]?.description }}
+                        {{ users[message.replyingTo.sender]?.description }}
                       </p>
                     </div>
                   </b-flex>
@@ -146,16 +144,16 @@
                     <b-spacer></b-spacer>
                     <sl-button
                       size="medium"
-                      v-if="message.sender != user.id"
+                      v-if="message.replyingTo.sender != user.id"
                       variant="primary"
                       v-on:click="
-                        $emit('startMeetingWithUser', users[message.sender])
+                        $emit('startMeetingWithUser', users[message.replyingTo.sender])
                       "
                     >
                       <sl-icon slot="prefix" name="camera-video-fill"></sl-icon>
                       Meet
                     </sl-button>
-                    <router-link :to="`/user/${message.sender}`">
+                    <router-link :to="`/user/${message.replyingTo.sender}`">
                       <sl-button size="medium">
                         <sl-icon slot="prefix" name="person-fill"></sl-icon>
                         View Profile
@@ -205,16 +203,21 @@
               "
             >
               <span>{{ users[message.sender]?.username }}</span>
-              <div
+              <sl-tag
                 v-if="checkIfUserHasTag(message.sender)"
-                class="userTag"
+                class="tag my-1"
+                size="small"
                 :style="{
-                  '--tagColor':
-                    this.chat.tags[checkIfUserHasTag(message.sender)].color,
+                  '--color':
+                    this.chat.tags[checkIfUserHasTag(message.sender)]?.color,
+                  '--backgroundColor':
+                    this.chat.tags[checkIfUserHasTag(message.sender)]
+                      ?.backgroundColor,
                 }"
+                pill
               >
-                {{ checkIfUserHasTag(message.sender) }}
-              </div>
+                {{ checkIfUserHasTag(message.sender) }}</sl-tag
+              >
             </small>
             <b-flex>
               <sl-dropdown hoist placement="right">

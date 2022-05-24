@@ -102,6 +102,7 @@ export default {
         short: {},
         shorts: {},
       },
+      hoveredContact: -1,
       short: {
         show: false,
         photo: {
@@ -333,7 +334,8 @@ export default {
           "#f14d27",
         ],
         data: {
-          color: "var(--primary)",
+          color: "#0f0f0f",
+          backgroundColor: "#4a90e2"
         },
       },
       opnChat: (chat) => {

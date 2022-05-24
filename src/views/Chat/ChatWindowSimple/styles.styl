@@ -86,6 +86,12 @@
 
     .msg {
         position: relative;
+
+        .tag {
+            position: relative;
+            bottom: 7px;
+            left: 2px;
+        }
     }
 
     .reaction {
@@ -205,8 +211,9 @@
 
     .time {
         text-align: center;
-        color: lighten($bg-dark, 50);
+        color: var(--sl-color-neutral-600);
         font-size: 11px;
+        margin-block: var(--sl-spacing-small);
     }
 
     @keyframes messageAnimation {
@@ -357,25 +364,6 @@
         color: var(--sl-color-primary-600);
     }
 
-    // html:not(.dark) .msg-text {
-    // color: white;
-    // }
-
-    // html:not(.dark) .time {
-    // color: #000 a8;
-    // }
-
-    // html:not(.dark) .reactions {
-    // background-color: #fff;
-    // }
-
-    // html:not(.dark) .reaction:hover {
-    // background-color: #e5e5e5;
-    // }
-
-    // html:not(.dark) #emojiBtn {
-    // color: #565656;
-    // }
     textarea {
         min-height: 50px;
     }
@@ -392,6 +380,17 @@
         .replyingToMessage {
             opacity: 0.5;
             position: relative;
+
+            .vue-avatar--wrapper {
+                margin-inline: 9px;
+            }
+        }
+
+        margin-top: var(--sl-spacing-large);
+
+        .msg-content {
+            position: relative;
+            left: -5px;
         }
 
         small {
@@ -429,11 +428,6 @@
     .msg:not(.sub) {
         // Or the usernames collide
         margin-top: var(--sl-spacing-small);
-
-        .msg-content {
-            position: relative;
-            left: -3px;
-        }
 
         .fileMsg {
             margin-top: var(--sl-spacing-x-small);

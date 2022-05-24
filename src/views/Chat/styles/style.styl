@@ -30,17 +30,15 @@
     position: absolute;
     right: 0;
     top: 8px;
-    font-size: 14px;
-    border-radius: 5px;
-    padding-inline: 5px;
+    // font-size: 14px;
+    // border-radius: 5px;
+    // padding-inline: 5px;
 }
 
 .memberActionButtons {
     position: absolute;
     right: 0;
     top: 1px;
-    opacity: 0;
-    transition: opacity 0.2s;
 }
 
 #tagPreview {
@@ -49,18 +47,6 @@
     border-radius: 7px;
     padding-inline: 10px;
     font-size: 20px;
-}
-
-.tag {
-    width: max-content;
-    border-radius: 7px;
-    display: inline-flex;
-    padding-block: 1px;
-    padding-inline: 10px;
-    margin-right: 5px;
-    margin-top: 5px;
-    font-size: 14px;
-    user-select: none;
 }
 
 .userTag {
@@ -106,41 +92,23 @@
 }
 
 .tagSelectDialog {
-    border-radius: var(--ui-radius) !important;
-    box-shadow: #00000075 0px 5px 15px;
-    width: max-content;
-    padding: 5px;
-    background-color: lighten($bg-dark, 5%);
+    width: 285px;
+    --padding: var(--sl-spacing-small);
 
-    .tag {
+    .tag::part(base) {
         cursor: pointer;
-        transition: filter 0.2s;
-
-        &:hover {
-            filter: brightness(1.25);
-        }
 
         &:active {
-            filter: brightness(1.05);
+            transform: scale(0.95);
         }
     }
 }
 
-.memberInfo:hover .memberActionButtons {
-    opacity: 1;
-}
-
+// .memberInfo:hover .memberActionButtons {
+// opacity: 1;
+// }
 .isAdmin .memberLabel:not(.adminLabel) {
     right: 60px;
-}
-
-.adminLabel {
-    border: 2px solid $primary;
-    color: $primary;
-}
-
-html.dark .adminLabel {
-    color: $primary-text;
 }
 
 html:not(.dark) {
@@ -505,4 +473,25 @@ body {
     &:focus-visible {
         box-shadow: var(--sl-focus-ring);
     }
+}
+
+#chatInfoBar {
+    height: 100%;
+    width: 250px;
+
+    &::part(base) {
+        height: 100%;
+        width: 250px;
+    }
+}
+
+#tagPreview {
+    margin: auto;
+    display: block;
+}
+
+.tag::part(base) {
+    color: var(--color);
+    background-color: var(--backgroundColor);
+    border: none;
 }
