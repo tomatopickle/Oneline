@@ -4,7 +4,7 @@
 
 A free, fast and reliable chat app.
 
-Check it out [here](https://oneline-web.netlify.app/)
+Check it out [here](https://oneline.surge.sh/)
 
 ## Project setup
 ```
