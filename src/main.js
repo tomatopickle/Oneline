@@ -23,6 +23,9 @@ setBasePath(
   "https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.0.0-beta.73/dist/"
 );
 
+registerIconLibrary('default', {
+  resolver: name => `https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/icons/${name}.svg`
+});
 const url = location.href;
 const oldUrl = "oneline-web.netlify.app";
 if (url.includes(oldUrl)) {
