@@ -78,7 +78,7 @@
                 <b-spacer></b-spacer>
                 <sl-dropdown style="max-width: 200px">
                   <sl-button slot="trigger" variant="primary" outline circle>
-                    <sl-icon name="plus-lg" label="New"></sl-icon>
+                    <i class="bi-plus-lg"></i>
                   </sl-button>
                   <sl-menu>
                     <sl-menu-item

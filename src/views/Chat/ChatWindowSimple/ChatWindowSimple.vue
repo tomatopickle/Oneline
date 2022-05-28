@@ -113,7 +113,9 @@
                   :size="30"
                   class="senderAvatarEl"
                   :username="
-                    users[message.replyingTo.sender] ? users[message.replyingTo.sender].username : ''
+                    users[message.replyingTo.sender]
+                      ? users[message.replyingTo.sender].username
+                      : ''
                   "
                   :src="users[message.replyingTo.sender]?.avatar"
                 >
@@ -147,15 +149,18 @@
                       v-if="message.replyingTo.sender != user.id"
                       variant="primary"
                       v-on:click="
-                        $emit('startMeetingWithUser', users[message.replyingTo.sender])
+                        $emit(
+                          'startMeetingWithUser',
+                          users[message.replyingTo.sender]
+                        )
                       "
                     >
-                      <sl-icon slot="prefix" name="camera-video-fill"></sl-icon>
+                      <i slot="prefix" class="bi-camera-video-fill"></i>
                       Meet
                     </sl-button>
                     <router-link :to="`/user/${message.replyingTo.sender}`">
                       <sl-button size="medium">
-                        <sl-icon slot="prefix" name="person-fill"></sl-icon>
+                        <i slot="prefix" class="bi-person-fill"></i>
                         View Profile
                       </sl-button>
                     </router-link>
@@ -272,12 +277,12 @@
                         $emit('startMeetingWithUser', users[message.sender])
                       "
                     >
-                      <sl-icon slot="prefix" name="camera-video-fill"></sl-icon>
+                      <i slot="prefix" class="bi-camera-video-fill"></i>
                       Meet
                     </sl-button>
                     <router-link :to="`/user/${message.sender}`">
                       <sl-button size="medium">
-                        <sl-icon slot="prefix" name="person-fill"></sl-icon>
+                        <i slot="prefix" class="bi-person-fill"></i>
                         View Profile
                       </sl-button>
                     </router-link>
