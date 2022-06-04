@@ -27,7 +27,7 @@
     "click-outside-vue3": "^4.0.1",
     "core-js": "^3.6.5",
     "emoji-js": "^3.6.0",
-    "emoji-mart-vue-fast": "^10.2.0",
+    "emoji-mart-vue-fast": "^10.2.2",
     "emoji-picker-element": "^1.8.1",
     "firebase": "9.8.1",
     "json-stable-stringify": "^1.0.1",
