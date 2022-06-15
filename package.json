@@ -16,7 +16,7 @@
   "dependencies": {
     "@daily-co/daily-js": "^0.26.0",
     "@kyvg/vue3-notification": "^2.3.4",
-    "@shoelace-style/shoelace": "^2.0.0-beta.74",
+    "@shoelace-style/shoelace": "^2.0.0-beta.76",
     "@shoelace-style/vue-sl-model": "^2.0.0",
     "@vime/vue-next": "^5.3.1",
     "@vueuse/head": "^0.7.5",
