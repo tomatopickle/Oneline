@@ -128,7 +128,7 @@
                 viewBox="0 0 512 512"
                 style="enable-background: new 0 0 512 512"
                 xml:space="preserve"
-                class="center"
+                class="center block"
               >
                 <g>
                   <g xmlns="http://www.w3.org/2000/svg">
@@ -155,13 +155,13 @@
               </svg>
               <br />
               <p class="text-center">You don't have any chats</p>
-              <b-btn
-                color="primary"
+              <br>
+              <sl-button
+                variant="primary"
                 outline
-                class="center"
-                size="small"
+                class="center block w-max"
                 @click="newChat.modal = true"
-                >New Chat</b-btn
+                >New Chat</sl-button
               >
             </template>
             <transition-group name="flip-list" tag="div">
@@ -284,9 +284,9 @@
           <br />
           <h1 class="mt-0">Hmm... You don't have any chats</h1>
           <br />
-          <b-btn @click="newChat.modal = true" color="primary" class="center">
-            <b-icon name="mdi mdi-plus" left></b-icon>Create New Chat
-          </b-btn>
+          <sl-button @click="newChat.modal = true" size="large" variant="primary" class="center block w-max">
+            <sl-icon name="plus-lg" slot="prefix"></sl-icon>Create New Chat
+          </sl-button>
         </div>
         <div class="w-max center" v-else-if="!chat.id">
           <br />
