@@ -282,7 +282,7 @@ export default {
             short_names: ["+1", "thumbsup"],
             short_name: "+1",
           },
-          messagesSimpleMode: false,
+          messagesSimpleMode: true,
           themeColor: "#119ee2",
           notification: {
             granted: false,
