@@ -316,8 +316,8 @@
         </div>
         <div v-if="chat.id && Object.keys(messages).length == 0">
           <br />
-          <b-btn @click="sendHi()" color="primary" class="center"
-            >Say Hi 👋</b-btn
+          <sl-button @click="sendHi()" variant="primary" class="center block w-max"
+            >Say Hi 👋</sl-button
           >
         </div>
         <br />
