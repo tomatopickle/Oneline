@@ -189,6 +189,25 @@ sl-tab-group.centered {
     background: var(--sl-panel-background-color);
 }
 
+[data-badge]::after {
+    content: attr(data-badge);
+    width: 20px;
+    height: 20px;
+    border-radius: 30px;
+    display: block;
+    position: absolute;
+    right: -3px;
+    bottom: -6px;
+    background-color: var(--sl-color-primary-500);
+    text-align: center;
+    font-size: 12px;
+    transition: transform 0.2s;
+    user-select: none;
+    line-height: 2;
+    color: var(--sl-panel-background-color);
+    line-height: 1.75;
+}
+
 #contacts .contact .badge {
     color: var(--sl-panel-background-color);
     position: absolute;

@@ -190,23 +190,6 @@ html {
   text-align: center;
 }
 
-[data-badge]::after {
-  content: attr(data-badge);
-  width: 20px;
-  height: 20px;
-  border-radius: 30px;
-  display: block;
-  position: absolute;
-  right: -3px;
-  bottom: -6px;
-  background-color: var(--primary);
-  text-align: center;
-  font-size: 12px;
-  transition: transform 0.2s;
-  user-select: none;
-  line-height: 2;
-}
-
 #shortsControl {
   position: fixed;
   top: 9vh;
