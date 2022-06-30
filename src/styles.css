@@ -81,16 +81,16 @@ html.dark body {
 }
 #splashScreen {
   background-image: url(./assets/logos/logo.png);
-  background-position: center center;
   background-repeat: no-repeat;
   position: absolute;
   height: 100%;
   width: 100%;
   z-index: 9555;
   background-color: #0c0b0b;
-  background-size: 30%;
-  background-position-y: 15vh;
+  background-position-y: 10%;
+  background-position-x: 50%;
   display: none;
+  background-size: 295px;
 }
 #splashScreen:after {
   content: "Oneline";
