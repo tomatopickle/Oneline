@@ -155,7 +155,7 @@
               </svg>
               <br />
               <p class="text-center">You don't have any chats</p>
-              <br>
+              <br />
               <sl-button
                 variant="primary"
                 outline
@@ -284,7 +284,12 @@
           <br />
           <h1 class="mt-0">Hmm... You don't have any chats</h1>
           <br />
-          <sl-button @click="newChat.modal = true" size="large" variant="primary" class="center block w-max">
+          <sl-button
+            @click="newChat.modal = true"
+            size="large"
+            variant="primary"
+            class="center block w-max"
+          >
             <sl-icon name="plus-lg" slot="prefix"></sl-icon>Create New Chat
           </sl-button>
         </div>
@@ -316,7 +321,10 @@
         </div>
         <div v-if="chat.id && Object.keys(messages).length == 0">
           <br />
-          <sl-button @click="sendHi()" variant="primary" class="center block w-max"
+          <sl-button
+            @click="sendHi()"
+            variant="primary"
+            class="center block w-max"
             >Say Hi 👋</sl-button
           >
         </div>
@@ -1280,17 +1288,13 @@
         </template>
         <div class="short" v-for="short in shorts.shorts" :key="short.time">
           <figure :class="short.filter" v-if="short.type == 'photo'">
-            <img
-              @load="
-                $refs.shortsSlider.refresh();
-                $refs.shortsSlider.scrollToIndex(0);
-                shorts.index = 0;
-              "
+            <v-lazy-image
+              src-placeholder="https://res.cloudinary.com/abaan/image/upload/v1640548169/dark-loading-gif.gif"
               class="shortImage"
               :src="short.src"
               alt
             />
-            <h4 class="shortImageCaption">{{ shorts.short?.caption }}</h4>
+            <h4 class="shortImageCaption" v-if="shorts.short?.caption">{{ shorts.short?.caption }}</h4>
           </figure>
           <figure :class="short.filter" v-else-if="short.type == 'video'">
             <video
