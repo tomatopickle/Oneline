@@ -4440,10 +4440,10 @@ emoji-mart-vue-fast@^10.2.2:
     "@babel/runtime" "^7.16.3"
     vue-virtual-scroller "^1.0.10"
 
-emoji-picker-element@^1.8.1:
-  version "1.11.3"
-  resolved "https://registry.yarnpkg.com/emoji-picker-element/-/emoji-picker-element-1.11.3.tgz#982ff6b31c87c77c2c263c654424eb7ffb4081f3"
-  integrity sha512-2pPwqgZ1JLn7hdu3LdJpfyREmvCWP5gKhkGFqAK/mIXKz/uYx+U6DZsMoGAHjdkh+njE+CEkHjHW3eTq/eYAfQ==
+emoji-picker-element@^1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/emoji-picker-element/-/emoji-picker-element-1.13.0.tgz#e8d8bba8c171ee7ec0ca2bb9c17c31caa6040d17"
+  integrity sha512-virRJVyj+WIn2pbixk4MoiAhEhxHIn6mlUeOmQgGIt9grBx2cstvK6w+W0mpF+yhH7mwvTQFOZVIF8dCADNNYg==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
