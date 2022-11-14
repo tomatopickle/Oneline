@@ -903,7 +903,7 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.10.5", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.3.4", "@babel/runtime@^7.8.4":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.11.0", "@babel/runtime@^7.12.5", "@babel/runtime@^7.16.3", "@babel/runtime@^7.3.4", "@babel/runtime@^7.8.4":
   version "7.17.9"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.9.tgz#d19fbf802d01a8cb6cf053a64e472d42c434ba72"
   integrity sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==
@@ -1626,11 +1626,6 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
-
-"@tsconfig/node12@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@tsconfig/node12/-/node12-1.0.9.tgz#62c1f6dee2ebd9aead80dc3afa56810e58e1a04c"
-  integrity sha512-/yBMcem+fbvhSREH+s14YJi18sp7J9jpuhYByADT2rypfajMZZN4WQ6zBGgBKp53NKmqI36wFYDb3yaMPurITw==
 
 "@types/body-parser@*":
   version "1.19.2"
@@ -8390,13 +8385,11 @@ public-encrypt@^4.0.0:
     randombytes "^2.0.1"
     safe-buffer "^5.1.2"
 
-pubnub@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/pubnub/-/pubnub-5.0.1.tgz#2bc5e7a986e625a02f4d7ebc9e25269e905e8e09"
-  integrity sha512-V2xDmbKviFY4mjuFE4a4uM5K0niLa/0aHu8tGs1cUHEyLt7yG+4zli/LvNb5ZKpcsdN7rojbbiZNd8TZuT+gUg==
+pubnub@^7.2.1:
+  version "7.2.1"
+  resolved "https://registry.yarnpkg.com/pubnub/-/pubnub-7.2.1.tgz#06ade827f1d17ec6f5bc79eedcf0d2bfcd74109f"
+  integrity sha512-3mYJbR2JbZRwcRs2wUURWW6U34Rsx9MK3QbcGGuKML96W4HlqvS4wQQagUyaZF2G/3w0Bq/iYMXUfFmIbQYhYA==
   dependencies:
-    "@babel/runtime" "^7.10.5"
-    "@tsconfig/node12" "^1.0.9"
     agentkeepalive "^3.5.2"
     buffer "^6.0.3"
     cbor-js "^0.1.0"
