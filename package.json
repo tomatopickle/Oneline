@@ -36,7 +36,7 @@
     "medium-editor": "^5.23.3",
     "nanoid": "^3.1.30",
     "nprogress": "^0.2.0",
-    "pubnub": "^5.0.0",
+    "pubnub": "^7.2.2",
     "register-service-worker": "^1.7.1",
     "sort-json": "^2.0.0",
     "stylus": "0.58.1",
