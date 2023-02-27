@@ -28,7 +28,7 @@
     "core-js": "^3.23.3",
     "emoji-js": "^3.6.0",
     "emoji-mart-vue-fast": "^10.2.2",
-    "emoji-picker-element": "^1.8.1",
+    "emoji-picker-element": "^1.16.0",
     "firebase": "9.8.2",
     "json-stable-stringify": "^1.0.1",
     "linkify-html": "^3.0.5",
